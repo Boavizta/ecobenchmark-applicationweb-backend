@@ -3,15 +3,15 @@ CREATE SCHEMA ecobenchmark;
 
 SET search_path TO ecobenchmark;
 
-CREATE TABLE users
+CREATE TABLE account
 (
     id            uuid primary key,
     login         text,
     creation_date timestamp
 );
 
-CREATE INDEX idx_users_creation_date
-    ON users(creation_date);
+CREATE INDEX idx_account_creation_date
+    ON account(creation_date);
 
 CREATE TABLE list
 (
