@@ -26,7 +26,7 @@ CREATE INDEX idx_list_creation_date
 CREATE TABLE task
 (
     id            uuid primary key,
-    list_id       uuid references ecobenchmark.list,
+    list_id       uuid references list(id),
     name          text,
     description   text,
     creation_date timestamp
