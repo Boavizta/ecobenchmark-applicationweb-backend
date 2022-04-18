@@ -1,10 +1,11 @@
 package main
 
 import (
-	"github.com/labstack/echo/v4"
+	echo "github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/pkg/errors"
 	"go_pgx/controllers/add_account"
+	"go_pgx/controllers/add_list"
 	"go_pgx/infra/storage"
 	"net/http"
 	"os"
@@ -35,6 +36,7 @@ func main() {
 		return c.String(http.StatusOK, "")
 	})
 	e.POST("/api/account", add_account.Controller(storageService))
+	e.POST("/api/list", add_list.Controller(storageService))
 
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())

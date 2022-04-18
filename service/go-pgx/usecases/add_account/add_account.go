@@ -16,16 +16,16 @@ func (c *AddAccount) Execute(requestLogin string) (*AddAccountResponse, error) {
 		return nil, errors.Wrap(err, "failed to generate uuid")
 	}
 
-	siteResponse := &AddAccountResponse{
+	accountResponse := &AddAccountResponse{
 		Id:           id,
 		Login:        requestLogin,
 		CreationDate: time.Now().UTC(),
 	}
 
-	err = c.Storage.AddAccount(siteResponse)
+	err = c.Storage.AddAccount(accountResponse)
 	if err != nil {
 		return nil, errors.Wrapf(err, "failed to create the account %s", requestLogin)
 	}
 
-	return siteResponse, nil
+	return accountResponse, nil
 }

@@ -5,6 +5,7 @@ import (
 	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/pkg/errors"
 	"go_pgx/usecases/add_account"
+	"go_pgx/usecases/add_list"
 )
 
 type Storage struct {
@@ -36,6 +37,20 @@ func (s *Storage) AddAccount(account *add_account.AddAccountResponse) error {
 	)
 	if err != nil {
 		return errors.Wrapf(err, "failed to insert the account %s", account.Login)
+	}
+	return nil
+}
+
+func (s *Storage) AddList(list *add_list.AddListResponse) error {
+	_, err := s.pool.Exec(
+		context.Background(),
+		"INSERT INTO list(id, name, creation_date) values ($1, $2, $3);",
+		list.Id,
+		list.Name,
+		list.CreationDate,
+	)
+	if err != nil {
+		return errors.Wrapf(err, "failed to insert the list %s", list.Name)
 	}
 	return nil
 }
