@@ -27,7 +27,7 @@ Content-Length: 115
 ----
 
 ----
-curl -i -X POST http://localhost:8080/api/list -H "Content-Type: application/json"  -d '{"name":"list 1"}'                                                                       2 ↵ ──(Mon,Apr18)─┘
+curl -i -X POST http://localhost:8080/api/list -H "Content-Type: application/json"  -d '{"name":"list 1", "account_id":"aa5c938c-b296-4eb8-92ef-ca3387ee5116"}'                                                                       2 ↵ ──(Mon,Apr18)─┘
 HTTP/1.1 201 Created
 Content-Type: application/json; charset=UTF-8
 Date: Mon, 18 Apr 2022 17:34:50 GMT

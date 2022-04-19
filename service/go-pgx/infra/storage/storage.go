@@ -44,8 +44,9 @@ func (s *Storage) AddAccount(account *add_account.AddAccountResponse) error {
 func (s *Storage) AddList(list *add_list.AddListResponse) error {
 	_, err := s.pool.Exec(
 		context.Background(),
-		"INSERT INTO list(id, name, creation_date) values ($1, $2, $3);",
+		"INSERT INTO list(id, account_id, name,  creation_date) values ($1, $2, $3, $4);",
 		list.Id,
+		list.AccountId,
 		list.Name,
 		list.CreationDate,
 	)

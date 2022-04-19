@@ -10,7 +10,7 @@ type AddList struct {
 	Storage Storage
 }
 
-func (c *AddList) Execute(requestName string) (*AddListResponse, error) {
+func (c *AddList) Execute(request AddListRequest) (*AddListResponse, error) {
 	id, err := uuid.NewV4()
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to generate uuid")
@@ -18,13 +18,14 @@ func (c *AddList) Execute(requestName string) (*AddListResponse, error) {
 
 	listResponse := &AddListResponse{
 		Id:           id,
-		Name:         requestName,
+		Name:         request.Name,
+		AccountId:    request.AccountId,
 		CreationDate: time.Now().UTC(),
 	}
 
 	err = c.Storage.AddList(listResponse)
 	if err != nil {
-		return nil, errors.Wrapf(err, "failed to create the list %s", requestName)
+		return nil, errors.Wrapf(err, "failed to create the list %s", request.Name)
 	}
 
 	return listResponse, nil

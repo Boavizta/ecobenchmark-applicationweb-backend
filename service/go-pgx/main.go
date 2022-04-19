@@ -37,7 +37,7 @@ func main() {
 	})
 	e.POST("/api/account", add_account.Controller(storageService))
 	e.POST("/api/list", add_list.Controller(storageService))
-
+	
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 	e.Logger.Fatal(e.Start(":8080"))

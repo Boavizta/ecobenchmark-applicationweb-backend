@@ -9,4 +9,5 @@ type AddListResponse struct {
 	Id           uuid.UUID
 	Name         string
 	CreationDate time.Time
+	AccountId    uuid.UUID
 }
