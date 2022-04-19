@@ -6,6 +6,7 @@ import (
 	"github.com/pkg/errors"
 	"go_pgx/usecases/add_account"
 	"go_pgx/usecases/add_list"
+	"go_pgx/usecases/add_task_to_list"
 )
 
 type Storage struct {
@@ -52,6 +53,22 @@ func (s *Storage) AddList(list *add_list.AddListResponse) error {
 	)
 	if err != nil {
 		return errors.Wrapf(err, "failed to insert the list %s", list.Name)
+	}
+	return nil
+}
+
+func (s *Storage) AddTask(task *add_task_to_list.AddTaskResponse) error {
+	_, err := s.pool.Exec(
+		context.Background(),
+		"INSERT INTO task(id, list_id, name, description, creation_date) values ($1, $2, $3, $4, $5);",
+		task.Id,
+		task.ListId,
+		task.Name,
+		task.Description,
+		task.CreationDate,
+	)
+	if err != nil {
+		return errors.Wrapf(err, "failed to insert the task %s", task.Name)
 	}
 	return nil
 }

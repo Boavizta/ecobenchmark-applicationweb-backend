@@ -35,3 +35,16 @@ Content-Length: 117
 
 {"id":"cc052192-f329-44ea-b3dc-4d0f8115aff6","name":"list 1","creation_date":"2022-04-18 17:34:50.264097 +0000 UTC"}
 ----
+
+----
+curl -i -X POST http://localhost:8080/api/list/86947eb7-d9fa-4258-9353-4d60921455e1/task -H "Content-Type: application/json"  -d '{"name":"task 1", "description":"aa5c938c-b296-4eb8-92ef-ca3387ee5116"}'
+
+HTTP/1.1 201 Created
+Content-Type: application/json; charset=UTF-8
+Date: Tue, 19 Apr 2022 06:40:09 GMT
+Content-Length: 194
+
+{"id":"a49f3a3f-c91d-4dc5-a058-d582dbda9495","name":"task 1","description":"description","creation_date":"2022-04-19 06:40:09.688522 +0000 UTC","list_id":"6f03849a-bc29-4886-9948-74abb6aaf56a"}
+
+
+----

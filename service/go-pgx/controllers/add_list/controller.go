@@ -18,14 +18,14 @@ func Controller(storage add_list.Storage) func(c echo.Context) error {
 			return c.NoContent(http.StatusBadRequest)
 		}
 
-		uuids, err := uuid.FromString(request.AccountId)
+		accountid, err := uuid.FromString(request.AccountId)
 		if err != nil {
 			return c.NoContent(http.StatusBadRequest)
 		}
 
 		requestList := add_list.AddListRequest{
 			Name:      request.Name,
-			AccountId: uuids,
+			AccountId: accountid,
 		}
 
 		createdList, err := useCase.Execute(requestList)

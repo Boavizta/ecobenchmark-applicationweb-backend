@@ -6,6 +6,7 @@ import (
 	"github.com/pkg/errors"
 	"go_pgx/controllers/add_account"
 	"go_pgx/controllers/add_list"
+	"go_pgx/controllers/add_task_to_list"
 	"go_pgx/infra/storage"
 	"net/http"
 	"os"
@@ -37,7 +38,8 @@ func main() {
 	})
 	e.POST("/api/account", add_account.Controller(storageService))
 	e.POST("/api/list", add_list.Controller(storageService))
-	
+	e.POST("/api/list/:list_id/task", add_task_to_list.Controller(storageService))
+
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 	e.Logger.Fatal(e.Start(":8080"))
