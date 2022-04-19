@@ -27,7 +27,7 @@ Content-Length: 115
 ----
 
 ----
-curl -i -X POST http://localhost:8080/api/list -H "Content-Type: application/json"  -d '{"name":"list 1", "account_id":"aa5c938c-b296-4eb8-92ef-ca3387ee5116"}'                                                                       2 ↵ ──(Mon,Apr18)─┘
+curl -i -X POST http://localhost:8080/api/list -H "Content-Type: application/json"  -d '{"name":"list 1", "account_id":"f7d36f5e-ecba-4255-91ae-d817bcd0f1bc"}'                                                                       2 ↵ ──(Mon,Apr18)─┘
 HTTP/1.1 201 Created
 Content-Type: application/json; charset=UTF-8
 Date: Mon, 18 Apr 2022 17:34:50 GMT
@@ -37,14 +37,22 @@ Content-Length: 117
 ----
 
 ----
-curl -i -X POST http://localhost:8080/api/list/86947eb7-d9fa-4258-9353-4d60921455e1/task -H "Content-Type: application/json"  -d '{"name":"task 1", "description":"aa5c938c-b296-4eb8-92ef-ca3387ee5116"}'
+curl -i -X POST http://localhost:8080/api/list/88b1108b-c6ea-458b-8bb2-08225f70300a/task -H "Content-Type: application/json"  -d '{"name":"task 1", "description":"des"}'
 
 HTTP/1.1 201 Created
 Content-Type: application/json; charset=UTF-8
 Date: Tue, 19 Apr 2022 06:40:09 GMT
 Content-Length: 194
 
-{"id":"a49f3a3f-c91d-4dc5-a058-d582dbda9495","name":"task 1","description":"description","creation_date":"2022-04-19 06:40:09.688522 +0000 UTC","list_id":"6f03849a-bc29-4886-9948-74abb6aaf56a"}
+{"id":"a49f3a3f-c91d-4dc5-a058-d582dbda9495","name":"task 1","description":"description","creation_date":"2022-04-19 06:40:09.688522 +0000 UTC","list_id":"88b1108b-c6ea-458b-8bb2-08225f70300a"}
 
 
+----
+
+----
+curl -X GET http://localhost:8080/api/account/f7d36f5e-ecba-4255-91ae-d817bcd0f1bc/list/\?page\=0  | jq
+----
+
+----
+curl -X GET http://localhost:8080/api/account/f7d36f5e-ecba-4255-91ae-d817bcd0f1bc/list/\?page\=1  | jq
 ----
