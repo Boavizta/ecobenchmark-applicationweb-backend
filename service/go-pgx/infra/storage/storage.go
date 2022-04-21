@@ -10,6 +10,7 @@ import (
 	"go_pgx/usecases/add_list"
 	"go_pgx/usecases/add_task_to_list"
 	"go_pgx/usecases/get_lists"
+	"go_pgx/usecases/get_stats"
 	"time"
 )
 
@@ -161,4 +162,38 @@ func (s *Storage) GetListsByAccountId(request get_lists.GetListsRequest) ([]get_
 	}
 
 	return listWithTask, nil
+}
+
+func (s *Storage) GetStatsByAccounts() ([]get_stats.GetStatsByAccountsResponse, error) {
+	var stats = []get_stats.GetStatsByAccountsResponse{}
+
+	rowsList, err := s.pool.Query(context.Background(),
+		`select id,  login, count(list_id) as nb_list, round(avg(nb_tasks),2) as avg_tasks from (select account.id, account.login, list.id list_id, count(task.id) nb_tasks from account inner join list on (list.account_id=account.id) left join task on (task.list_id=list.id) group by account.id, account.login, list.id) t group by id, login`,
+	)
+	if err != nil {
+		return nil, errors.Wrapf(err, "failed to select the stats")
+	}
+	defer rowsList.Close()
+	for rowsList.Next() {
+		var rawAccountId string
+		var accountLogin sql.NullString
+		var listCount int64
+		var taskAvg float64
+		err = rowsList.Scan(&rawAccountId, &accountLogin, &listCount, &taskAvg)
+		if err != nil {
+			return nil, errors.Wrap(err, "failed to scan the SQL result")
+		}
+		accountId, err := uuid.FromString(rawAccountId)
+		if err != nil {
+			return nil, errors.Wrapf(err, "the account has wrong id: %s", rawAccountId)
+		}
+		stat := get_stats.GetStatsByAccountsResponse{
+			AccountId:    accountId,
+			AccountLogin: accountLogin.String,
+			ListCount:    listCount,
+			TaskAvg:      taskAvg,
+		}
+		stats = append(stats, stat)
+	}
+	return stats, nil
 }

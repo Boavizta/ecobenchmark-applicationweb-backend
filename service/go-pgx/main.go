@@ -8,6 +8,7 @@ import (
 	"go_pgx/controllers/add_list"
 	"go_pgx/controllers/add_task_to_list"
 	"go_pgx/controllers/get_lists"
+	"go_pgx/controllers/get_stats"
 	"go_pgx/infra/storage"
 	"net/http"
 	"os"
@@ -41,6 +42,7 @@ func main() {
 	e.POST("/api/list", add_list.Controller(storageService))
 	e.POST("/api/list/:list_id/task", add_task_to_list.Controller(storageService))
 	e.GET("/api/account/:account_id/list/", get_lists.Controller(storageService))
+	e.GET("/api/stats", get_stats.Controller(storageService))
 
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
