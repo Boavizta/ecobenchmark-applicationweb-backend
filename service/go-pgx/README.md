@@ -1,21 +1,26 @@
-## How to run
-`go run main.go`
+# Use case code in Golang using pgx for db connection
 
-Port 8080
+## How to run
 
 Environment variable `POSTGRESQL_CONNECTION_URI` needs to be set.
 
+`go run main.go`
 
+Then it listen on port 8080
 
-## Env configuration :
+http://localhost:8080
+
+## Development Environment setup
 
 `docker run --name some-postgres  -p 5432:5432  -e POSTGRES_PASSWORD=mysecretpassword -d postgres`
 
 `POSTGRESQL_CONNECTION_URI=postgresql://postgres:mysecretpassword@127.0.0.1:5432/postgres?search_path=ecobenchmark`
+
+And init the db with sql in ../../migrations folder.
  
+## API usage example
 
-
-    ➜  ~ curl -i -X POST http://localhost:8080/api/account -H "Content-Type: application/json"  -d '{"login":"toto"}'
+    curl -i -X POST http://localhost:8080/api/account -H "Content-Type: application/json"  -d '{"login":"toto"}'
 
     HTTP/1.1 201 Created
     Content-Type: application/json; charset=UTF-8
@@ -26,7 +31,8 @@ Environment variable `POSTGRESQL_CONNECTION_URI` needs to be set.
 
 ----
 
-    curl -i -X POST http://localhost:8080/api/list -H "Content-Type: application/json"  -d '{"name":"list 1", "account_id":"f7d36f5e-ecba-4255-91ae-d817bcd0f1bc"}'                                                                       2 ↵ ──(Mon,Apr18)─┘
+    curl -i -X POST http://localhost:8080/api/list -H "Content-Type: application/json"  -d '{"name":"list 1", "account_id":"f7d36f5e-ecba-4255-91ae-d817bcd0f1bc"}'
+
     HTTP/1.1 201 Created
     Content-Type: application/json; charset=UTF-8
     Date: Mon, 18 Apr 2022 17:34:50 GMT
@@ -49,10 +55,8 @@ Environment variable `POSTGRESQL_CONNECTION_URI` needs to be set.
 ----
     curl -X GET http://localhost:8080/api/account/f7d36f5e-ecba-4255-91ae-d817bcd0f1bc/list/\?page\=1  | jq
 ----
-    curl -X GET http://localhost:8080/api/stats  | jq                                                      
-    % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-    Dload  Upload   Total   Spent    Left  Speed
-    100   111  100   111    0     0    653      0 --:--:-- --:--:-- --:--:--   707
+    curl -X GET http://localhost:8080/api/stats  | jq
+
     [
         {
             "account_id": "f7d36f5e-ecba-4255-91ae-d817bcd0f1bc",
