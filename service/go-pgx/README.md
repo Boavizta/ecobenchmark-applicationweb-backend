@@ -35,7 +35,7 @@ And init the db with sql in ../../migrations folder.
     Date: Fri, 15 Apr 2022 08:42:50 GMT
     Content-Length: 115
 
-    {"id":"fcbf7d89-b611-405d-89cb-9688a965b78d","name":"toto","creation_date":"2022-04-15 08:42:49.769601 +0000 UTC"}
+    {"id":"fcbf7d89-b611-405d-89cb-9688a965b78d","login":"toto","creation_date":"2022-04-15 08:42:49.769601 +0000 UTC"}
 
 ----
 
