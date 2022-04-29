@@ -1,4 +1,4 @@
-DROP SCHEMA ecobenchmark CASCADE;
+DROP SCHEMA IF EXISTS ecobenchmark CASCADE;
 CREATE SCHEMA ecobenchmark;
 
 SET search_path TO ecobenchmark;
@@ -16,9 +16,14 @@ CREATE INDEX idx_account_creation_date
 CREATE TABLE list
 (
     id            uuid primary key,
+    account_id    uuid references account(id),
     name          text,
     creation_date timestamp
 );
+
+
+CREATE INDEX idx_list_account_id
+    ON list(account_id);
 
 CREATE INDEX idx_list_creation_date
     ON list(creation_date);
