@@ -20,7 +20,15 @@ And init the db with sql in ../../migrations folder.
  
 ## API usage example
 
-    curl -i -X POST http://localhost:8080/api/account -H "Content-Type: application/json"  -d '{"login":"toto"}'
+    curl -I http://localhost:8080/healthcheck   
+
+    HTTP/1.1 200 OK
+    Content-Type: text/plain; charset=UTF-8
+    Date: Fri, 29 Apr 2022 05:51:42 GMT
+
+----
+
+    curl -i -X POST http://localhost:8080/api/accounts -H "Content-Type: application/json"  -d '{"login":"toto"}'
 
     HTTP/1.1 201 Created
     Content-Type: application/json; charset=UTF-8
@@ -31,7 +39,7 @@ And init the db with sql in ../../migrations folder.
 
 ----
 
-    curl -i -X POST http://localhost:8080/api/list -H "Content-Type: application/json"  -d '{"name":"list 1", "account_id":"f7d36f5e-ecba-4255-91ae-d817bcd0f1bc"}'
+    curl -i -X POST http://localhost:8080/api/lists -H "Content-Type: application/json"  -d '{"name":"list 1", "account_id":"f7d36f5e-ecba-4255-91ae-d817bcd0f1bc"}'
 
     HTTP/1.1 201 Created
     Content-Type: application/json; charset=UTF-8
@@ -42,7 +50,7 @@ And init the db with sql in ../../migrations folder.
 
 ----
 
-    curl -i -X POST http://localhost:8080/api/list/88b1108b-c6ea-458b-8bb2-08225f70300a/task -H "Content-Type: application/json"  -d '{"name":"task 1", "description":"des"}'
+    curl -i -X POST http://localhost:8080/api/lists/88b1108b-c6ea-458b-8bb2-08225f70300a/tasks -H "Content-Type: application/json"  -d '{"name":"task 1", "description":"des"}'
 
     HTTP/1.1 201 Created
     Content-Type: application/json; charset=UTF-8
@@ -51,9 +59,9 @@ And init the db with sql in ../../migrations folder.
 
     {"id":"a49f3a3f-c91d-4dc5-a058-d582dbda9495","name":"task 1","description":"description","creation_date":"2022-04-19 06:40:09.688522 +0000 UTC","list_id":"88b1108b-c6ea-458b-8bb2-08225f70300a"}
 ----
-    curl -X GET http://localhost:8080/api/account/f7d36f5e-ecba-4255-91ae-d817bcd0f1bc/list/\?page\=0  | jq
+    curl -X GET http://localhost:8080/api/accounts/f7d36f5e-ecba-4255-91ae-d817bcd0f1bc/lists/\?page\=0  | jq
 ----
-    curl -X GET http://localhost:8080/api/account/f7d36f5e-ecba-4255-91ae-d817bcd0f1bc/list/\?page\=1  | jq
+    curl -X GET http://localhost:8080/api/accounts/f7d36f5e-ecba-4255-91ae-d817bcd0f1bc/lists/\?page\=1  | jq
 ----
     curl -X GET http://localhost:8080/api/stats  | jq
 

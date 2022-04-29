@@ -20,9 +20,9 @@ func init() {
 	var exists bool
 	var err error
 
-	postgresqlConnectionUri, exists := os.LookupEnv("POSTGRESQL_CONNECTION_URI")
+	postgresqlConnectionUri, exists := os.LookupEnv("DATABASE_URL")
 	if !exists {
-		panic(errors.New("the environment variable POSTGRESQL_CONNECTION_URI is required"))
+		panic(errors.New("the environment variable DATABASE_URL is required"))
 	}
 
 	storageService, err = storage.New(postgresqlConnectionUri)
@@ -35,13 +35,13 @@ func init() {
 func main() {
 	e := echo.New()
 
-	e.GET("/ping", func(c echo.Context) error {
+	e.HEAD("/healthcheck", func(c echo.Context) error {
 		return c.String(http.StatusOK, "")
 	})
-	e.POST("/api/account", add_account.Controller(storageService))
-	e.POST("/api/list", add_list.Controller(storageService))
-	e.POST("/api/list/:list_id/task", add_task_to_list.Controller(storageService))
-	e.GET("/api/account/:account_id/list/", get_lists.Controller(storageService))
+	e.POST("/api/accounts", add_account.Controller(storageService))
+	e.POST("/api/lists", add_list.Controller(storageService))
+	e.POST("/api/lists/:list_id/tasks", add_task_to_list.Controller(storageService))
+	e.GET("/api/accounts/:account_id/lists/", get_lists.Controller(storageService))
 	e.GET("/api/stats", get_stats.Controller(storageService))
 
 	e.Use(middleware.Logger())
