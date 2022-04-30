@@ -6,18 +6,20 @@ use uuid::Uuid;
 pub mod create;
 
 #[derive(serde::Deserialize, serde::Serialize)]
-pub struct Account {
+pub struct List {
     id: Uuid,
-    login: String,
+    account_id: Uuid,
+    name: String,
     creation_date: DateTime<Utc>,
 }
 
-impl<'r> sqlx::FromRow<'r, PgRow> for Account {
+impl<'r> sqlx::FromRow<'r, PgRow> for List {
     fn from_row(row: &'r PgRow) -> Result<Self, sqlx::Error> {
         Ok(Self {
             id: row.get(0),
-            login: row.get(1),
-            creation_date: row.get(2),
+            account_id: row.get(1),
+            name: row.get(2),
+            creation_date: row.get(3),
         })
     }
 }

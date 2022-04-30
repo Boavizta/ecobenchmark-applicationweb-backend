@@ -23,6 +23,7 @@ async fn main() -> std::io::Result<()> {
             .app_data(pool.clone())
             .service(crate::handler::health::handler)
             .service(crate::handler::accounts_create::handler)
+            .service(crate::handler::lists_create::handler)
     })
     .bind(binding())?
     .run()
