@@ -2,7 +2,7 @@ CREATE TABLE account
 (
     id            uuid primary key default gen_random_uuid(),
     login         text,
-    creation_date timestamp default now()
+    creation_date timestamptz default now()
 );
 
 CREATE INDEX idx_account_creation_date
@@ -13,7 +13,7 @@ CREATE TABLE list
     id            uuid primary key default gen_random_uuid(),
     account_id    uuid references account(id),
     name          text,
-    creation_date timestamp default now()
+    creation_date timestamptz default now()
 );
 
 
@@ -29,7 +29,7 @@ CREATE TABLE task
     list_id       uuid references list(id),
     name          text,
     description   text,
-    creation_date timestamp default now()
+    creation_date timestamptz default now()
 );
 
 CREATE INDEX idx_task_list_id
