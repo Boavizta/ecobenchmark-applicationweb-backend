@@ -12,12 +12,8 @@ http://localhost:8080
 
 ## Development Environment setup
 
-`docker run --name some-postgres  -p 5432:5432  -e POSTGRES_PASSWORD=mysecretpassword -d postgres`
+See the readme in the root folder.
 
-`DATABASE_URL=postgresql://postgres:mysecretpassword@127.0.0.1:5432/postgres?search_path=ecobenchmark`
-
-And init the db with sql in ../../migrations folder.
- 
 ## API usage example
 
     curl -I http://localhost:8080/healthcheck   
