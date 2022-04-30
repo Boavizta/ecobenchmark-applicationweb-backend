@@ -4,6 +4,7 @@ use sqlx::Row;
 use uuid::Uuid;
 
 pub mod create;
+pub mod list;
 
 #[derive(serde::Deserialize, serde::Serialize)]
 pub struct List {
