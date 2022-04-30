@@ -3,6 +3,7 @@ package add_account
 import (
 	echo "github.com/labstack/echo/v4"
 	"github.com/pkg/errors"
+	"go_pgx/common"
 	"go_pgx/usecases/add_account"
 	"log"
 	"net/http"
@@ -29,7 +30,7 @@ func Controller(storage add_account.Storage) func(c echo.Context) error {
 			responseBody{
 				Id:           createdAccount.Id.String(),
 				Login:        createdAccount.Login,
-				CreationDate: createdAccount.CreationDate.String(),
+				CreationDate: common.JSONDATE{Time: createdAccount.CreationDate},
 			},
 		)
 	}

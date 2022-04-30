@@ -4,6 +4,7 @@ import (
 	"github.com/gofrs/uuid"
 	echo "github.com/labstack/echo/v4"
 	"github.com/pkg/errors"
+	"go_pgx/common"
 	"go_pgx/usecases/add_list"
 	"log"
 	"net/http"
@@ -41,7 +42,7 @@ func Controller(storage add_list.Storage) func(c echo.Context) error {
 				Id:           createdList.Id.String(),
 				AccountId:    createdList.AccountId.String(),
 				Name:         createdList.Name,
-				CreationDate: createdList.CreationDate.String(),
+				CreationDate: common.JSONDATE{Time: createdList.CreationDate},
 			},
 		)
 	}
