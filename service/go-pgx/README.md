@@ -2,7 +2,7 @@
 
 ## How to run
 
-Environment variable `POSTGRESQL_CONNECTION_URI` needs to be set.
+Environment variable `DATABASE_URL` needs to be set.
 
 `go run main.go`
 
@@ -14,7 +14,7 @@ http://localhost:8080
 
 `docker run --name some-postgres  -p 5432:5432  -e POSTGRES_PASSWORD=mysecretpassword -d postgres`
 
-`POSTGRESQL_CONNECTION_URI=postgresql://postgres:mysecretpassword@127.0.0.1:5432/postgres?search_path=ecobenchmark`
+`DATABASE_URL=postgresql://postgres:mysecretpassword@127.0.0.1:5432/postgres?search_path=ecobenchmark`
 
 And init the db with sql in ../../migrations folder.
  
