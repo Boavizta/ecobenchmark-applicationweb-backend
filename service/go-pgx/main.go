@@ -36,7 +36,7 @@ func main() {
 	e := echo.New()
 
 	e.HEAD("/healthcheck", func(c echo.Context) error {
-		return c.String(http.StatusOK, "")
+		return c.NoContent(http.StatusNoContent)
 	})
 	e.POST("/api/accounts", add_account.Controller(storageService))
 	e.POST("/api/lists", add_list.Controller(storageService))
