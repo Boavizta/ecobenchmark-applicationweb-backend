@@ -12,5 +12,5 @@ async fn handler(
 ) -> Result<HttpResponse, Error> {
     let mut conn = pool.acquire().await?;
     let created = payload.execute(&mut conn, list_id.into_inner()).await?;
-    Ok(HttpResponse::Ok().json(created))
+    Ok(HttpResponse::Created().json(created))
 }
