@@ -4,6 +4,7 @@ import (
 	"github.com/gofrs/uuid"
 	echo "github.com/labstack/echo/v4"
 	"github.com/pkg/errors"
+	"go_pgx/common"
 	"go_pgx/usecases/get_lists"
 	"log"
 	"net/http"
@@ -50,7 +51,7 @@ func listToResponse(tasks []get_lists.GetListsResponse) []responseBody {
 	for i, t := range tasks {
 		response[i] = responseBody{
 			Id:           t.Id.String(),
-			CreationDate: t.CreationDate.String(),
+			CreationDate: common.JSONDATE{Time: t.CreationDate},
 			Name:         t.Name,
 			Tasks:        taskToResponse(t.Tasks),
 		}
@@ -63,7 +64,7 @@ func taskToResponse(tasks []get_lists.TasksResponse) []TaskBody {
 	for i, t := range tasks {
 		response[i] = TaskBody{
 			Id:           t.Id.String(),
-			CreationDate: t.CreationDate.String(),
+			CreationDate: common.JSONDATE{Time: t.CreationDate},
 			Name:         t.Name,
 			Description:  t.Description,
 		}
