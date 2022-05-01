@@ -26,6 +26,7 @@ async fn main() -> std::io::Result<()> {
             .service(crate::handler::lists_create::handler)
             .service(crate::handler::lists_list::handler)
             .service(crate::handler::tasks_create::handler)
+            .service(crate::handler::stats::handler)
     })
     .bind(binding())?
     .run()
