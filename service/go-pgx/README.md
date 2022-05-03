@@ -35,7 +35,7 @@ See the readme in the root folder.
 
 ----
 
-    curl -i -X POST http://localhost:8080/api/lists -H "Content-Type: application/json"  -d '{"name":"list 1", "account_id":"f7d36f5e-ecba-4255-91ae-d817bcd0f1bc"}'
+    curl -i -X POST http://localhost:8080/api/accounts/f7d36f5e-ecba-4255-91ae-d817bcd0f1bc/lists -H "Content-Type: application/json"  -d '{"name":"list 1"}'
 
     HTTP/1.1 201 Created
     Content-Type: application/json; charset=UTF-8
