@@ -19,7 +19,7 @@ func Controller(storage add_list.Storage) func(c echo.Context) error {
 			return c.NoContent(http.StatusBadRequest)
 		}
 
-		accountid, err := uuid.FromString(request.AccountId)
+		accountid, err := uuid.FromString(c.Param("account_id"))
 		if err != nil {
 			return c.NoContent(http.StatusBadRequest)
 		}
