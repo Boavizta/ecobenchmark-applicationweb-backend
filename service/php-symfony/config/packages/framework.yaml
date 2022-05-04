@@ -1,5 +1,7 @@
 # see https://symfony.com/doc/current/reference/configuration/framework.html
 framework:
+    uid:
+        default_uuid_version: 4
     secret: '%env(APP_SECRET)%'
     #csrf_protection: true
     http_method_override: false

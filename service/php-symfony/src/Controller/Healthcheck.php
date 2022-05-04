@@ -9,7 +9,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class Healthcheck extends AbstractController
 {
     #[Route('/healthcheck', name: 'healthcheck')]
-    public function healthcheck()
+    public function healthcheck(): Response
     {
         return new Response('', 204);
     }
