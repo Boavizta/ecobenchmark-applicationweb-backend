@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\ListEntityRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Uid\UuidV4;
 
@@ -24,6 +26,14 @@ class ListEntity
 
     #[ORM\Column(type: 'datetimetz', nullable: true)]
     private $creation_date;
+
+    #[ORM\OneToMany(mappedBy: 'list', targetEntity: Task::class)]
+    private $tasks;
+
+    public function __construct()
+    {
+        $this->tasks = new ArrayCollection();
+    }
 
     public function getId(): ?UuidV4
     {
@@ -62,6 +72,36 @@ class ListEntity
     public function setCreationDate(?\DateTimeInterface $creation_date): self
     {
         $this->creation_date = $creation_date;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Task>
+     */
+    public function getTasks(): Collection
+    {
+        return $this->tasks;
+    }
+
+    public function addTask(Task $task): self
+    {
+        if (!$this->tasks->contains($task)) {
+            $this->tasks[] = $task;
+            $task->setList($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTask(Task $task): self
+    {
+        if ($this->tasks->removeElement($task)) {
+            // set the owning side to null (unless already changed)
+            if ($task->getList() === $this) {
+                $task->setList(null);
+            }
+        }
 
         return $this;
     }
