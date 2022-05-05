@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\AccountRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
 use Symfony\Component\Uid\UuidV4;
@@ -21,6 +23,14 @@ class Account
 
     #[ORM\Column(type: 'datetimetz', nullable: true)]
     private $creation_date;
+
+    #[ORM\OneToMany(mappedBy: 'Account', targetEntity: ListEntity::class)]
+    private $lists;
+
+    public function __construct()
+    {
+        $this->lists = new ArrayCollection();
+    }
 
     public function getId(): ?UuidV4
     {
@@ -47,6 +57,36 @@ class Account
     public function setCreationDate(?\DateTimeInterface $creation_date): self
     {
         $this->creation_date = $creation_date;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ListEntity>
+     */
+    public function getLists(): Collection
+    {
+        return $this->lists;
+    }
+
+    public function addList(ListEntity $list): self
+    {
+        if (!$this->lists->contains($list)) {
+            $this->lists[] = $list;
+            $list->setAccount($this);
+        }
+
+        return $this;
+    }
+
+    public function removeList(ListEntity $list): self
+    {
+        if ($this->lists->removeElement($list)) {
+            // set the owning side to null (unless already changed)
+            if ($list->getAccount() === $this) {
+                $list->setAccount(null);
+            }
+        }
 
         return $this;
     }
