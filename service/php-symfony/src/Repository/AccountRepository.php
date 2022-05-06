@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Account;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Doctrine\Persistence\ManagerRegistry;
@@ -47,32 +48,23 @@ class AccountRepository extends ServiceEntityRepository
         }
     }
 
-    // /**
-    //  * @return Account[] Returns an array of Account objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @param string $id
+     * @return Account
+     * @throws NonUniqueResultException
+     */
+    public function findAllJoinListsAndTasks(string $id): Account
     {
-        return $this->createQueryBuilder('a')
-            ->andWhere('a.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('a.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
+        $entityManager = $this->getEntityManager();
 
-    /*
-    public function findOneBySomeField($value): ?Account
-    {
-        return $this->createQueryBuilder('a')
-            ->andWhere('a.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        $query = $entityManager->createQuery(
+            'SELECT a, l, t
+            FROM App\Entity\Account a
+            LEFT JOIN a.lists l
+            LEFT JOIN l.tasks t
+            WHERE a.id = :id'
+        )->setParameter('id', $id);
+
+        return $query->getOneOrNullResult();
     }
-    */
 }
