@@ -1,5 +1,24 @@
 # Eco benchmark
 
+This repository is benchmarking different scenario to try to compare the energy consumption, for several languages.
+
+The different scenario will be the following, for each language:
+
+- default, optimised but not extremely
+- without database index
+- without proper sql queries
+
+## Workflow
+
+The complete workflow is based on docker images. Every image should be named as `<org>/service-<service_name>:<use_case>`.
+
+Each image can be built using the following command.
+
+```bash
+# oRG=jdrouet is used by default but can be changed by exporting a different variable.
+./builder/service.sh <name_of_your_service> <use_case>
+```
+
 ## Starting the database
 
 ### Postgres
