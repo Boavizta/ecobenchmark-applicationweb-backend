@@ -23,7 +23,7 @@ class Account
     #[ORM\Column(type: 'datetimetz', nullable: true)]
     private $creation_date;
 
-    #[ORM\OneToMany(mappedBy: 'Account', targetEntity: ListEntity::class)]
+    #[ORM\OneToMany(mappedBy: 'account', targetEntity: ListEntity::class)]
     private $lists;
 
     public function __construct()

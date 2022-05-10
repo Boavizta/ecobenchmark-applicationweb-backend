@@ -19,7 +19,7 @@ class ListEntity
     private $id;
 
     #[ORM\ManyToOne(targetEntity: Account::class, inversedBy: 'lists')]
-    private $Account;
+    private $account;
 
     #[ORM\Column(type: 'text', nullable: true)]
     private $name;
@@ -42,12 +42,12 @@ class ListEntity
 
     public function getAccount(): ?Account
     {
-        return $this->Account;
+        return $this->account;
     }
 
-    public function setAccount(?Account $Account): self
+    public function setAccount(?Account $account): self
     {
-        $this->Account = $Account;
+        $this->account = $account;
 
         return $this;
     }

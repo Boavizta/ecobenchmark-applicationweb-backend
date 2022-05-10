@@ -49,26 +49,6 @@ class AccountRepository extends ServiceEntityRepository
         }
     }
 
-    /**
-     * @param string $id
-     * @return Account
-     * @throws NonUniqueResultException
-     */
-    public function findAllJoinListsAndTasks(string $id): Account
-    {
-        $entityManager = $this->getEntityManager();
-
-        $query = $entityManager->createQuery(
-            'SELECT a, l, t
-            FROM App\Entity\Account a
-            LEFT JOIN a.lists l
-            LEFT JOIN l.tasks t
-            WHERE a.id = :id'
-        )->setParameter('id', $id);
-
-        return $query->getOneOrNullResult();
-    }
-
     public function getStats(): array
     {
         $entityManager = $this->getEntityManager();

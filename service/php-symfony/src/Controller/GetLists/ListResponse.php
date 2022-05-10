@@ -13,13 +13,17 @@ class ListResponse
     public string $creation_date;
     public string $account_id;
 
-    static function fromAccountEntity(Account $account): array
+    /**
+     * @param ListEntity[] $listEntities
+     * @return array
+     */
+    static function fromListEntities(array $listEntities): array
     {
-        $lists = [];
-        foreach ($account->getLists() as $list) {
-            $lists[] = self::fromListEntity($list);
+        $listResponses = [];
+        foreach ($listEntities as $list) {
+            $listResponses[] = self::fromListEntity($list);
         }
-        return $lists;
+        return $listResponses;
     }
 
     static function fromListEntity(ListEntity $list): ListResponse
