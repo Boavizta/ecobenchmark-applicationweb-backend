@@ -5,8 +5,7 @@ This repository is benchmarking different scenario to try to compare the energy 
 The different scenario will be the following, for each language:
 
 - default, optimised but not extremely
-- without database index
-- without proper sql queries
+- different degraded use cases.
 
 ## Workflow
 
@@ -35,3 +34,54 @@ docker run -d \
 
 export DATABASE_URL=postgresql://postgres:mysecretpassword@127.0.0.1:5432/postgres
 ```
+
+## Use Case Documentation
+
+### Default
+
+**Branch**  : main
+
+**Description** : classic optimized implementation, but not too much.
+
+### No Index
+
+**Branch** : usecase-no-index
+
+**Description** : oups, we forgot to put the indexes. For thoses who are laughing, you all have people running wordpress website around you. Check the db...
+
+### ORM Loop
+
+**Branch**  : usecase-orm-loop
+
+**Description** : for the API path `GET /api/accounts/:account_id/lists/` we do a classic loop like developer usually do using a ORM or layered architecture.
+
+Instead of one request, the get list become : 
+ - Get the list from the db (paginated)
+ - Loop on the list
+   - get the tasks of the lists
+   - fill the tasks in the list object
+ - return full list with task.
+
+### MySQL
+
+**Branch**  : usecase-mysql
+
+**Description** : replace postgresql by mysql
+
+### GRPC
+
+**Branch**  : usecase-grpc
+
+**Description** : use grpc instead of classic http/json.
+
+### No Pagination
+
+**Branch**  : usecase-no-pagination
+
+**Description** : for the API path `GET /api/accounts/:account_id/lists/` remove pagination.
+
+### Aggregation on code side
+
+**Branch**  : usecase-aggregation-code-side
+
+**Description** : for the API path `GET /api/stats` remove group by and aggregate on code side.
