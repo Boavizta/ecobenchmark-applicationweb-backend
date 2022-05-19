@@ -1,46 +1,51 @@
 package storage
 
 import (
-	"context"
 	"database/sql"
 	"github.com/gofrs/uuid"
-	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/pkg/errors"
 	"go_pgx/usecases/add_account"
 	"go_pgx/usecases/add_list"
 	"go_pgx/usecases/add_task_to_list"
 	"go_pgx/usecases/get_lists"
 	"go_pgx/usecases/get_stats"
+	"strings"
 	"time"
+
+	_ "github.com/go-sql-driver/mysql"
 )
 
 type Storage struct {
 	ConnectionURI string
-	pool          *pgxpool.Pool
+	pool          *sql.DB
 }
 
 func New(connectionURI string) (*Storage, error) {
-	pool, err := pgxpool.Connect(context.Background(), connectionURI)
+	tokenizeUrl := strings.Split(connectionURI, "://")
+	pool, err := sql.Open(tokenizeUrl[0], tokenizeUrl[1])
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to create the connection pool")
 	}
+	pool.SetConnMaxLifetime(time.Minute * 3)
+	pool.SetMaxOpenConns(10)
+	pool.SetMaxIdleConns(10)
 
-	pgStorage := &Storage{
+	myStorage := &Storage{
 		ConnectionURI: connectionURI,
 		pool:          pool,
 	}
 
-	return pgStorage, nil
+	return myStorage, nil
 }
 
 func (s *Storage) AddAccount(account *add_account.AddAccountResponse) error {
 	_, err := s.pool.Exec(
-		context.Background(),
-		"INSERT INTO account(id, login, creation_date) values ($1, $2, $3);",
+		"INSERT INTO account(id, login, creation_date) values (UUID_TO_BIN(?), ?, ?);",
 		account.Id,
 		account.Login,
 		account.CreationDate,
 	)
+
 	if err != nil {
 		return errors.Wrapf(err, "failed to insert the account %s", account.Login)
 	}
@@ -49,8 +54,7 @@ func (s *Storage) AddAccount(account *add_account.AddAccountResponse) error {
 
 func (s *Storage) AddList(list *add_list.AddListResponse) error {
 	_, err := s.pool.Exec(
-		context.Background(),
-		"INSERT INTO list(id, account_id, name,  creation_date) values ($1, $2, $3, $4);",
+		"INSERT INTO list(id, account_id, name,  creation_date) values (UUID_TO_BIN(?), UUID_TO_BIN(?), ?, ?);",
 		list.Id,
 		list.AccountId,
 		list.Name,
@@ -64,8 +68,7 @@ func (s *Storage) AddList(list *add_list.AddListResponse) error {
 
 func (s *Storage) AddTask(task *add_task_to_list.AddTaskResponse) error {
 	_, err := s.pool.Exec(
-		context.Background(),
-		"INSERT INTO task(id, list_id, name, description, creation_date) values ($1, $2, $3, $4, $5);",
+		"INSERT INTO task(id, list_id, name, description, creation_date) values (UUID_TO_BIN(?), UUID_TO_BIN(?), ?, ?, ?);",
 		task.Id,
 		task.ListId,
 		task.Name,
@@ -83,25 +86,26 @@ func (s *Storage) GetListsByAccountId(request get_lists.GetListsRequest) ([]get_
 	var listsRef = map[string]*get_lists.GetListsResponse{}
 	var pageSize int64 = 10
 
-	rowsTask, err := s.pool.Query(context.Background(),
+	rowsTask, err := s.pool.Query(
 		`SELECT
-                l.id,
+                BIN_TO_UUID(l.id),
                 l.name,
                 l.creation_date,
-                l.account_id,
-                t.id AS task_id,
+                BIN_TO_UUID(l.account_id),
+                BIN_TO_UUID(t.id) AS task_id,
                 t.name AS task_name,
                 t.description,
                 t.creation_date AS task_creation_date
             FROM list l
                 LEFT JOIN task t ON l.id = t.list_id
             WHERE
-                l.account_id = $1
-                AND l.id IN (SELECT id FROM list WHERE account_id = $1 LIMIT $2 OFFSET $3)
+                l.account_id = UUID_TO_BIN(?)
+                AND l.id IN (select id from (SELECT id FROM list WHERE account_id = UUID_TO_BIN(?) LIMIT ?,?) tmp)
 		`,
-		request.AccountId,
-		pageSize,
+		request.AccountId.String(),
+		request.AccountId.String(),
 		request.Page*pageSize,
+		pageSize,
 	)
 	if err != nil {
 		return nil, errors.Wrapf(err, "failed to select the tasks")
@@ -179,8 +183,8 @@ func (s *Storage) GetListsByAccountId(request get_lists.GetListsRequest) ([]get_
 func (s *Storage) GetStatsByAccounts() ([]get_stats.GetStatsByAccountsResponse, error) {
 	var stats = []get_stats.GetStatsByAccountsResponse{}
 
-	rowsList, err := s.pool.Query(context.Background(),
-		`select id,  login, count(list_id) as nb_list, round(avg(nb_tasks),2) as avg_tasks from (select account.id, account.login, list.id list_id, count(task.id) nb_tasks from account inner join list on (list.account_id=account.id) left join task on (task.list_id=list.id) group by account.id, account.login, list.id) t group by id, login`,
+	rowsList, err := s.pool.Query(
+		`select BIN_TO_UUID(id),  login, count(list_id) as nb_list, round(avg(nb_tasks),2) as avg_tasks from (select account.id, account.login, list.id list_id, count(task.id) nb_tasks from account inner join list on (list.account_id=account.id) left join task on (task.list_id=list.id) group by account.id, account.login, list.id) t group by id, login`,
 	)
 	if err != nil {
 		return nil, errors.Wrapf(err, "failed to select the stats")

@@ -1,8 +1,10 @@
+/* UUID in MYSQL https://stitcher.io/blog/optimised-uuids-in-mysql */
+
 CREATE TABLE account
 (
-    id            uuid primary key default gen_random_uuid(),
+    id            binary(16) primary key DEFAULT (UUID_TO_BIN(uuid())),
     login         text,
-    creation_date timestamptz default now()
+    creation_date DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE INDEX idx_account_creation_date
@@ -10,10 +12,10 @@ CREATE INDEX idx_account_creation_date
 
 CREATE TABLE list
 (
-    id            uuid primary key default gen_random_uuid(),
-    account_id    uuid references account(id),
+    id            binary(16) primary key DEFAULT (UUID_TO_BIN(uuid())),
+    account_id    binary(16),
     name          text,
-    creation_date timestamptz default now()
+    creation_date DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 
@@ -25,11 +27,11 @@ CREATE INDEX idx_list_creation_date
 
 CREATE TABLE task
 (
-    id            uuid primary key default gen_random_uuid(),
-    list_id       uuid references list(id),
+    id            binary(16) primary key DEFAULT (UUID_TO_BIN(uuid())),
+    list_id       binary(16),
     name          text,
     description   text,
-    creation_date timestamptz default now()
+    creation_date DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE INDEX idx_task_list_id
