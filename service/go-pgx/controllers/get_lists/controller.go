@@ -48,12 +48,13 @@ func Controller(storage get_lists.Storage) func(c echo.Context) error {
 
 func listToResponse(tasks []get_lists.GetListsResponse) []responseBody {
 	response := make([]responseBody, len(tasks))
-	for i, t := range tasks {
+	for i, l := range tasks {
 		response[i] = responseBody{
-			Id:           t.Id.String(),
-			CreationDate: common.JSONDATE{Time: t.CreationDate},
-			Name:         t.Name,
-			Tasks:        taskToResponse(t.Tasks),
+			Id:           l.Id.String(),
+			CreationDate: common.JSONDATE{Time: l.CreationDate},
+			Name:         l.Name,
+			AccountId:    l.AccountId.String(),
+			Tasks:        taskToResponse(l.Tasks),
 		}
 	}
 	return response
