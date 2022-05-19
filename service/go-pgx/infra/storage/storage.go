@@ -81,7 +81,6 @@ func (s *Storage) AddTask(task *add_task_to_list.AddTaskResponse) error {
 func (s *Storage) GetListsByAccountId(request get_lists.GetListsRequest) ([]get_lists.GetListsResponse, error) {
 	var listWithTask = []get_lists.GetListsResponse{}
 	var listsRef = map[string]*get_lists.GetListsResponse{}
-	var pageSize int64 = 10
 
 	rowsTask, err := s.pool.Query(context.Background(),
 		`SELECT
@@ -97,11 +96,9 @@ func (s *Storage) GetListsByAccountId(request get_lists.GetListsRequest) ([]get_
                 LEFT JOIN task t ON l.id = t.list_id
             WHERE
                 l.account_id = $1
-                AND l.id IN (SELECT id FROM list WHERE account_id = $1 LIMIT $2 OFFSET $3)
+                AND l.id IN (SELECT id FROM list WHERE account_id = $1)
 		`,
 		request.AccountId,
-		pageSize,
-		request.Page*pageSize,
 	)
 	if err != nil {
 		return nil, errors.Wrapf(err, "failed to select the tasks")

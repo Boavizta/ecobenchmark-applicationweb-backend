@@ -8,7 +8,6 @@ import (
 	"go_pgx/usecases/get_lists"
 	"log"
 	"net/http"
-	"strconv"
 )
 
 func Controller(storage get_lists.Storage) func(c echo.Context) error {
@@ -21,14 +20,8 @@ func Controller(storage get_lists.Storage) func(c echo.Context) error {
 			return c.NoContent(http.StatusBadRequest)
 		}
 
-		page, err := strconv.ParseInt(c.QueryParam("page"), 6, 12)
-		if err != nil {
-			page = 0
-		}
-
 		requestLists := get_lists.GetListsRequest{
 			AccountId: accountId,
-			Page:      page,
 		}
 
 		lists, err := useCase.Execute(requestLists)

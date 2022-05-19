@@ -5,6 +5,5 @@ import (
 )
 
 type GetListsRequest struct {
-	Page      int64
 	AccountId uuid.UUID
 }
