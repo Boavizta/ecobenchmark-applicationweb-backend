@@ -68,6 +68,10 @@ Instead of one request, the get list become :
 
 **Description** : replace postgresql by mysql
 
+**Note** : DATABASE_URL should be like : `mysql://root:mysqlpw@tcp(localhost:3306)/ecobenchmark?parseTime=true`
+
+`?parseTime=true` is mandatory.
+
 ### GRPC
 
 **Branch**  : usecase-grpc
