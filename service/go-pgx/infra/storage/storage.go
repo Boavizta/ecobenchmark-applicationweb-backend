@@ -11,6 +11,7 @@ import (
 	"go_pgx/usecases/add_task_to_list"
 	"go_pgx/usecases/get_lists"
 	"go_pgx/usecases/get_stats"
+	"math"
 	"time"
 )
 
@@ -179,8 +180,17 @@ func (s *Storage) GetListsByAccountId(request get_lists.GetListsRequest) ([]get_
 func (s *Storage) GetStatsByAccounts() ([]get_stats.GetStatsByAccountsResponse, error) {
 	var stats = []get_stats.GetStatsByAccountsResponse{}
 
+	type rawData struct {
+		AccountId    uuid.UUID
+		AccountLogin string
+		RawListId    string
+		RawTaskId    sql.NullString
+	}
+
+	var rawDataArray = []rawData{}
+
 	rowsList, err := s.pool.Query(context.Background(),
-		`select id,  login, count(list_id) as nb_list, round(avg(nb_tasks),2) as avg_tasks from (select account.id, account.login, list.id list_id, count(task.id) nb_tasks from account inner join list on (list.account_id=account.id) left join task on (task.list_id=list.id) group by account.id, account.login, list.id) t group by id, login`,
+		`select account.id, account.login, list.id list_id, task.id task_id from account inner join list on (list.account_id=account.id) left join task on (task.list_id=list.id)`,
 	)
 	if err != nil {
 		return nil, errors.Wrapf(err, "failed to select the stats")
@@ -189,9 +199,9 @@ func (s *Storage) GetStatsByAccounts() ([]get_stats.GetStatsByAccountsResponse, 
 	for rowsList.Next() {
 		var rawAccountId string
 		var accountLogin sql.NullString
-		var listCount int64
-		var taskAvg float64
-		err = rowsList.Scan(&rawAccountId, &accountLogin, &listCount, &taskAvg)
+		var listId string
+		var taskId sql.NullString
+		err = rowsList.Scan(&rawAccountId, &accountLogin, &listId, &taskId)
 		if err != nil {
 			return nil, errors.Wrap(err, "failed to scan the SQL result")
 		}
@@ -199,13 +209,66 @@ func (s *Storage) GetStatsByAccounts() ([]get_stats.GetStatsByAccountsResponse, 
 		if err != nil {
 			return nil, errors.Wrapf(err, "the account has wrong id: %s", rawAccountId)
 		}
-		stat := get_stats.GetStatsByAccountsResponse{
+		raw := rawData{
 			AccountId:    accountId,
 			AccountLogin: accountLogin.String,
-			ListCount:    listCount,
-			TaskAvg:      taskAvg,
+			RawListId:    listId,
+			RawTaskId:    taskId,
+		}
+		rawDataArray = append(rawDataArray, raw)
+	}
+
+	type preparedData struct {
+		AccountId    uuid.UUID
+		AccountLogin string
+		CountListId  int
+		TaskIdMap    map[string]int
+	}
+	var preparedDataMap = map[string]*preparedData{}
+
+	for _, e := range rawDataArray {
+		if preparedDataMap[e.AccountId.String()] == nil {
+			taskIdMap := map[string]int{}
+			taskIdMap[e.RawListId] = 0
+			if e.RawTaskId.Valid {
+				taskIdMap[e.RawListId] = 1
+			}
+			prepData := preparedData{
+				AccountId:    e.AccountId,
+				AccountLogin: e.AccountLogin,
+				CountListId:  1,
+				TaskIdMap:    taskIdMap,
+			}
+			preparedDataMap[e.AccountId.String()] = &prepData
+		} else {
+			if _, ok := preparedDataMap[e.AccountId.String()].TaskIdMap[e.RawListId]; ok {
+				if e.RawTaskId.Valid {
+					preparedDataMap[e.AccountId.String()].TaskIdMap[e.RawListId] += 1
+				}
+			} else {
+				preparedDataMap[e.AccountId.String()].CountListId += 1
+				preparedDataMap[e.AccountId.String()].TaskIdMap[e.RawListId] = 0
+				if e.RawTaskId.Valid {
+					preparedDataMap[e.AccountId.String()].TaskIdMap[e.RawListId] = 1
+				}
+			}
+		}
+	}
+
+	for _, e := range preparedDataMap {
+		inc := 0
+		for _, t := range e.TaskIdMap {
+			inc += t
+		}
+		avgTask := float64(inc) / float64(e.CountListId)
+		stat := get_stats.GetStatsByAccountsResponse{
+			AccountId:    e.AccountId,
+			AccountLogin: e.AccountLogin,
+			ListCount:    int64(e.CountListId),
+			TaskAvg:      math.Round(avgTask*100) / 100,
 		}
 		stats = append(stats, stat)
 	}
+
 	return stats, nil
 }
