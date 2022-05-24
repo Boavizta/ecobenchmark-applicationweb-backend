@@ -35,6 +35,18 @@ docker run -d \
 export DATABASE_URL=postgresql://postgres:mysecretpassword@127.0.0.1:5432/postgres
 ```
 
+
+## Use Case Status
+
+| Langage       | Référence (main) | No Index | ORM Loop | MySQL | GRPC | No Pagination | Aggregation on code side |
+|---------------|----------------|----------|----------|-------|----|---------------|--------------------------|
+| Go Lang       | X              | X        | X        | X     |  | X             | X                        |
+| Rust          |                |          |          |       |  |               |                          |
+| PHP (Symfony) | X              |          |          |       |  |               |                          |
+| JVM/Kotlin    |                |          |          |       |  |               |                          |
+| Node.js       |                |          |          |       |  |               |                          |
+| Ruby On Rails |                |          |          |       |  |               |                          |
+
 ## Use Case Documentation
 
 ### Default
