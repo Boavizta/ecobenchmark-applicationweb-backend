@@ -82,7 +82,6 @@ func (s *Storage) GetListsByAccountId(request get_lists.GetListsRequest) ([]get_
 	var listWithTask = []get_lists.GetListsResponse{}
 	var listsRef = map[string]*get_lists.GetListsResponse{}
 	var pageSize int64 = 10
-	var listIds []string
 
 	rowsTask, err := s.pool.Query(context.Background(),
 		`SELECT
@@ -133,6 +132,7 @@ func (s *Storage) GetListsByAccountId(request get_lists.GetListsRequest) ([]get_
 		}
 
 		if rawTaskId.Valid {
+			// List with tasks
 			taskId, err := uuid.FromString(rawTaskId.String)
 			if err != nil {
 				return nil, errors.Wrapf(err, "the task has wrong id: %s", rawTaskId)
@@ -157,10 +157,11 @@ func (s *Storage) GetListsByAccountId(request get_lists.GetListsRequest) ([]get_
 					Tasks:        []get_lists.TasksResponse{},
 				}
 				list.Tasks = append(list.Tasks, task)
-				listsRef[rawListId] = &list
-				listIds = append(listIds, rawListId)
+				listWithTask = append(listWithTask, list)
+				listsRef[rawListId] = &listWithTask[len(listWithTask)-1]
 			}
 		} else {
+			// List without tasks
 			list := get_lists.GetListsResponse{
 				Id:           listId,
 				Name:         listName,
@@ -168,14 +169,10 @@ func (s *Storage) GetListsByAccountId(request get_lists.GetListsRequest) ([]get_
 				AccountId:    accountId,
 				Tasks:        []get_lists.TasksResponse{},
 			}
-			listsRef[rawListId] = &list
-			listIds = append(listIds, rawListId)
+			listWithTask = append(listWithTask, list)
+			listsRef[rawListId] = &listWithTask[len(listWithTask)-1]
 		}
 	}
-	for _, value := range listsRef {
-		listWithTask = append(listWithTask, *value)
-	}
-
 	return listWithTask, nil
 }
 
