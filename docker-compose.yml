@@ -1,4 +1,14 @@
 services:
+  go-pgx:
+    image: jdrouet/eco-benchmark:runner-go-pgx-default
+    depends_on:
+      - database
+    environment:
+      - DATABASE_URL=postgresql://postgres:mysecretpassword@database:5432/postgres
+    ports:
+      - 8080:8080
+    restart: unless-stopped
+
   php-symfony:
     image: jdrouet/eco-benchmark:runner-php-symfony-default
     depends_on:
