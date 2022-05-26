@@ -2,51 +2,43 @@ package add_task_to_list
 
 import (
 	"github.com/gofrs/uuid"
-	echo "github.com/labstack/echo/v4"
 	"github.com/pkg/errors"
-	"go_pgx/common"
+	"go_pgx/endpoints"
 	"go_pgx/usecases/add_task_to_list"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
+	"google.golang.org/protobuf/types/known/timestamppb"
 	"log"
-	"net/http"
 )
 
-func Controller(storage add_task_to_list.Storage) func(c echo.Context) error {
+func Controller(req *endpoints.AddTaskInput, storage add_task_to_list.Storage) (*endpoints.AddTaskOutput, error) {
 	useCase := add_task_to_list.AddTask{Storage: storage}
 
-	return func(c echo.Context) error {
-		request := requestBody{}
-		if err := c.Bind(&request); err != nil {
-			return c.NoContent(http.StatusBadRequest)
-		}
-
-		listId, err := uuid.FromString(c.Param("list_id"))
-		if err != nil {
-			return c.NoContent(http.StatusBadRequest)
-		}
-
-		requestTask := add_task_to_list.AddTaskRequest{
-			Name:        request.Name,
-			Description: request.Description,
-			ListId:      listId,
-		}
-
-		createdTask, err := useCase.Execute(requestTask)
-
-		if err != nil {
-			log.Printf("%+v", errors.Wrap(err, "failed to handle the request to add the task"))
-			return c.String(http.StatusInternalServerError, "failed to add the task")
-		}
-
-		return c.JSON(
-			http.StatusCreated,
-			responseBody{
-				Id:           createdTask.Id.String(),
-				ListId:       createdTask.ListId.String(),
-				Name:         createdTask.Name,
-				Description:  createdTask.Description,
-				CreationDate: common.JSONDATE{Time: createdTask.CreationDate},
-			},
-		)
+	listId, err := uuid.FromString(req.ListId)
+	if err != nil {
+		return nil, status.Error(codes.Aborted, "failed to handle the listid")
 	}
 
+	requestTask := add_task_to_list.AddTaskRequest{
+		Name:   req.Name,
+		ListId: listId,
+	}
+
+	if (req.Description != nil) {
+		requestTask.Description = *req.Description
+	}
+
+	createdTask, err := useCase.Execute(requestTask)
+
+	if err != nil {
+		log.Printf("%+v", errors.Wrap(err, "failed to handle the request to add the task"))
+		return nil, status.Error(codes.Aborted, "failed to add the task")
+	}
+
+	return &endpoints.AddTaskOutput{Id: createdTask.Id.String(),
+		ListId:       createdTask.ListId.String(),
+		Name:         createdTask.Name,
+		Description:  createdTask.Description,
+		CreationDate: timestamppb.New(createdTask.CreationDate),
+	}, nil
 }

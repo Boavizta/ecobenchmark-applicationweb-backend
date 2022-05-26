@@ -2,56 +2,51 @@ package get_lists
 
 import (
 	"github.com/gofrs/uuid"
-	echo "github.com/labstack/echo/v4"
 	"github.com/pkg/errors"
-	"go_pgx/common"
+	"go_pgx/endpoints"
 	"go_pgx/usecases/get_lists"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
+	"google.golang.org/protobuf/types/known/timestamppb"
 	"log"
-	"net/http"
-	"strconv"
 )
 
-func Controller(storage get_lists.Storage) func(c echo.Context) error {
+func Controller(req *endpoints.GetListInput, storage get_lists.Storage) (*endpoints.GetListOutput, error) {
 	useCase := get_lists.GetListsByAccountId{Storage: storage}
 
-	return func(c echo.Context) error {
-
-		accountId, err := uuid.FromString(c.Param("account_id"))
-		if err != nil {
-			return c.NoContent(http.StatusBadRequest)
-		}
-
-		page, err := strconv.ParseInt(c.QueryParam("page"), 6, 12)
-		if err != nil {
-			page = 0
-		}
-
-		requestLists := get_lists.GetListsRequest{
-			AccountId: accountId,
-			Page:      page,
-		}
-
-		lists, err := useCase.Execute(requestLists)
-
-		if err != nil {
-			log.Printf("%+v", errors.Wrap(err, "failed to handle the request to get the lists"))
-			return c.String(http.StatusInternalServerError, "failed to add the lists")
-		}
-
-		return c.JSON(
-			http.StatusCreated,
-			listToResponse(lists),
-		)
+	accountId, err := uuid.FromString(req.AccountId)
+	if err != nil {
+		return nil, status.Error(codes.Aborted, "failed to handle the account id")
 	}
 
+	page := int64(0)
+	if req.Page != nil {
+		page = int64(*req.Page)
+	}
+
+	requestLists := get_lists.GetListsRequest{
+		AccountId: accountId,
+		Page:      page,
+	}
+
+	lists, err := useCase.Execute(requestLists)
+
+	if err != nil {
+		log.Printf("%+v", errors.Wrap(err, "failed to handle the request to get the lists"))
+		return nil, status.Error(codes.Aborted, "failed to add the lists")
+	}
+
+	return &endpoints.GetListOutput{
+		List: listToResponse(lists),
+	}, nil
 }
 
-func listToResponse(tasks []get_lists.GetListsResponse) []responseBody {
-	response := make([]responseBody, len(tasks))
+func listToResponse(tasks []get_lists.GetListsResponse) []*endpoints.List {
+	response := make([]*endpoints.List, len(tasks))
 	for i, l := range tasks {
-		response[i] = responseBody{
+		response[i] = &endpoints.List{
 			Id:           l.Id.String(),
-			CreationDate: common.JSONDATE{Time: l.CreationDate},
+			CreationDate: timestamppb.New(l.CreationDate),
 			Name:         l.Name,
 			AccountId:    l.AccountId.String(),
 			Tasks:        taskToResponse(l.Tasks),
@@ -60,12 +55,12 @@ func listToResponse(tasks []get_lists.GetListsResponse) []responseBody {
 	return response
 }
 
-func taskToResponse(tasks []get_lists.TasksResponse) []TaskBody {
-	response := make([]TaskBody, len(tasks))
+func taskToResponse(tasks []get_lists.TasksResponse) []*endpoints.Task {
+	response := make([]*endpoints.Task, len(tasks))
 	for i, t := range tasks {
-		response[i] = TaskBody{
+		response[i] = &endpoints.Task{
 			Id:           t.Id.String(),
-			CreationDate: common.JSONDATE{Time: t.CreationDate},
+			CreationDate: timestamppb.New(t.CreationDate),
 			Name:         t.Name,
 			Description:  t.Description,
 		}

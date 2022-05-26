@@ -1,17 +1,23 @@
 package main
 
 import (
-	echo "github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
+	"context"
+	"fmt"
 	"github.com/pkg/errors"
 	"go_pgx/controllers/add_account"
 	"go_pgx/controllers/add_list"
 	"go_pgx/controllers/add_task_to_list"
 	"go_pgx/controllers/get_lists"
 	"go_pgx/controllers/get_stats"
+	"go_pgx/endpoints"
 	"go_pgx/infra/storage"
-	"net/http"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/keepalive"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
+	"log"
+	"net"
 	"os"
+	"time"
 )
 
 var storageService *storage.Storage
@@ -33,18 +39,60 @@ func init() {
 }
 
 func main() {
-	e := echo.New()
+	port := "8080"
+	lis, err := net.Listen("tcp", fmt.Sprintf(":%s", port))
+	if err != nil {
+		log.Fatalf("failed to listen: %v", err)
+	}
+	s := grpc.NewServer(
+		grpc.ConnectionTimeout(time.Second),
+		grpc.KeepaliveParams(keepalive.ServerParameters{
+			MaxConnectionIdle: time.Second * 10,
+			Timeout:           time.Second * 20,
+		}),
+		grpc.KeepaliveEnforcementPolicy(
+			keepalive.EnforcementPolicy{
+				MinTime:             time.Second,
+				PermitWithoutStream: true,
+			}),
+		grpc.MaxConcurrentStreams(5),
+	)
 
-	e.HEAD("/healthcheck", func(c echo.Context) error {
-		return c.NoContent(http.StatusNoContent)
-	})
-	e.POST("/api/accounts", add_account.Controller(storageService))
-	e.POST("/api/accounts/:account_id/lists", add_list.Controller(storageService))
-	e.POST("/api/lists/:list_id/tasks", add_task_to_list.Controller(storageService))
-	e.GET("/api/accounts/:account_id/lists", get_lists.Controller(storageService))
-	e.GET("/api/stats", get_stats.Controller(storageService))
+	endpoints.RegisterHealthServer(s, &healthServer{})
+	endpoints.RegisterTodoListServer(s, &todoListServer{})
+	if err := s.Serve(lis); err != nil {
+		log.Fatalf("failed to serve: %v", err)
+	}
+}
 
-	e.Use(middleware.Logger())
-	e.Use(middleware.Recover())
-	e.Logger.Fatal(e.Start(":8080"))
+type healthServer struct {
+	endpoints.UnimplementedHealthServer
+}
+
+type todoListServer struct {
+	endpoints.UnimplementedTodoListServer
+}
+
+func (s *healthServer) GetHealthCheck(ctx context.Context, empty *emptypb.Empty) (*emptypb.Empty, error) {
+	return empty, nil
+}
+
+func (s *todoListServer) AddAccount(ctx context.Context, msg *endpoints.AddAccountInput) (*endpoints.AddAccountOutput, error) {
+	return add_account.Controller(msg, storageService)
+}
+
+func (s *todoListServer) AddListToAccount(ctx context.Context, msg *endpoints.AddListInput) (*endpoints.AddListOutput, error) {
+	return add_list.Controller(msg, storageService)
+}
+
+func (s *todoListServer) AddTaskToList(ctx context.Context, msg *endpoints.AddTaskInput) (*endpoints.AddTaskOutput, error) {
+	return add_task_to_list.Controller(msg, storageService)
+}
+
+func (s *todoListServer) GetListsWithTasks(ctx context.Context, msg *endpoints.GetListInput) (*endpoints.GetListOutput, error) {
+	return get_lists.Controller(msg, storageService)
+}
+
+func (s *todoListServer) GetStats(ctx context.Context, msg *emptypb.Empty) (*endpoints.GetStatsOutput, error) {
+	return get_stats.Controller(storageService)
 }
