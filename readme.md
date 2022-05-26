@@ -39,13 +39,13 @@ export DATABASE_URL=postgresql://postgres:mysecretpassword@127.0.0.1:5432/postgr
 ## Use Case Status
 
 | Langage       | Reference (main) | No Index | ORM Loop | MySQL | GRPC | No Pagination | Aggregation on code side |
-|---------------|------------------|----------|----------|-------|----|---------------|--------------------------|
-| Go Lang       | X                | X        | X        | X     |  | X             | X                        |
-| Rust          |                  |          |          |       |  |               |                          |
-| PHP (Symfony) | X                |          |          |       |  |               |                          |
-| JVM/Kotlin    |                  |          |          |       |  |               |                          |
-| Node.js       |                  |          |          |       |  |               |                          |
-| Ruby On Rails |                  |          |          |       |  |               |                          |
+|---------------|------------------|----------|----------|-------|------|---------------|--------------------------|
+| Go Lang       | X                | X        | X        | X     | X    | X             | X                        |
+| Rust          |                  |          |          |       |      |               |                          |
+| PHP (Symfony) | X                | X        |          |       |      |               |                          |
+| JVM/Kotlin    |                  |          |          |       |      |               |                          |
+| Node.js       |                  |          |          |       |      |               |                          |
+| Ruby On Rails |                  |          |          |       |      |               |                          |
 
 ## Use Case Documentation
 
@@ -89,6 +89,8 @@ Instead of one request, the get list become :
 **Branch**  : usecase-grpc
 
 **Description** : use grpc instead of classic http/json.
+
+Based on this service definition : https://gitlab.com/jeremie.drouet/eco-benchmark/-/blob/usecase-grpc/service/go-pgx/endpoints/endpoints.proto
 
 ### No Pagination
 
