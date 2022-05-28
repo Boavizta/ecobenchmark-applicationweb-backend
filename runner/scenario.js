@@ -41,8 +41,14 @@ export default function() {
       }
       
       // list tasks
-      let listRes = http.get(`http://${serverHost}/api/accounts/${account.id}/lists`);
-      check(listRes, { 'success listing': success_response });
+      for (let page = 0;; page++) {
+        let listRes = http.get(`http://${serverHost}/api/accounts/${account.id}/lists?page=${page}`);
+        let result = check(listRes, { 'success listing': success_response });
+        if (result.length === 0) {
+          break;
+        }
+      }
+      
       
       // get stats
       let statsRes = http.get(`http://${serverHost}/api/stats`);

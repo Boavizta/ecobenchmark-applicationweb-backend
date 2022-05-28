@@ -1,0 +1,15 @@
+---
+- hosts: all
+  roles:
+    - cleanup
+    - deploy
+
+- hosts: localhost
+  connection: local
+  roles:
+    - execute
+
+- hosts: all
+  roles:
+    - gathering
+    - cleanup
