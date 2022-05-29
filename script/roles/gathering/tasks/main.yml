@@ -1,0 +1,10 @@
+---
+- name: gather docker activity results
+  fetch:
+    src: "/tmp/{{ service }}-{{ use_case }}-{{ run_id }}-docker-activity-{{ instance_type }}.json"
+    dest: "{{ output_directory }}/{{ service }}-{{ use_case }}-{{ run_id }}-docker-activity-{{ instance_type }}.json"
+    flat: yes
+    validate_checksum: no
+  tags:
+    - gathering
+  

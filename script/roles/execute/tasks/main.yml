@@ -1,0 +1,21 @@
+---
+- name: start runner
+  community.docker.docker_container:
+    name: eco-benchmark-runner
+    image: "jdrouet/eco-benchmark:runner-{{ use_case }}"
+    detach: no
+    volumes:
+      - "{{ output_directory }}:/tmp/results"
+    command:
+      - "run"
+      - "/config/scenario.js"
+      - "--vus"
+      - "{{ virtual_users }}"
+      - "--duration"
+      - "{{ duration }}"
+      - "-e"
+      - "SERVER_HOST={{ server_host }}"
+      - "--summary-export"
+      - "/tmp/results/{{ service }}-{{ use_case }}-{{ run_id }}-k6-summary.json"
+      - "--out"
+      - "json=/tmp/results/{{ service }}-{{ use_case }}-{{ run_id }}-k6.json"

@@ -41,7 +41,7 @@ func main() {
 	e.POST("/api/accounts", add_account.Controller(storageService))
 	e.POST("/api/accounts/:account_id/lists", add_list.Controller(storageService))
 	e.POST("/api/lists/:list_id/tasks", add_task_to_list.Controller(storageService))
-	e.GET("/api/accounts/:account_id/lists/", get_lists.Controller(storageService))
+	e.GET("/api/accounts/:account_id/lists", get_lists.Controller(storageService))
 	e.GET("/api/stats", get_stats.Controller(storageService))
 
 	e.Use(middleware.Logger())

@@ -1,0 +1,44 @@
+---
+- name: deploy database
+  community.docker.docker_container:
+    name: eco-benchmark-database
+    image: "jdrouet/eco-benchmark:database-{{ use_case }}"
+    state: started
+    ports:
+      - "{{ database_port }}:{{ database_port }}"
+    env:
+      POSTGRES_PASSWORD=password
+  tags:
+    - deploy
+  when: instance_type == "database"
+
+- name: deploy application
+  community.docker.docker_container:
+    name: eco-benchmark-application
+    image: "jdrouet/eco-benchmark:service-{{ service }}-{{ use_case }}"
+    state: started
+    ports:
+      - "8080:8080"
+    env:
+      DATABASE_URL: "{{ database_url }}"
+  tags:
+    - deploy
+  when: instance_type == "application"
+
+- name: deploy watcher
+  community.docker.docker_container:
+    name: eco-benchmark-watcher
+    image: "jdrouet/docker-activity"
+    state: started
+    volumes:
+      - /sys/class/powercap:/sys/class/powercap:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /tmp:/tmp
+    command:
+      - "file"
+      - "--format"
+      - "json"
+      - "/tmp/{{ service }}-{{ use_case }}-{{ run_id }}-docker-activity-{{ instance_type }}.json"
+  tags:
+    - deploy
+  

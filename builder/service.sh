@@ -20,8 +20,7 @@ export use_case=$2
 
 echo "Building service $service for use case $use_case"
 
-docker build --tag "$ORG/runner-$service:$use_case" ./service/$service
-docker push "$ORG/runner-$service:$use_case"
+docker buildx build --push --tag "$ORG/eco-benchmark:service-$service-$use_case" ./service/$service
 
 exit 0
 

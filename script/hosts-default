@@ -1,0 +1,21 @@
+[application]
+bequiet ansible_host=192.168.1.170
+
+[database]
+asus ansible_host=192.168.1.151
+
+[all:vars]
+use_case=default
+virtual_users=10
+duration=1m
+server_host=192.168.1.170:8080
+run_id=overrideme
+
+[application:vars]
+database_url=postgres://postgres:password@192.168.1.151:5432/postgres
+instance_type=application
+
+[database:vars]
+database_port=5432
+instance_type=database
+

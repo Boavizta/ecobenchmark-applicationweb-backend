@@ -1,0 +1,26 @@
+---
+- name: remove all existing running containers
+  community.docker.docker_container:
+    name: "{{ item }}"
+    state: absent
+  loop:
+    - eco-benchmark-database
+    - eco-benchmark-application
+    - eco-benchmark-watcher
+  tags:
+    - cleanup
+
+- name: clean existing result files
+  community.docker.docker_container:
+    name: eco-benchmark-cleanup
+    image: debian:buster
+    detach: no
+    volumes:
+      - /tmp:/tmp
+    command:
+      - "/bin/rm"
+      - "-f"
+      - "/tmp/{{ service }}-{{ use_case }}-{{ run_id }}*"
+  tags:
+    - cleanup
+
