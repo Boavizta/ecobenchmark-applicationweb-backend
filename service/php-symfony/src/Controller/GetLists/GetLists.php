@@ -16,7 +16,7 @@ class GetLists extends AbstractController
     public function getLists(Request $request, string $account_id, ManagerRegistry $doctrine): Response
     {
         $listRepository = $doctrine->getManager()->getRepository(ListEntity::class);
-        $lists = $listRepository->findAllByAccountJoinTasks($account_id, $request->query->getInt('page'));
+        $lists = $listRepository->findAllByAccountJoinTasks($account_id);
 
         return $this->json(ListResponse::fromListEntities($lists));
     }

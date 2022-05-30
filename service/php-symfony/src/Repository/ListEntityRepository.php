@@ -54,7 +54,7 @@ class ListEntityRepository extends ServiceEntityRepository
      * @param int $pageSize
      * @return ListEntity[]
      */
-    public function findAllByAccountJoinTasks(string $account_id, int $page, int $pageSize = 10): array
+    public function findAllByAccountJoinTasks(string $account_id): array
     {
         $entityManager = $this->getEntityManager();
 
@@ -82,12 +82,10 @@ class ListEntityRepository extends ServiceEntityRepository
                 LEFT JOIN task t ON l.id = t.list_id
             WHERE
                 l.account_id = :id
-                AND l.id IN (SELECT id FROM list WHERE account_id = :id LIMIT :limit OFFSET :offset)',
+                AND l.id IN (SELECT id FROM list WHERE account_id = :id)',
             $rsm
         )
-            ->setParameter('id', $account_id)
-            ->setParameter('limit', $pageSize)
-            ->setParameter('offset', $page * $pageSize);
+            ->setParameter('id', $account_id);
 
         return $query->getResult();
     }
