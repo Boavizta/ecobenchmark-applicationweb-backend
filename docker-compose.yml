@@ -1,6 +1,16 @@
 services:
+  rust-actix-sqlx:
+    image: jdrouet/eco-benchmark:service-rust-actix-sqlx-default
+    depends_on:
+      - database
+    environment:
+      - DATABASE_URL=postgresql://postgres:mysecretpassword@database:5432/postgres
+    ports:
+      - 8080:8080
+    restart: unless-stopped
+
   go-pgx:
-    image: jdrouet/eco-benchmark:runner-go-pgx-default
+    image: jdrouet/eco-benchmark:service-go-pgx-default
     depends_on:
       - database
     environment:
@@ -10,7 +20,7 @@ services:
     restart: unless-stopped
 
   php-symfony:
-    image: jdrouet/eco-benchmark:runner-php-symfony-default
+    image: jdrouet/eco-benchmark:service-php-symfony-default
     depends_on:
       - database
     environment:
@@ -25,4 +35,6 @@ services:
       - POSTGRES_PASSWORD=mysecretpassword
     volumes:
       - ${PWD}/migrations:/docker-entrypoint-initdb.d:ro
-    
+    ports:
+      - 5432:5432
+  

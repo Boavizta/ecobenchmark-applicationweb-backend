@@ -6,12 +6,12 @@ use uuid::Uuid;
 pub mod create;
 pub mod list;
 
-#[derive(serde::Deserialize, serde::Serialize)]
+#[derive(Debug, serde::Deserialize, serde::Serialize)]
 pub struct List {
-    id: Uuid,
-    account_id: Uuid,
-    name: String,
-    creation_date: DateTime<Utc>,
+    pub id: Uuid,
+    pub account_id: Uuid,
+    pub name: String,
+    pub creation_date: DateTime<Utc>,
 }
 
 impl<'r> sqlx::FromRow<'r, PgRow> for List {
