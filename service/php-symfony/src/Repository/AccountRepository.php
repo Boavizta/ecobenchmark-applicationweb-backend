@@ -62,7 +62,7 @@ class AccountRepository extends ServiceEntityRepository
 
         $query = $entityManager->createNativeQuery(
             'SELECT 
-				id,  
+				BIN_TO_UUID(id) AS id, 
 				login, 
 				count(list_id) AS nb_list, 
 				round(avg(nb_tasks),2) AS avg_tasks 

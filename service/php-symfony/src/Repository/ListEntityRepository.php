@@ -70,19 +70,19 @@ class ListEntityRepository extends ServiceEntityRepository
 
         $query = $entityManager->createNativeQuery(
             'SELECT
-                l.id,
+                BIN_TO_UUID(l.id) as id,
                 l.name,
                 l.creation_date,
-                l.account_id,
-                t.id AS task_id,
+                BIN_TO_UUID(l.account_id) as account_id,
+                BIN_TO_UUID(t.id) AS task_id,
                 t.name AS task_name,
                 t.description,
                 t.creation_date AS task_creation_date
             FROM list l
                 LEFT JOIN task t ON l.id = t.list_id
             WHERE
-                l.account_id = :id
-                AND l.id IN (SELECT id FROM list WHERE account_id = :id LIMIT :limit OFFSET :offset)',
+                l.account_id = UUID_TO_BIN(:id)
+                AND l.id IN (select id from (SELECT id FROM list WHERE account_id = UUID_TO_BIN(:id) LIMIT :offset,:limit) tmp)',
             $rsm
         )
             ->setParameter('id', $account_id)
