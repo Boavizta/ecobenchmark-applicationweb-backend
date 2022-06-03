@@ -178,17 +178,6 @@ func (s *Storage) GetListsByAccountId(request get_lists.GetListsRequest) ([]get_
 }
 
 func (s *Storage) GetStatsByAccounts() ([]get_stats.GetStatsByAccountsResponse, error) {
-	var stats = []get_stats.GetStatsByAccountsResponse{}
-
-	type rawData struct {
-		AccountId    uuid.UUID
-		AccountLogin string
-		RawListId    string
-		RawTaskId    sql.NullString
-	}
-
-	var rawDataArray = []rawData{}
-
 	rowsList, err := s.pool.Query(context.Background(),
 		`select account.id, account.login, list.id list_id, task.id task_id from account inner join list on (list.account_id=account.id) left join task on (task.list_id=list.id)`,
 	)
@@ -196,7 +185,17 @@ func (s *Storage) GetStatsByAccounts() ([]get_stats.GetStatsByAccountsResponse, 
 		return nil, errors.Wrapf(err, "failed to select the stats")
 	}
 	defer rowsList.Close()
+
+	type preparedData struct {
+		AccountId    uuid.UUID
+		AccountLogin string
+		TaskIdMap    map[string]int
+		TasksCount   int
+	}
+	var preparedDataMap = map[string]*preparedData{}
+
 	for rowsList.Next() {
+		// Extract data
 		var rawAccountId string
 		var accountLogin sql.NullString
 		var listId string
@@ -209,62 +208,37 @@ func (s *Storage) GetStatsByAccounts() ([]get_stats.GetStatsByAccountsResponse, 
 		if err != nil {
 			return nil, errors.Wrapf(err, "the account has wrong id: %s", rawAccountId)
 		}
-		raw := rawData{
-			AccountId:    accountId,
-			AccountLogin: accountLogin.String,
-			RawListId:    listId,
-			RawTaskId:    taskId,
-		}
-		rawDataArray = append(rawDataArray, raw)
-	}
 
-	type preparedData struct {
-		AccountId    uuid.UUID
-		AccountLogin string
-		CountListId  int
-		TaskIdMap    map[string]int
-	}
-	var preparedDataMap = map[string]*preparedData{}
-
-	for _, e := range rawDataArray {
-		if preparedDataMap[e.AccountId.String()] == nil {
-			taskIdMap := map[string]int{}
-			taskIdMap[e.RawListId] = 0
-			if e.RawTaskId.Valid {
-				taskIdMap[e.RawListId] = 1
-			}
+		// Aggregate data
+		if preparedDataMap[accountId.String()] == nil {
 			prepData := preparedData{
-				AccountId:    e.AccountId,
-				AccountLogin: e.AccountLogin,
-				CountListId:  1,
-				TaskIdMap:    taskIdMap,
+				AccountId:    accountId,
+				AccountLogin: accountLogin.String,
+				TaskIdMap:    map[string]int{listId: 0},
 			}
-			preparedDataMap[e.AccountId.String()] = &prepData
+			if taskId.Valid {
+				prepData.TaskIdMap[listId] = 1
+				prepData.TasksCount = 1
+			}
+			preparedDataMap[accountId.String()] = &prepData
 		} else {
-			if _, ok := preparedDataMap[e.AccountId.String()].TaskIdMap[e.RawListId]; ok {
-				if e.RawTaskId.Valid {
-					preparedDataMap[e.AccountId.String()].TaskIdMap[e.RawListId] += 1
-				}
-			} else {
-				preparedDataMap[e.AccountId.String()].CountListId += 1
-				preparedDataMap[e.AccountId.String()].TaskIdMap[e.RawListId] = 0
-				if e.RawTaskId.Valid {
-					preparedDataMap[e.AccountId.String()].TaskIdMap[e.RawListId] = 1
-				}
+			if _, ok := preparedDataMap[accountId.String()].TaskIdMap[listId]; !ok {
+				preparedDataMap[accountId.String()].TaskIdMap[listId] = 0
+			}
+			if taskId.Valid {
+				preparedDataMap[accountId.String()].TaskIdMap[listId]++
+				preparedDataMap[accountId.String()].TasksCount++
 			}
 		}
 	}
 
+	var stats []get_stats.GetStatsByAccountsResponse
 	for _, e := range preparedDataMap {
-		inc := 0
-		for _, t := range e.TaskIdMap {
-			inc += t
-		}
-		avgTask := float64(inc) / float64(e.CountListId)
+		avgTask := float64(e.TasksCount) / float64(len(e.TaskIdMap))
 		stat := get_stats.GetStatsByAccountsResponse{
 			AccountId:    e.AccountId,
 			AccountLogin: e.AccountLogin,
-			ListCount:    int64(e.CountListId),
+			ListCount:    int64(len(e.TaskIdMap)),
 			TaskAvg:      math.Round(avgTask*100) / 100,
 		}
 		stats = append(stats, stat)
