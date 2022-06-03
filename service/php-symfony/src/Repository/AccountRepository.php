@@ -57,7 +57,7 @@ class AccountRepository extends ServiceEntityRepository
         $rsm->addScalarResult('id', 'id');
         $rsm->addScalarResult('login', 'login');
         $rsm->addScalarResult('nb_list', 'nb_list');
-        $rsm->addScalarResult('avg_tasks', 'avg_tasks');
+        $rsm->addScalarResult('avg_tasks', 'avg_tasks', 'float');
 
 
         $query = $entityManager->createNativeQuery(
@@ -65,7 +65,7 @@ class AccountRepository extends ServiceEntityRepository
 				id,  
 				login, 
 				count(list_id) AS nb_list, 
-				avg(nb_tasks) AS avg_tasks 
+				round(avg(nb_tasks),2) AS avg_tasks 
 			FROM (
 				SELECT 
 					account.id, 

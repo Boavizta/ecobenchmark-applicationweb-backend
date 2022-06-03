@@ -7,7 +7,7 @@ class StatResponse
     public string $account_id;
     public string $account_login;
     public int $list_count;
-    public int $task_avg;
+    public float $task_avg;
 
     /**
      * @return StatResponse[]
