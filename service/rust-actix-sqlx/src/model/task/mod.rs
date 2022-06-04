@@ -25,3 +25,21 @@ impl<'r> sqlx::FromRow<'r, PgRow> for Task {
         })
     }
 }
+
+impl Task {
+    pub async fn find_for_list<'e, 'u, E: sqlx::Executor<'e, Database = sqlx::Postgres>>(
+        executor: E,
+        list_id: &'u Uuid,
+    ) -> Result<Vec<Task>, sqlx::Error> {
+        sqlx::query_as(
+            r#"
+            SELECT id, list_id, name, description, creation_date
+            FROM task
+            WHERE list_id = $1
+            "#,
+        )
+        .bind(list_id)
+        .fetch_all(executor)
+        .await
+    }
+}
