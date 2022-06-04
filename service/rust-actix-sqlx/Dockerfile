@@ -1,4 +1,4 @@
-ARG RUST_VERSION=1.59.0
+ARG RUST_VERSION=1.61.0
 FROM rust:${RUST_VERSION}-bullseye AS builder
 
 ENV USER=root
@@ -15,7 +15,7 @@ RUN cargo build --release --offline
 FROM gcr.io/distroless/cc-debian11
 
 ENV ADDRESS=0.0.0.0
-ENV PORT=3000
+ENV PORT=8080
 
 COPY --from=builder /code/target/release/rust-actix-sqlx /usr/bin/rust-actix-sqlx
 

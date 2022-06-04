@@ -1,4 +1,9 @@
-use actix_web::{get, App, HttpServer, Responder};
+use actix_web::{web, App, HttpServer};
+
+mod error;
+mod handler;
+mod model;
+mod service;
 
 fn binding() -> (String, u16) {
     let host = std::env::var("ADDRESS").unwrap_or_else(|_| "localhost".into());
@@ -9,15 +14,21 @@ fn binding() -> (String, u16) {
     (host, port)
 }
 
-#[get("/_healthcheck")]
-async fn healthcheck() -> impl Responder {
-    "up"
-}
-
-#[actix_web::main] // or #[tokio::main]
+#[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    HttpServer::new(|| App::new().service(healthcheck))
-        .bind(binding())?
-        .run()
-        .await
+    let pool = web::Data::new(service::database::create_pool().await);
+
+    HttpServer::new(move || {
+        App::new()
+            .app_data(pool.clone())
+            .service(crate::handler::health::handler)
+            .service(crate::handler::accounts_create::handler)
+            .service(crate::handler::lists_create::handler)
+            .service(crate::handler::lists_list::handler)
+            .service(crate::handler::tasks_create::handler)
+            .service(crate::handler::stats::handler)
+    })
+    .bind(binding())?
+    .run()
+    .await
 }
