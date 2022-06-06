@@ -32,8 +32,7 @@ class GetStats {
 				LEFT JOIN task ON (task.list_id=list.id) 
 				GROUP BY account.id, account.login, list.id
 			) t 
-			GROUP BY id, login""".trimIndent(),
-            emptyArray()
+			GROUP BY id, login""".trimIndent()
         ) { rs: ResultSet, _: Int ->
             StatsResponse(
                 UUID.fromString(rs.getString("id")),
