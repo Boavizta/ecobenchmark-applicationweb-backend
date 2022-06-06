@@ -3,7 +3,7 @@ FROM php:8.0.19-apache-buster
 RUN apt-get update && \
     apt-get install -y libpq-dev unzip && \
     rm -rf /var/cache/apt/archives /var/lib/apt/lists/* && \
-    docker-php-ext-install pdo_pgsql && \
+    docker-php-ext-install pdo_mysql && \
     a2enmod rewrite && \
     rm /etc/apache2/sites-available/000-default.conf && \
     rm /etc/apache2/sites-available/default-ssl.conf && \
