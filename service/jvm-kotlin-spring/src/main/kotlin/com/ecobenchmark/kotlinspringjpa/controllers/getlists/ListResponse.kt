@@ -6,7 +6,7 @@ import java.util.UUID
 data class ListResponse(
     val id: UUID,
     val name: String,
-    val tasks: MutableList<TaskResponse>,
+    val tasks: List<TaskResponse>,
     val creationDate: Instant,
     val accountId: UUID
 )
