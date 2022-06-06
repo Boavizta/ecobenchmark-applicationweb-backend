@@ -23,7 +23,7 @@ class GetLists {
     lateinit var jdbcTemplate: JdbcTemplate
 
     @GetMapping("/api/accounts/{id}/lists")
-    fun getLists(@PathVariable(value = "id") accountId: UUID, @RequestParam(defaultValue = "0") page: Int): ResponseEntity<List<ListResponse>> {
+    fun getLists(@PathVariable(value = "id") accountId: UUID): ResponseEntity<List<ListResponse>> {
         val listResponseMap = mutableMapOf<UUID, ListResponse>()
 
         val stats = jdbcTemplate.query<Any>(
@@ -41,7 +41,7 @@ class GetLists {
                 LEFT JOIN task t ON l.id = t.list_id
             WHERE
                 l.account_id = ?
-                AND l.id IN (SELECT id FROM list WHERE account_id = ? LIMIT ? OFFSET ?)""".trimIndent(),
+                AND l.id IN (SELECT id FROM list WHERE account_id = ?)""".trimIndent(),
             { rs: ResultSet, _: Int ->
                 val listId = UUID.fromString(rs.getString("id"))
                 var listResponse = listResponseMap[listId]
@@ -69,9 +69,7 @@ class GetLists {
                 }
             },
             accountId,
-            accountId,
-            10,
-            page * 10
+            accountId
         )
 
         return ResponseEntity.ok().body(listResponseMap.values.toList())
