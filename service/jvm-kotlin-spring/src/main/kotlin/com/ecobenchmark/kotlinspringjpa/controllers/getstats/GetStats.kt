@@ -17,10 +17,10 @@ class GetStats {
         val stats = jdbcTemplate.query<Any>(
             """
                 SELECT 
-				id,  
+				BIN_TO_UUID(id) AS id, 
 				login, 
 				count(list_id) AS nb_list, 
-				avg(nb_tasks) AS avg_tasks 
+				round(avg(nb_tasks),2) AS avg_tasks 
 			FROM (
 				SELECT 
 					account.id, 

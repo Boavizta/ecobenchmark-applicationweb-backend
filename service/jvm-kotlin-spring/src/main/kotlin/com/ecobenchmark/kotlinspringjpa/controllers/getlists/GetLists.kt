@@ -29,19 +29,19 @@ class GetLists {
         val stats = jdbcTemplate.query<Any>(
             """
                 SELECT
-                l.id,
+                BIN_TO_UUID(l.id) as id,
                 l.name,
                 l.creation_date,
-                l.account_id,
-                t.id AS task_id,
+                BIN_TO_UUID(l.account_id) as account_id,
+                BIN_TO_UUID(t.id) AS task_id,
                 t.name AS task_name,
                 t.description,
                 t.creation_date AS task_creation_date
             FROM list l
                 LEFT JOIN task t ON l.id = t.list_id
             WHERE
-                l.account_id = ?
-                AND l.id IN (SELECT id FROM list WHERE account_id = ? LIMIT ? OFFSET ?)""".trimIndent(),
+                l.account_id = UUID_TO_BIN(?)
+                AND l.id IN (select id from (SELECT id FROM list WHERE account_id = UUID_TO_BIN(?) LIMIT ?,?) tmp)""".trimIndent(),
             { rs: ResultSet, _: Int ->
                 val listId = UUID.fromString(rs.getString("id"))
                 var listResponse = listResponseMap[listId]
@@ -61,17 +61,17 @@ class GetLists {
                     listResponse.tasks.add(
                         TaskResponse(
                             UUID.fromString(rs.getString("task_id")),
-                            rs.getString("name"),
+                            rs.getString("task_name"),
                             rs.getString("description"),
                             rs.getTimestamp("task_creation_date").toInstant()
                         )
                     )
                 }
             },
-            accountId,
-            accountId,
-            10,
-            page * 10
+            accountId.toString(),
+            accountId.toString(),
+            page * 10,
+            10
         )
 
         return ResponseEntity.ok().body(listResponseMap.values.toList())

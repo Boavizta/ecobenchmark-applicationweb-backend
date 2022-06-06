@@ -10,8 +10,8 @@ docker build -t benchmark-kotlin-spring-jpa .
 
 ```bash
 docker run --name=benchmark-kotlin-spring-jpa -d -p 8080:8080 \
-  -e SPRING_DATASOURCE_URL='jdbc:postgresql://172.17.0.1:5432/postgres' \
-  -e SPRING_DATASOURCE_USERNAME='postgres' \
-  -e SPRING_DATASOURCE_PASSWORD='mysecretpassword' \
+  -e SPRING_DATASOURCE_URL='jdbc:mysql://172.17.0.1:3306/ecobenchmark' \
+  -e SPRING_DATASOURCE_USERNAME='root' \
+  -e SPRING_DATASOURCE_PASSWORD='mysqlpw' \
   benchmark-kotlin-spring-jpa
 ```
