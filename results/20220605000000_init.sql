@@ -1,8 +1,10 @@
-CREATE TABLE result
+CREATE TABLE results
 (
+    id            uuid primary key default gen_random_uuid(),
+    batch_number integer,
     service varchar(64),
     use_case varchar(128),
-    run_id	integer primary key,
+    run_id	integer,
     valid boolean,
     vus integer,
     iterations  integer,
@@ -21,8 +23,3 @@ CREATE TABLE result
     database_cpu_median numeric,
     database_energy numeric
 );
-
-
-
-
-
