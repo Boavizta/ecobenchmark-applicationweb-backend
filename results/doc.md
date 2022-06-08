@@ -2,13 +2,14 @@
 
 ## Import
 
-`COPY result(service,use_case,run_id,valid,vus,iterations,http_reqs,checks_passes,checks_fails,application_ram_avg,application_ram_median,application_cpu_avg,application_cpu_median,application_energy,database_ram_avg,database_ram_median,database_cpu_avg,database_cpu_median,database_energy)
+`COPY results(service,use_case,run_id,valid,vus,iterations,http_reqs,checks_passes,checks_fails,application_ram_avg,application_ram_median,application_cpu_avg,application_cpu_median,application_energy,database_ram_avg,database_ram_median,database_cpu_avg,database_cpu_median,database_energy)
 FROM '/Users/youen/eco-bench-results.csv'
 DELIMITER ','
 CSV HEADER;`
 
 
 ## Requests
+
 
 ###  Filter by failure > 0
 
@@ -19,3 +20,12 @@ WHERE
 checks_fails = 0
 
 group by service,use_case,vus order by vus, service, use_case ASC
+
+
+
+
+
+
+
+
+
