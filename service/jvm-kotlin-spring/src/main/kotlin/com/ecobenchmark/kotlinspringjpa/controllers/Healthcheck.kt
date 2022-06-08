@@ -1,13 +1,19 @@
 package com.ecobenchmark.kotlinspringjpa.controllers
 
-import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.RestController
+import com.google.protobuf.Empty
+import io.grpc.Status
+import io.grpc.StatusException
+import io.grpc.health.v1.HealthCheckRequest
+import io.grpc.health.v1.HealthCheckResponse
+import io.grpc.health.v1.HealthGrpc
+import io.grpc.stub.ServerCalls
+import io.grpc.stub.StreamObserver
+import org.lognet.springboot.grpc.GRpcService
 
-@RestController
-class Healthcheck {
-    @GetMapping("/healthcheck")
-    fun healthcheck(): ResponseEntity<String> {
-        return ResponseEntity.noContent().build()
+@GRpcService
+class Healthcheck:ecobenchmark.HealthGrpcKt.HealthCoroutineImplBase() {
+
+    override suspend fun getHealthCheck(request: Empty): Empty {
+        return request
     }
 }

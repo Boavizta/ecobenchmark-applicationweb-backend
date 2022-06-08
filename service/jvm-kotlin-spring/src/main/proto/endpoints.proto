@@ -1,0 +1,99 @@
+syntax = "proto3";
+package ecobenchmark;
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+
+option go_package = "ecobenchmark/endpoints";
+
+service Health {
+
+  rpc GetHealthCheck(google.protobuf.Empty) returns (google.protobuf.Empty) {}
+
+}
+
+service TodoList {
+
+  rpc AddAccount(addAccountInput) returns (addAccountOutput) {}
+
+  rpc AddListToAccount(addListInput) returns (addListOutput) {}
+
+  rpc AddTaskToList(addTaskInput) returns (addTaskOutput) {}
+
+  rpc GetListsWithTasks(getListInput) returns (getListOutput) {}
+
+  rpc GetStats(google.protobuf.Empty) returns (getStatsOutput) {}
+
+}
+
+message addAccountInput {
+  string login = 1;
+}
+
+message addAccountOutput {
+  string id= 1;
+  string login = 2;
+  google.protobuf.Timestamp creationDate = 3;
+}
+
+message addListInput {
+  string name = 1;
+  string accountId = 4;
+}
+
+message addListOutput {
+  string id= 1;
+  string name = 2;
+  google.protobuf.Timestamp creationDate = 3;
+  string accountId = 4;
+}
+
+message addTaskInput {
+  string name = 1;
+  optional string description = 2;
+  string listId = 3;
+}
+
+message addTaskOutput {
+  string id= 1;
+  string name = 2;
+  string description = 3;
+  google.protobuf.Timestamp creationDate = 4;
+  string listId = 5;
+}
+
+message getListInput {
+  string accountId= 1;
+  optional int32 page= 2;
+}
+
+message getListOutput {
+  repeated List list = 1;
+}
+
+message List {
+  string id= 1;
+  string name = 2;
+  string description = 3;
+  repeated Task tasks = 4;
+  google.protobuf.Timestamp creationDate = 5;
+  string accountId = 6;
+}
+
+message Task {
+  string id= 1;
+  string name = 2;
+  string description = 3;
+  google.protobuf.Timestamp creationDate = 4;
+}
+
+message getStatsOutput {
+  repeated Stats stats = 1;
+}
+
+message Stats {
+  string accountId= 1;
+  string accountLogin = 2;
+  int64 listCount = 3;
+  double taskAvg = 4;
+}
