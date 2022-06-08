@@ -2,10 +2,14 @@ package com.ecobenchmark.kotlinspringjpa.controllers.getlists
 
 
 import com.ecobenchmark.kotlinspringjpa.repositories.AccountRepository
+import com.ecobenchmark.kotlinspringjpa.repositories.ListRepository
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Pageable
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 import java.util.*
@@ -15,17 +19,16 @@ import java.util.*
 @RestController
 class GetLists {
     @Autowired
-    lateinit var accountRepository: AccountRepository
+    lateinit var listRepository: ListRepository
 
     @GetMapping("/api/accounts/{id}/lists")
-    fun getLists(@PathVariable(value = "id") accountId: UUID): ResponseEntity<List<ListResponse>> {
-        val account = accountRepository.findById(accountId)
-        if (account.isEmpty) {
-            return ResponseEntity.badRequest().build()
-        }
+    fun getLists(@PathVariable(value = "id") accountId: UUID,@RequestParam(value = "page") page: Int): ResponseEntity<List<ListResponse>> {
 
-        val result = account.get()
-            .lists
+        val pagination: Pageable = PageRequest.of(page, 10)
+
+        val lists = listRepository.findAllByAccountId(accountId,pagination)
+
+        val result = lists
             .map { l ->
                 ListResponse(
                     l.id!!,
