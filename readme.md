@@ -42,8 +42,8 @@ export DATABASE_URL=postgresql://postgres:mysecretpassword@127.0.0.1:5432/postgr
 |---------------|------------------|----------|----------|-------|------|---------------|--------------------------|
 | Go Lang       | X                | X        | X        | X     | X    | X             | X                        |
 | Rust          | X                | X        |          |       |      |               |                          |
-| PHP (Symfony) | X                | X        | X        | X     |      | X             | X                        |
-| JVM/Kotlin    | X                | X        | X        | X     |      | X             | X                        |
+| PHP (Symfony) | X                | X        | X        | X     | N/A  | X             | X                        |
+| JVM/Kotlin    | X                | X        | X        | X     | X    | X             | X                        |
 | Node.js       |                  |          |          |       |      |               |                          |
 | Ruby On Rails |                  |          |          |       |      |               |                          |
 
