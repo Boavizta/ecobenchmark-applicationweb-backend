@@ -1,10 +1,15 @@
 const express = require('express');
+const bodyParser = require('body-parser');
+const morgan = require('morgan');
 
 const PORT = process.env.PORT || 3000;
 
 const app = express();
 
-app.get('/_healthcheck', (_, res) => res.send('ok'));
+app.use(morgan('tiny'));
+app.use(bodyParser.json());
+app.use(require('./handler'));
+app.use(require('./middleware/error-handler'));
 
 app.listen(PORT, (err) => {
   if (err) {
