@@ -1,6 +1,6 @@
 services:
   runner:
-    image: jdrouet/eco-benchmark:runner-default
+    image: jdrouet/eco-benchmark:runner-orm-loop
     build: ../../runner
     command:
       - run
@@ -15,7 +15,7 @@ services:
       - service
 
   service:
-    image: jdrouet/eco-benchmark:service-jvm-kotlin-spring-default
+    image: jdrouet/eco-benchmark:service-jvm-kotlin-spring-orm-loop
     build: .
     depends_on:
       - database
@@ -26,7 +26,7 @@ services:
     restart: unless-stopped
 
   database:
-    image: jdrouet/eco-benchmark:database-default
+    image: jdrouet/eco-benchmark:database-orm-loop
     build: ../../migrations
     environment:
       - POSTGRES_PASSWORD=mysecretpassword
