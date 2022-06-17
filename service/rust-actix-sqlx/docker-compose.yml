@@ -20,17 +20,20 @@ services:
     depends_on:
       - database
     environment:
-      - DATABASE_URL=postgres://postgres:mysecretpassword@database:5432/postgres
+      - DATABASE_URL=postgres://ecobench:mysecretpassword@database:3306/ecobench
       - DATABASE_POOL_MAX=20
     restart: unless-stopped
 
   database:
-    image: jdrouet/eco-benchmark:database-default
+    image: jdrouet/eco-benchmark:database-mysql
     build: ../../migrations
     environment:
-      - POSTGRES_PASSWORD=mysecretpassword
+      - MYSQL_USER=ecobench
+      - MYSQL_ROOT_PASSWORD=mysecretpassword
+      - MYSQL_DATABASE=ecobench
+      - MYSQL_PASSWORD=mysecretpassword
     healthcheck:
-      test: "/usr/bin/psql -U postgres postgres -c \"\\d\""
+      test: "/usr/bin/mysql --user=ecobench --password=mysecretpassword --execute \"SHOW DATABASES;\""
       interval: 3s
       timeout: 1s
       retries: 20
