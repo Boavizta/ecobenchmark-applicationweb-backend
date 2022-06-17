@@ -15,7 +15,7 @@ services:
       - service
 
   service:
-    image: jdrouet/eco-benchmark:service-rust-actix-sqlx-default
+    image: jdrouet/eco-benchmark:service-php-symfony-default
     build: .
     depends_on:
       - database
