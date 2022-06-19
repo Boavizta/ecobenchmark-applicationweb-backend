@@ -41,10 +41,10 @@ export DATABASE_URL=postgresql://postgres:mysecretpassword@127.0.0.1:5432/postgr
 | Langage       | Reference (main) | No Index | ORM Loop | MySQL | GRPC | No Pagination | Aggregation on code side |
 |---------------|------------------|----------|----------|-------|------|---------------|--------------------------|
 | Go Lang       | X                | X        | X        | X     | X    | X             | X                        |
-| Rust          | X                | X        |          |       |      |               |                          |
+| Rust          | X                | X        | X        |       |      |               |                          |
 | PHP (Symfony) | X                | X        | X        | X     | N/A  | X             | X                        |
 | JVM/Kotlin    | X                | X        | X        | X     | X    | X             | X                        |
-| Node.js       |                  |          |          |       |      |               |                          |
+| Node.js       | X                |          |          |       |      |               |                          |
 | Ruby On Rails |                  |          |          |       |      |               |                          |
 
 ## Use Case Documentation
