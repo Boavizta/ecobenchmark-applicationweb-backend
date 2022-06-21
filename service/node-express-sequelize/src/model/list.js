@@ -1,9 +1,9 @@
 const { Model, QueryTypes } = require('sequelize');
 
 const taskFromResult = (item) => ({
-  id: item.listId,
-  listId: item.id,
-  name: item.taskName,
+  id: item.task_id,
+  listId: item.listId,
+  name: item.task_name,
   description: item.description,
   creationDate: item.taskCreationDate,
 });
@@ -43,7 +43,7 @@ module.exports = (sequelize, DataTypes) => {
       });
     }
 
-    static findByAccount(accountId, page, size = 10) {
+    static findByAccount(accountId) {
       return sequelize.query(`
           SELECT
               l.id,
@@ -62,13 +62,10 @@ module.exports = (sequelize, DataTypes) => {
                   SELECT id
                   FROM list
                   WHERE account_id = :account_id
-                  LIMIT :limit OFFSET :offset
               )
         `, {
           replacements: {
-            account_id: accountId,
-            limit: size,
-            offset: page * size,
+            account_id: accountId
           },
           type: QueryTypes.SELECT,
         }).then(aggregateLists);
