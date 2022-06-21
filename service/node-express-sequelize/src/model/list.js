@@ -1,9 +1,9 @@
 const { Model, QueryTypes } = require('sequelize');
 
 const taskFromResult = (item) => ({
-  id: item.listId,
-  listId: item.id,
-  name: item.taskName,
+  id: item.task_id,
+  listId: item.listId,
+  name: item.task_name,
   description: item.description,
   creationDate: item.taskCreationDate,
 });
