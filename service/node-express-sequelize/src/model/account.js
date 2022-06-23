@@ -15,16 +15,7 @@ module.exports = (sequelize, DataTypes) => {
     }
     
     static statistics() {
-      return sequelize.query(`
-          select id, login, count(list_id) as nb_list, round(avg(nb_tasks), 2) as avg_tasks
-          from (
-              select account.id, account.login, list.id list_id, count(task.id) nb_tasks
-              from account
-              inner join list on (list.account_id=account.id)
-              left join task on (task.list_id=list.id)
-              group by account.id, account.login, list.id
-          ) t
-          group by id, login
+      return sequelize.query(`select account.id, account.login, list.id list_id, task.id task_id from account inner join list on (list.account_id=account.id) left join task on (task.list_id=list.id)
       `, {
         type: QueryTypes.SELECT,
       });
