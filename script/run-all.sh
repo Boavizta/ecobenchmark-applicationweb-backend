@@ -13,10 +13,10 @@ function run_once() {
   extra_vars="$extra_vars server_runner_user=$SERVER_RUNNER_USER"
   ansible-playbook \
     -i script/hosts \
-    -i script/inventory-$1-$2 \
+    -i script/inventory-$1 \
     script/site.yml \
     --skip-tags install \
-    --extra-vars "$extra_vars output_directory=$PWD/results run_id=$run_id"
+    --extra-vars "$extra_vars service=$1 use_case=$2 output_directory=$PWD/results run_id=$run_id"
 }
 
 function run() {
@@ -25,13 +25,13 @@ function run() {
   done
 }
 
-run go-pgx default
+run go-pgx no-index
 
-run jvm-kotlin-spring default
+run jvm-kotlin-spring no-index
 
-run node-express-sequelize default
+run node-express-sequelize no-index
 
-run php-symfony default
+run php-symfony no-index
 
-run rust-actix-sqlx default
+run rust-actix-sqlx no-index
 
