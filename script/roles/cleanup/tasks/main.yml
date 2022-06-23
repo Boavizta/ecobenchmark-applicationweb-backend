@@ -4,6 +4,7 @@
     name: "{{ item }}"
     state: absent
   loop:
+    - eco-benchmark-scaphandre
     - eco-benchmark-database
     - eco-benchmark-application
     - eco-benchmark-watcher
@@ -20,7 +21,7 @@
     command:
       - "/bin/rm"
       - "-f"
-      - "/tmp/{{ service }}-{{ use_case }}-{{ run_id }}*"
+      - "/tmp/{{ service }}_{{ use_case }}_{{ run_id }}*"
   tags:
     - cleanup
 

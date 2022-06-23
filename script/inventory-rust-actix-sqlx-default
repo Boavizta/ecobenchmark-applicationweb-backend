@@ -1,0 +1,6 @@
+[all:vars]
+service=rust-actix-sqlx
+use_case=default
+
+[application:vars]
+database_url="postgres://postgres:password@{{ server_database_host }}:5432/postgres"

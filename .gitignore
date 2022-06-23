@@ -1,3 +1,6 @@
 runner/eco-bench-runner
 
 *.iml
+.env
+results/*.json
+results/*.csv
