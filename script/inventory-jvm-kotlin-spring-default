@@ -1,0 +1,6 @@
+[all:vars]
+service=jvm-kotlin-spring
+use_case=default
+
+[application:vars]
+database_url="jdbc:postgresql://{{ server_database_host }}:5432/{{ database_name }}"

@@ -4,18 +4,19 @@
     name: eco-benchmark-runner
     image: "jdrouet/eco-benchmark:runner-{{ use_case }}"
     detach: no
+    user: "1000:1000"
     volumes:
-      - "{{ output_directory }}:/tmp/results"
+      - "{{ ansible_env.HOME }}:/tmp"
     command:
       - "run"
       - "/config/scenario.js"
       - "--vus"
-      - "{{ virtual_users }}"
+      - "{{ virtual_users | to_json }}"
       - "--duration"
-      - "{{ duration }}"
+      - "{{ duration }}s"
       - "-e"
-      - "SERVER_HOST={{ server_host }}"
+      - "SERVER_HOST={{ server_application_host }}:8080"
       - "--summary-export"
-      - "/tmp/results/{{ service }}-{{ use_case }}-{{ run_id }}-k6-summary.json"
-      - "--out"
-      - "json=/tmp/results/{{ service }}-{{ use_case }}-{{ run_id }}-k6.json"
+      - "/tmp/{{ service }}_{{ use_case }}_{{ run_id }}_k6-summary.json"
+      # - "--out"
+      # - "json=/tmp/{{ service }}-{{ use_case }}-{{ run_id }}-k6.json"

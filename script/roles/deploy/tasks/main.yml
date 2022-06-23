@@ -4,26 +4,40 @@
     name: eco-benchmark-database
     image: "jdrouet/eco-benchmark:database-{{ use_case }}"
     state: started
-    ports:
-      - "{{ database_port }}:{{ database_port }}"
+    network_mode: host
+    restart_policy: unless-stopped
     env:
-      POSTGRES_PASSWORD=password
+      POSTGRES_PASSWORD: "{{ database_password }}"
   tags:
     - deploy
   when: instance_type == "database"
+
+- name: wait for the database to boot up
+  ansible.builtin.pause:
+    seconds: 30
 
 - name: deploy application
   community.docker.docker_container:
     name: eco-benchmark-application
     image: "jdrouet/eco-benchmark:service-{{ service }}-{{ use_case }}"
     state: started
-    ports:
-      - "8080:8080"
+    network_mode: host
+    restart_policy: unless-stopped
     env:
       DATABASE_URL: "{{ database_url }}"
+      # this is a duplicate to be handled with java
+      SPRING_DATASOURCE_URL: "{{ database_url }}"
+      SPRING_DATASOURCE_USERNAME: "{{ database_username }}"
+      SPRING_DATASOURCE_PASSWORD: "{{ database_password }}"
+      # set the max number of pool to be the number of users
+      DATABASE_POOL_MAX: "{{ virtual_users | to_json }}"
   tags:
     - deploy
   when: instance_type == "application"
+
+- name: wait for the application to boot up
+  ansible.builtin.pause:
+    seconds: 30
 
 - name: deploy watcher
   community.docker.docker_container:
@@ -33,12 +47,37 @@
     volumes:
       - /sys/class/powercap:/sys/class/powercap:ro
       - /var/run/docker.sock:/var/run/docker.sock
-      - /tmp:/tmp
+      - "{{ ansible_env.HOME }}:/tmp"
     command:
+      - "--disable-powercap"
       - "file"
       - "--format"
       - "json"
-      - "/tmp/{{ service }}-{{ use_case }}-{{ run_id }}-docker-activity-{{ instance_type }}.json"
+      - "/tmp/{{ service }}_{{ use_case }}_{{ run_id }}_docker-activity-{{ instance_type }}.json"
   tags:
     - deploy
+  when: instance_type == "application" or instance_type == "database"
+  
+- name: deploy scaphandre
+  community.docker.docker_container:
+    name: eco-benchmark-scaphandre
+    image: "hubblo/scaphandre:main"
+    state: started
+    volumes:
+      - /sys/class/powercap:/sys/class/powercap:ro
+      - /proc:/proc
+      - "{{ ansible_env.HOME }}:/tmp"
+    command:
+      - "json"
+      - "-t"
+      - "{{ duration + 120 }}"
+      - "-s"
+      - "0"
+      - "-n"
+      - "100000000"
+      - "-f"
+      - "/tmp/{{ service }}_{{ use_case }}_{{ run_id }}_scaphandre-{{ instance_type }}.json"
+  tags:
+    - deploy
+  when: instance_type == "application" or instance_type == "database"
   
