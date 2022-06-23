@@ -25,13 +25,13 @@ function run() {
   done
 }
 
-# run go-pgx default
+run go-pgx default
 
 run jvm-kotlin-spring default
 
-# run node-express-sequelize default
+run node-express-sequelize default
 
-# run php-symfony default
+run php-symfony default
 
-# run rust-actix-sqlx default
+run rust-actix-sqlx default
 
