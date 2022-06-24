@@ -8,9 +8,8 @@ use uuid::Uuid;
 async fn handler(
     pool: web::Data<Pool>,
     account_id: web::Path<Uuid>,
-    payload: web::Query<ListList>,
 ) -> Result<HttpResponse, Error> {
     let mut conn = pool.acquire().await?;
-    let result = payload.execute(&mut conn, account_id.into_inner()).await?;
+    let result = ListList::execute(&mut conn, account_id.into_inner()).await?;
     Ok(HttpResponse::Ok().json(result))
 }
