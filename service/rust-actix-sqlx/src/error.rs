@@ -27,6 +27,7 @@ impl ResponseError for Error {
 
 impl From<sqlx::Error> for Error {
     fn from(err: sqlx::Error) -> Self {
+        eprintln!("sqlx error: {:?}", err);
         match err {
             sqlx::Error::RowNotFound => Self {
                 code: StatusCode::NOT_FOUND,

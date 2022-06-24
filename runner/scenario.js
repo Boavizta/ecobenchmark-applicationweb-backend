@@ -42,13 +42,8 @@ export default function() {
     }
 
     // list tasks
-    for (let page = 0;; page++) {
-      let listRes = http.get(`http://${serverHost}/api/accounts/${account.id}/lists?page=${page}`);
-      check(listRes, { 'success listing': success_response });
-      if (listRes.json().length === 0) {
-        break;
-      }
-    }
+    let listRes = http.get(`http://${serverHost}/api/accounts/${account.id}/lists`);
+    check(listRes, { 'success listing': success_response });
     
     
     // get stats
