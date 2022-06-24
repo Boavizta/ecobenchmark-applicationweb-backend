@@ -25,13 +25,13 @@ function run() {
   done
 }
 
-run go-pgx no-index
+run go-pgx orm-loop
 
-run jvm-kotlin-spring no-index
+run jvm-kotlin-spring orm-loop
 
-run node-express-sequelize no-index
+run node-express-sequelize orm-loop
 
-run php-symfony no-index
+run php-symfony orm-loop
 
-run rust-actix-sqlx no-index
+run rust-actix-sqlx orm-loop
 
