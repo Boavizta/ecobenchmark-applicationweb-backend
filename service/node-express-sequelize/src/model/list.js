@@ -1,19 +1,18 @@
 const { Model, QueryTypes } = require('sequelize');
+const { BINARYUUID, VIRTUALBINARYUUID,toBinaryUUID,fromBinaryUUID } = require("@hypercharlie/sequelize-binary-uuid");
 
-const taskFromResult = (item) => ({
-  id: item.listId,
-  listId: item.id,
-  name: item.taskName,
+const taskFromResult = (item) => (item.task_id?{
+  id: fromBinaryUUID(item.task_id),
+  name: item.task_name,
   description: item.description,
   creationDate: item.taskCreationDate,
-});
+}:null);
 
 const aggregateLists = (result) => {
   const lists = result.reduce((res, item) => {
     if (!res.has(item.id)) {
       res.set(item.id, {
-        id: item.id,
-        accountId: item.accountId,
+        id: fromBinaryUUID(item.id),
         name: item.name,
         creationDate: item.creationDate,
         tasks: [taskFromResult(item)],
@@ -44,29 +43,27 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     static findByAccount(accountId, page, size = 10) {
+
+      console.log(accountId);
       return sequelize.query(`
-          SELECT
-              l.id,
-              l.account_id,
-              l.name,
-              l.creation_date,
-              t.id AS task_id,
-              t.name AS task_name,
-              t.description,
-              t.creation_date AS task_creation_date
-          FROM list l
-              LEFT JOIN task t ON l.id = t.list_id
-          WHERE
-              l.account_id = :account_id
-              AND l.id IN (
-                  SELECT id
-                  FROM list
-                  WHERE account_id = :account_id
-                  LIMIT :limit OFFSET :offset
-              )
+
+        SELECT
+          l.id AS id,
+          l.name,
+          l.creation_date,
+          l.account_id,
+          t.id AS task_id,
+          t.name AS task_name,
+          t.description,
+          t.creation_date AS task_creation_date
+        FROM list l
+               LEFT JOIN task t ON l.id = t.list_id
+        WHERE
+          l.account_id = :account_id
+          AND l.id IN (select id from (SELECT id FROM list WHERE account_id = :account_id LIMIT :offset,:limit) tmp)
         `, {
           replacements: {
-            account_id: accountId,
+            account_id: toBinaryUUID(accountId),
             limit: size,
             offset: page * size,
           },
@@ -76,16 +73,20 @@ module.exports = (sequelize, DataTypes) => {
   }
 
   List.init({
-    id: {
+    bid: BINARYUUID({
+      field: 'id',
       primaryKey: true,
-      allowNull: false,
-      type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4,
+      allowNull: false
+    }),
+    id: VIRTUALBINARYUUID("bid", "id"),
+    login: {
+      allowNull: true,
+      type: DataTypes.TEXT,
+      unique: true,
     },
-    accountId: {
-      type: DataTypes.UUID,
-      allowNull: false,
-    },
+    accountId : BINARYUUID({
+      allowNull: false
+    }),
     name: {
       allowNull: false,
       type: DataTypes.TEXT,

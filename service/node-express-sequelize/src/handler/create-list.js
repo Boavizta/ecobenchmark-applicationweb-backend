@@ -1,5 +1,6 @@
 const Joi = require('joi');
 const models = require('../model');
+const { toBinaryUUID } = require ("@hypercharlie/sequelize-binary-uuid");
 
 const schema = Joi.object().keys({
   name: Joi.string().required(),
@@ -11,8 +12,13 @@ module.exports = (req, res, next) => {
   return models.list
     .create({
       ...body.value,
-      accountId: req.params.account,
+      accountId: toBinaryUUID(req.params.account),
     })
-    .then((list) => res.send(list))
+    .then((list) => res.send({
+            id: list.id,
+            name: list.name,
+            creation_date: list.creationDate
+        })
+        )
     .catch(next);
 }

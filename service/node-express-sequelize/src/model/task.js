@@ -1,4 +1,5 @@
 const { Model } = require('sequelize');
+const { BINARYUUID,VIRTUALBINARYUUID } = require("@hypercharlie/sequelize-binary-uuid");
 
 module.exports = (sequelize, DataTypes) => {
   class Task extends Model {
@@ -16,16 +17,15 @@ module.exports = (sequelize, DataTypes) => {
   }
 
   Task.init({
-    id: {
+    bid: BINARYUUID({
+      field: 'id',
       primaryKey: true,
-      allowNull: false,
-      type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4,
-    },
-    listId: {
-      type: DataTypes.UUID,
-      allowNull: false,
-    },
+      allowNull: false
+    }),
+    id: VIRTUALBINARYUUID("bid", "id"),
+    listId: BINARYUUID({
+      allowNull: false
+    }),
     name: {
       type: DataTypes.TEXT,
     },
