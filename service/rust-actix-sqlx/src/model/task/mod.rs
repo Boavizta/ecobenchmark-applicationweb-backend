@@ -1,5 +1,5 @@
 use chrono::{DateTime, Utc};
-use sqlx::postgres::PgRow;
+use sqlx::mysql::MySqlRow;
 use sqlx::Row;
 use uuid::Uuid;
 
@@ -14,8 +14,8 @@ pub struct Task {
     pub creation_date: DateTime<Utc>,
 }
 
-impl<'r> sqlx::FromRow<'r, PgRow> for Task {
-    fn from_row(row: &'r PgRow) -> Result<Self, sqlx::Error> {
+impl<'r> sqlx::FromRow<'r, MySqlRow> for Task {
+    fn from_row(row: &'r MySqlRow) -> Result<Self, sqlx::Error> {
         Ok(Self {
             id: row.get(0),
             list_id: row.get(1),

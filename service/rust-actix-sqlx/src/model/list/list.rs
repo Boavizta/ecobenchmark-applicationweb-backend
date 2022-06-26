@@ -1,6 +1,6 @@
 use crate::model::list::List;
 use crate::model::task::Task;
-use sqlx::postgres::PgRow;
+use sqlx::mysql::MySqlRow;
 use sqlx::Row;
 use std::collections::HashMap;
 use uuid::Uuid;
@@ -60,8 +60,8 @@ struct FlattenListWithTask {
     task: Task,
 }
 
-impl<'r> sqlx::FromRow<'r, PgRow> for FlattenListWithTask {
-    fn from_row(row: &'r PgRow) -> Result<Self, sqlx::Error> {
+impl<'r> sqlx::FromRow<'r, MySqlRow> for FlattenListWithTask {
+    fn from_row(row: &'r MySqlRow) -> Result<Self, sqlx::Error> {
         let list_id: Uuid = row.get(0);
         Ok(Self {
             list: List {
@@ -90,7 +90,7 @@ impl ListList {
         10
     }
 
-    pub async fn execute<'e, E: sqlx::Executor<'e, Database = sqlx::Postgres>>(
+    pub async fn execute<'e, E: sqlx::Executor<'e, Database = sqlx::MySql>>(
         &self,
         executor: E,
         account_id: Uuid,
@@ -109,16 +109,19 @@ impl ListList {
             FROM list l
                 LEFT JOIN task t ON l.id = t.list_id
             WHERE
-                l.account_id = $1
+                l.account_id = ?
                 AND l.id IN (
-                    SELECT id
-                    FROM list
-                    WHERE account_id = $1
-                    LIMIT $2 OFFSET $3
+                    SELECT id FROM (
+                        SELECT id
+                        FROM list
+                        WHERE account_id = ?
+                        LIMIT ? OFFSET ?
+                    ) tmp
                 )
             "#,
         )
-        .bind(account_id)
+        .bind(&account_id)
+        .bind(&account_id)
         .bind(self.size as i64)
         .bind((self.page * self.size) as i64)
         .fetch_all(executor)

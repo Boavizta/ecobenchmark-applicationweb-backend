@@ -1,4 +1,5 @@
 use uuid::Uuid;
+use chrono::Utc;
 
 #[derive(serde::Deserialize)]
 pub struct ListCreate {
@@ -6,15 +7,25 @@ pub struct ListCreate {
 }
 
 impl ListCreate {
-    pub async fn execute<'e, E: sqlx::Executor<'e, Database = sqlx::Postgres>>(
+    pub async fn execute<'e, E: sqlx::Executor<'e, Database = sqlx::MySql>>(
         &self,
         executor: E,
         account_id: Uuid,
     ) -> Result<super::List, sqlx::Error> {
-        sqlx::query_as("INSERT INTO list(account_id, name) VALUES ($1,$2) RETURNING id, account_id, name, creation_date")
-            .bind(account_id)
+        let id = Uuid::new_v4();
+        let creation_date = Utc::now();
+        sqlx::query("INSERT INTO list(id, account_id, name, creation_date) VALUES (?,?,?,?)")
+            .bind(&id)
+            .bind(&account_id)
             .bind(self.name.as_str())
-            .fetch_one(executor)
-            .await
+            .bind(&creation_date)
+            .execute(executor)
+            .await?;
+        Ok(super::List {
+            id,
+            account_id,
+            name: self.name.clone(),
+            creation_date,
+        })
     }
 }
