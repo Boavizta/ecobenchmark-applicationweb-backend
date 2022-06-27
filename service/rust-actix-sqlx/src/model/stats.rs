@@ -1,5 +1,5 @@
 use num_traits::cast::ToPrimitive;
-use sqlx::postgres::PgRow;
+use sqlx::mysql::MySqlRow;
 use sqlx::types::Decimal;
 use sqlx::Row;
 use uuid::Uuid;
@@ -13,7 +13,7 @@ pub struct AccountStat {
 }
 
 impl AccountStat {
-    pub async fn list<'e, E: sqlx::Executor<'e, Database = sqlx::Postgres>>(
+    pub async fn list<'e, E: sqlx::Executor<'e, Database = sqlx::MySql>>(
         executor: E,
     ) -> Result<Vec<AccountStat>, sqlx::Error> {
         sqlx::query_as(
@@ -34,8 +34,8 @@ impl AccountStat {
     }
 }
 
-impl<'r> sqlx::FromRow<'r, PgRow> for AccountStat {
-    fn from_row(row: &'r PgRow) -> Result<Self, sqlx::Error> {
+impl<'r> sqlx::FromRow<'r, MySqlRow> for AccountStat {
+    fn from_row(row: &'r MySqlRow) -> Result<Self, sqlx::Error> {
         Ok(Self {
             account_id: row.get(0),
             account_login: row.get(1),

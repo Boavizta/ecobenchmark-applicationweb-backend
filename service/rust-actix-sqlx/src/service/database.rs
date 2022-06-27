@@ -1,9 +1,9 @@
-use sqlx::postgres::PgPoolOptions;
+use sqlx::mysql::MySqlPoolOptions;
 
-pub type Pool = sqlx::PgPool;
+pub type Pool = sqlx::MySqlPool;
 
 fn database_url() -> String {
-    std::env::var("DATABASE_URL").unwrap_or_else(|_| "postgres://localhost/postgres".into())
+    std::env::var("DATABASE_URL").unwrap_or_else(|_| "mysql://localhost/mysql".into())
 }
 
 fn pool_max() -> u32 {
@@ -13,9 +13,9 @@ fn pool_max() -> u32 {
         .unwrap_or(5)
 }
 
-pub async fn create_pool() -> sqlx::PgPool {
+pub async fn create_pool() -> sqlx::MySqlPool {
     let url = database_url();
-    PgPoolOptions::new()
+    MySqlPoolOptions::new()
         .max_connections(pool_max())
         .connect(url.as_str())
         .await

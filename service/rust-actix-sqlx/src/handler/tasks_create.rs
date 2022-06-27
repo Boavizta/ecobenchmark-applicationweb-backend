@@ -11,6 +11,7 @@ async fn handler(
     payload: web::Json<TaskCreate>,
 ) -> Result<HttpResponse, Error> {
     let mut conn = pool.acquire().await?;
+    let payload = payload.into_inner();
     let created = payload.execute(&mut conn, list_id.into_inner()).await?;
     Ok(HttpResponse::Created().json(created))
 }

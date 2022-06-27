@@ -7,16 +7,27 @@ pub struct TaskCreate {
 }
 
 impl TaskCreate {
-    pub async fn execute<'e, E: sqlx::Executor<'e, Database = sqlx::Postgres>>(
-        &self,
+    pub async fn execute<'e, E: sqlx::Executor<'e, Database = sqlx::MySql>>(
+        self,
         executor: E,
         list_id: Uuid,
     ) -> Result<super::Task, sqlx::Error> {
-        sqlx::query_as("INSERT INTO task(list_id, name, description) VALUES ($1,$2,$3) RETURNING id, list_id, name, description, creation_date")
+        let id = Uuid::new_v4();
+        let creation_date = chrono::Utc::now();
+        sqlx::query("INSERT INTO task(id, list_id, name, description, creation_date) VALUES (?,?,?,?,?)")
+            .bind(&id)
             .bind(&list_id)
             .bind(self.name.as_str())
             .bind(self.description.as_str())
-            .fetch_one(executor)
-            .await
+            .bind(&creation_date)
+            .execute(executor)
+            .await?;
+        Ok(super::Task {
+            id,
+            list_id,
+            name: self.name,
+            description: self.description,
+            creation_date,
+        })
     }
 }
