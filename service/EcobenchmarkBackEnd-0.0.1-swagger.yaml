@@ -19,7 +19,7 @@ tags:
 paths:
   /api/accounts:
     post:
-      summary: Create an account
+      summary: Create an account / Simulate a login
       operationId: createAccount
       requestBody:
         required: true
@@ -45,6 +45,10 @@ paths:
             type: string
           required: true
           description: UUID of the account who own the task lists
+        - in: query
+          name: page
+          schema:
+            type: integer
       responses:
         '200':
           description: A list of accounts
@@ -107,8 +111,6 @@ paths:
           description: An list with the specified ID was not found.
   /api/stats:
     get:
-      tags:
-        - developers
       summary: Get statistics about all accounts, their lists and tasks.
       operationId: stats
       responses:
@@ -120,9 +122,8 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/ExtendedAccount'
-                  
   /healthcheck:
-    get:
+    get: 
       tags:
         - developers
       summary: returns the health of the service
@@ -155,12 +156,7 @@ components:
           type: string
           format: date-time
           example: '2022-06-29T13:37:00.001Z'
-        lists:
-          type: array
-          items:
-            $ref: '#/components/schemas/List'
 
-          
     List:
       type: object
       required:
@@ -180,10 +176,6 @@ components:
           type: string
           format: date-time
           example: '2022-06-29T13:37:00.001Z'
-        tasks:
-          type: array
-          items:
-            $ref: '#/components/schemas/Task'
     Task:
       type: object
       required:
@@ -206,10 +198,6 @@ components:
           example: '2022-06-29T13:37:00.001Z'
     ExtendedAccount:
       type: object
-      required:
-        - id
-        - login
-        - creationDate
       properties:
         id:
           type: string
@@ -226,12 +214,8 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ExtendedList'
-
-          
     ExtendedList:
       type: object
-      required:
-        - name
       properties:
         id:
           type: string
