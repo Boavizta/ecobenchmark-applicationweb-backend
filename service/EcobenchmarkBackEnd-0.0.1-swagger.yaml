@@ -26,14 +26,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Account'
+              $ref: '#/components/schemas/AccountRequest'
       responses:
         '200':
           description: Created
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Account'
+                $ref: '#/components/schemas/AccountResponse'
   /api/accounts/{accountId}/lists:
     get:
       summary: Get task lists of an account
@@ -51,11 +51,13 @@ paths:
             type: integer
       responses:
         '200':
-          description: A list of accounts
+          description: Tasks lists of an account (paginated)
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Account'
+                type: array
+                items:
+                  $ref: '#/components/schemas/TaskResponse'
         '404':
           description: An account with the specified ID was not found.
     post:
@@ -73,14 +75,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/List'
+              $ref: '#/components/schemas/ListRequest'
       responses:
         '200':
           description: Created
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/List'
+                $ref: '#/components/schemas/ListResponse'
         '404':
           description: An account with the specified ID was not found.
   /api/lists/{listId}/tasks:
@@ -99,14 +101,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Task'
+              $ref: '#/components/schemas/TaskRequest'
       responses:
         '200':
           description: Created
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Task'
+                $ref: '#/components/schemas/TaskResponse'
         '404':
           description: An list with the specified ID was not found.
   /api/stats:
@@ -115,13 +117,13 @@ paths:
       operationId: stats
       responses:
         '200':
-          description: A list of accounts
+          description: A list of accounts statistics
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/ExtendedAccount'
+                  $ref: '#/components/schemas/AccountStatistic'
   /healthcheck:
     get: 
       tags:
@@ -138,26 +140,39 @@ paths:
           description: It's not working properly. Contact the administrator.
 components:
   schemas:
-    Account:
+    AccountRequest:
       type: object
       required:
-        - id
         - login
-        - creationDate
+      properties:
+        login:
+          type: string
+          example: My Personal Account
+    AccountResponse:
+      type: object
+      required:
+        - login
       properties:
         id:
           type: string
           format: uuid
           example: d290f1ee-6c54-4b01-90e6-d701748f0851
-        name:
+        login:
           type: string
           example: My Personal Account
         creationDate:
           type: string
           format: date-time
           example: '2022-06-29T13:37:00.001Z'
-
-    List:
+    ListRequest:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          example: My Task List
+    ListResponse:
       type: object
       required:
         - name
@@ -165,10 +180,10 @@ components:
         id:
           type: string
           format: uuid
-          example: d290f1ee-6c54-4b01-90e6-d701748f0851
+          example: 276f6a6f-0afa-4e50-9e39-7130f5aea9d2
         accountId:
           type: string
-          example: ACME Corporation
+          example: d290f1ee-6c54-4b01-90e6-d701748f0851
         name:
           type: string
           example: My Task List
@@ -176,7 +191,19 @@ components:
           type: string
           format: date-time
           example: '2022-06-29T13:37:00.001Z'
-    Task:
+    TaskRequest:
+      type: object
+      required:
+        - name
+        - description
+      properties:
+        name:
+          type: string
+          example: Task0
+        description:
+          type: string
+          example: Just do it !
+    TaskResponse:
       type: object
       required:
         - name
@@ -185,7 +212,10 @@ components:
         id:
           type: string
           format: uuid
-          example: d290f1ee-6c54-4b01-90e6-d701748f0851
+          example: c6516320-e069-4238-a5c3-a57df2c1bc32
+        listId:
+          type: string
+          example: 276f6a6f-0afa-4e50-9e39-7130f5aea9d2
         name:
           type: string
           example: Task0
@@ -196,14 +226,30 @@ components:
           type: string
           format: date-time
           example: '2022-06-29T13:37:00.001Z'
-    ExtendedAccount:
+    AccountStatistic:
       type: object
       properties:
         id:
           type: string
           format: uuid
           example: d290f1ee-6c54-4b01-90e6-d701748f0851
-        name:
+        login:
+          type: string
+          example: My Personal Account
+        nb_list:
+          type: number
+          example: 42
+        avg_tasks:
+          type: number
+          example: 1337
+    AccountExtendedResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: d290f1ee-6c54-4b01-90e6-d701748f0851
+        login:
           type: string
           example: My Personal Account
         creationDate:
@@ -213,14 +259,14 @@ components:
         lists:
           type: array
           items:
-            $ref: '#/components/schemas/ExtendedList'
-    ExtendedList:
+            $ref: '#/components/schemas/ListExtendedResponse'
+    ListExtendedResponse:
       type: object
       properties:
         id:
           type: string
           format: uuid
-          example: d290f1ee-6c54-4b01-90e6-d701748f0851
+          example: 276f6a6f-0afa-4e50-9e39-7130f5aea9d2
         accountId:
           type: string
           example: ACME Corporation
@@ -234,4 +280,4 @@ components:
         tasks:
           type: array
           items:
-            $ref: '#/components/schemas/Task'
+            $ref: '#/components/schemas/TaskResponse'
