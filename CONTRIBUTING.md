@@ -21,7 +21,7 @@ A service is a combination of a language, a web framework, dao/orm lib (optional
 
 #### Implementation Spirit
 
-Remember that is not a  becnhmark to make language competition. But an eco benchmark to identify which design choice got impact on web application footprint on our planet. Design should represent practices from the communities.
+Remember that is not a  benchmark to make language competition. But an eco benchmark to identify which design choice got impact on web application footprint on our planet. Design should represent practices from the communities.
 
 #### Degraded use case
 
@@ -34,7 +34,7 @@ Each service must respect :
 - a predefined set of SQL requests by API to respect.
 - for some service, algorithm to respect.
 
-Reférence implementation is the [golang implementation](./service/go-pgx).
+Reference implementation is the [golang implementation](./service/go-pgx).
 
 #### API Contract
 
@@ -50,7 +50,7 @@ Each API endpoint must respect the following SQL request.
 Due to ORM behavior you may have small difference in the real generated SQL. Please just check if there is no major differences and document the minor differences.
 ___
 
-##### POST /api/account
+##### POST /api/accounts
 
 `INSERT INTO account(id, login, creation_date) values ($1, $2, $3);`
 
