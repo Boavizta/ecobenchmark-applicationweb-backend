@@ -7,6 +7,8 @@ The different scenario will be the following, for each language:
 - default, optimised but not extremely
 - different degraded use cases.
 
+![Eco Benchmark diagram](eco-benchmark-boavizta.drawio.svg)
+
 ## Workflow
 
 The complete workflow is based on docker images. Every image should be named as `<org>/service-<service_name>:<use_case>`.
@@ -103,3 +105,13 @@ Based on this service definition : https://gitlab.com/jeremie.drouet/eco-benchma
 **Branch**  : usecase-aggregation-code-side
 
 **Description** : for the API path `GET /api/stats` remove group by and aggregate on code side.
+
+## Contributing
+
+Everybody is more than welcome to contribute to this benchmark! Please check out the [Contributing guide](CONTRIBUTING.md) for guidelines about how to proceed.
+
+You can also [join us](https://boavizta.org/en/contact) and become a member of the non-profit French association.
+
+## License
+
+The Eco benchmark is released under the [AGPL-3.0 license](LICENSE).
