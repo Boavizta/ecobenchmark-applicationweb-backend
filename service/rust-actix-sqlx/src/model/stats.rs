@@ -5,6 +5,7 @@ use sqlx::Row;
 use uuid::Uuid;
 
 #[derive(serde::Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct AccountStat {
     account_id: Uuid,
     account_login: String,
