@@ -7,6 +7,7 @@ pub mod create;
 pub mod list;
 
 #[derive(Debug, serde::Deserialize, serde::Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct List {
     pub id: Uuid,
     pub account_id: Uuid,

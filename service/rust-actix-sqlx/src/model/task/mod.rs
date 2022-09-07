@@ -6,6 +6,7 @@ use uuid::Uuid;
 pub mod create;
 
 #[derive(Debug, serde::Deserialize, serde::Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct Task {
     pub id: Uuid,
     pub list_id: Uuid,
