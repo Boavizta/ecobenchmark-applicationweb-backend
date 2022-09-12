@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-public class Task {
+public class Task extends PanacheEntity {
 
     @Id
     @GeneratedValue(generator = "UUID")
