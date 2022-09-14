@@ -14,4 +14,7 @@ COPY apache.conf /etc/apache2/sites-enabled/symfony.conf
 ENV APP_ENV prod
 COPY . /var/www/project
 WORKDIR /var/www/project
-RUN composer install --no-dev --optimize-autoloader
+RUN composer install --prefer-dist --no-dev --no-progress --no-scripts --no-interaction
+RUN composer dump-autoload --no-dev --classmap-authoritative
+RUN composer dump-env prod
+RUN php bin/console cache:warmup --env prod
