@@ -5,11 +5,11 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
-public class ListEntity extends PanacheEntity {
+public class ListEntity {
 
     @Id
     @GeneratedValue(generator = "UUID")
@@ -20,12 +20,12 @@ public class ListEntity extends PanacheEntity {
 
     private String name;
 
-    private LocalDateTime creationDate;
+    private Instant creationDate;
 
     @OneToMany(mappedBy = "list")
     private List<Task> tasks;
 
-    public ListEntity(Account account, String name, LocalDateTime creationDate, List<Task> tasks) {
+    public ListEntity(Account account, String name, Instant creationDate, List<Task> tasks) {
         this.account = account;
         this.name = name;
         this.creationDate = creationDate;
@@ -56,11 +56,11 @@ public class ListEntity extends PanacheEntity {
         this.name = name;
     }
 
-    public LocalDateTime getCreationDate() {
+    public Instant getCreationDate() {
         return creationDate;
     }
 
-    public void setCreationDate(LocalDateTime creationDate) {
+    public void setCreationDate(Instant creationDate) {
         this.creationDate = creationDate;
     }
 

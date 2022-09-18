@@ -6,11 +6,12 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-import java.time.LocalDateTime;
+import java.time.Instant;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
-public class Account extends PanacheEntity {
+public class Account {
 
     @Id
     @GeneratedValue(generator = "UUID")
@@ -19,12 +20,12 @@ public class Account extends PanacheEntity {
 
     private String login;
 
-    private LocalDateTime creationDate;
+    private Instant creationDate;
 
     @OneToMany(mappedBy = "account")
-    private ListEntity lists;
+    private List<ListEntity> lists;
 
-    public Account(String login, LocalDateTime creationDate, ListEntity lists) {
+    public Account(String login, Instant creationDate, List<ListEntity> lists) {
         this.login = login;
         this.creationDate = creationDate;
         this.lists = lists;
@@ -46,19 +47,19 @@ public class Account extends PanacheEntity {
         this.login = login;
     }
 
-    public LocalDateTime getCreationDate() {
+    public Instant getCreationDate() {
         return creationDate;
     }
 
-    public void setCreationDate(LocalDateTime creationDate) {
+    public void setCreationDate(Instant creationDate) {
         this.creationDate = creationDate;
     }
 
-    public ListEntity getLists() {
+    public List<ListEntity> getLists() {
         return lists;
     }
 
-    public void setLists(ListEntity lists) {
+    public void setLists(List<ListEntity> lists) {
         this.lists = lists;
     }
 }

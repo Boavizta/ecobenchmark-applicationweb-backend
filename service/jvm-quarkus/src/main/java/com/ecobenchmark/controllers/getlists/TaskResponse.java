@@ -1,20 +1,10 @@
-package com.ecobenchmark.entities;
+package com.ecobenchmark.controllers.getlists;
 
-import org.hibernate.annotations.GenericGenerator;
-
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 import java.time.Instant;
 import java.util.UUID;
 
-@Entity
-public class Task {
+public class TaskResponse {
 
-    @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     private UUID id;
 
     private String name;
@@ -23,14 +13,11 @@ public class Task {
 
     private Instant creationDate;
 
-    @ManyToOne
-    private ListEntity list;
-
-    public Task(String name, String description, Instant creationDate, ListEntity list) {
+    public TaskResponse(UUID id, String name, String description, Instant creationDate) {
+        this.id = id;
         this.name = name;
         this.description = description;
         this.creationDate = creationDate;
-        this.list = list;
     }
 
     public UUID getId() {
@@ -63,13 +50,5 @@ public class Task {
 
     public void setCreationDate(Instant creationDate) {
         this.creationDate = creationDate;
-    }
-
-    public ListEntity getList() {
-        return list;
-    }
-
-    public void setList(ListEntity list) {
-        this.list = list;
     }
 }
