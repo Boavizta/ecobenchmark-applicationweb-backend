@@ -7,6 +7,7 @@ import com.ecobenchmark.repositories.TaskRepository;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 import java.time.Instant;
@@ -27,6 +28,7 @@ public class AddTaskResource {
 
     @POST
     @Path("/{id}/tasks")
+    @Transactional
     public Response addTask(@PathParam("id") UUID listId, TaskRequest taskRequest) {
         Optional<ListEntity> list = listEntityRepository.findByIdOptional(listId);
         if(list.isEmpty()){

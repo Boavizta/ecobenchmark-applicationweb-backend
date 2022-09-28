@@ -3,6 +3,7 @@ package com.ecobenchmark.controllers.getlists;
 
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -10,7 +11,7 @@ public class ListResponse {
 
     private UUID id;
     private String name;
-    private List<TaskResponse> tasks;
+    private List<TaskResponse> tasks = new ArrayList<>();
     private Instant creationDate;
     private UUID accountId;
 

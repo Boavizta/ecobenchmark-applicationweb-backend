@@ -2,10 +2,7 @@ package com.ecobenchmark.entities;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import java.time.Instant;
 import java.util.UUID;
 
@@ -21,6 +18,7 @@ public class Task {
 
     private String description;
 
+    @Column(name = "creation_date")
     private Instant creationDate;
 
     @ManyToOne
@@ -31,6 +29,9 @@ public class Task {
         this.description = description;
         this.creationDate = creationDate;
         this.list = list;
+    }
+
+    public Task() {
     }
 
     public UUID getId() {

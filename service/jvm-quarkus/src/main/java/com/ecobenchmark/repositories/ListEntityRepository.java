@@ -10,6 +10,6 @@ import java.util.UUID;
 @ApplicationScoped
 public class ListEntityRepository implements PanacheRepository<ListEntity> {
     public Optional<ListEntity> findByIdOptional(UUID listId) {
-        return find("uuid", listId).firstResultOptional();
+        return find("id", listId).firstResultOptional();
     }
 }

@@ -2,13 +2,12 @@ package com.ecobenchmark.entities;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
+@Entity(name = "list")
 public class ListEntity {
 
     @Id
@@ -16,10 +15,12 @@ public class ListEntity {
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     private UUID id;
 
+    @ManyToOne
     private Account account;
 
     private String name;
 
+    @Column(name = "creation_date")
     private Instant creationDate;
 
     @OneToMany(mappedBy = "list")
@@ -30,6 +31,9 @@ public class ListEntity {
         this.name = name;
         this.creationDate = creationDate;
         this.tasks = tasks;
+    }
+
+    public ListEntity() {
     }
 
     public UUID getId() {

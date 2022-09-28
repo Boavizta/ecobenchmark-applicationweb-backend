@@ -7,10 +7,12 @@ import com.ecobenchmark.repositories.ListEntityRepository;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 import java.time.Instant;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -28,6 +30,7 @@ public class AddListResource {
 
     @POST
     @Path("/{id}/lists")
+    @Transactional
     public Response addList(@PathParam("id") UUID accountId, ListRequest listRequest) {
         Optional<Account> account = accountRepository.findByIdOptional(accountId);
         if(account.isEmpty()){

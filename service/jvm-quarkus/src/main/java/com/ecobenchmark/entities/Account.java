@@ -2,10 +2,7 @@ package com.ecobenchmark.entities;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
@@ -20,10 +17,14 @@ public class Account {
 
     private String login;
 
+    @Column(name = "creation_date")
     private Instant creationDate;
 
     @OneToMany(mappedBy = "account")
     private List<ListEntity> lists;
+
+    public Account() {
+    }
 
     public Account(String login, Instant creationDate, List<ListEntity> lists) {
         this.login = login;
