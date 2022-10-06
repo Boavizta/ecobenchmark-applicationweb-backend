@@ -11,10 +11,6 @@ RUN apt-get update && \
     curl https://getcomposer.org/installer -o composer-setup.php && \
     php composer-setup.php --install-dir=/usr/local/bin --filename=composer
 COPY apache.conf /etc/apache2/sites-enabled/symfony.conf
-ENV APP_ENV prod
 COPY . /var/www/project
 WORKDIR /var/www/project
-RUN composer install --prefer-dist --no-dev --no-progress --no-scripts --no-interaction
-RUN composer dump-autoload --no-dev --classmap-authoritative
-RUN composer dump-env prod
-RUN php bin/console cache:warmup --env prod
+RUN composer install

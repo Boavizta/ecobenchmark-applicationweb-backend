@@ -16,7 +16,7 @@ RUN cp /usr/local/etc/php/php.ini-production /usr/local/etc/php/conf.d/php.ini
 ENV APP_ENV prod
 COPY . /var/www/project
 WORKDIR /var/www/project
-RUN composer install --prefer-dist --no-dev --no-progress --no-scripts --no-interaction
-RUN composer dump-autoload --no-dev --classmap-authoritative
-RUN composer dump-env prod
-RUN php bin/console cache:warmup --env prod
+RUN composer install --prefer-dist --no-dev --no-interaction && \
+    composer dump-autoload --no-dev --classmap-authoritative && \
+    composer dump-env prod && \
+    php bin/console cache:clear --env prod
