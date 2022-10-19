@@ -15,8 +15,10 @@ services:
       - service
 
   service:
-    image: jdrouet/eco-benchmark:service-jvm-quarkus
-    build: ./Dockerfile.jvm
+    image: quarkus/jvm-quarkus-jvm:latest
+    build:
+      context: ./src/main/docker
+      dockerfile: Dockerfile.jvm
     depends_on:
       - database
     environment:
