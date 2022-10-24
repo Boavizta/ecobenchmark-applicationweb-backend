@@ -8,3 +8,4 @@ results/*.png
 *.code-worksapce
 
 .DS_Store
+/.idea/*
