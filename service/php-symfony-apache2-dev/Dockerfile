@@ -13,4 +13,6 @@ RUN apt-get update && \
 COPY apache.conf /etc/apache2/sites-enabled/symfony.conf
 COPY . /var/www/project
 WORKDIR /var/www/project
+RUN chown -R www-data /var/www/project
+USER www-data
 RUN composer install

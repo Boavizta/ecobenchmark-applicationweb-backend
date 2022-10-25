@@ -16,6 +16,8 @@ RUN cp /usr/local/etc/php/php.ini-production /usr/local/etc/php/conf.d/php.ini
 ENV APP_ENV prod
 COPY . /var/www/project
 WORKDIR /var/www/project
+RUN chown -R www-data /var/www/project
+USER www-data
 RUN composer install --prefer-dist --no-dev --no-interaction && \
     composer dump-autoload --no-dev --classmap-authoritative && \
     composer dump-env prod && \
