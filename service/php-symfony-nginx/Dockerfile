@@ -1,7 +1,7 @@
 FROM php:8.1.11-fpm-buster
 
 RUN apt-get update && \
-    apt-get install -y nginx wget libpq-dev && \
+    apt-get install -y nginx wget libpq-dev unzip && \
     docker-php-ext-install pdo_pgsql opcache && \
     rm -rf /var/cache/apt/archives /var/lib/apt/lists/* && \
     curl https://getcomposer.org/installer -o composer-setup.php && \
