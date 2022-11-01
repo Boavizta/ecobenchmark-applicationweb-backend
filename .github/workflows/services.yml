@@ -11,23 +11,12 @@ jobs:
       - name: generate variables
         id: variables
         run: |
-          USE_CASE=$(cat ./usecase)
-          echo "::set-output name=use_case::$USE_CASE"
-          if [ "$GITHUB_REF" == "ref/head/main" && "$USE_CASE" == "default" ]; then
-            echo "::set-output name=push::true"
-          elif [ "$GITHUB_REF" == "ref/head/usecase-$USE_CASE" ]; then
-            echo "::set-output name=push::true"
-          else
-            echo "::set-output name=push::false"
-          fi
-          # should only push if on the boavizta repo (the creds are not available anyway if not on this repo)
-          if [ "$GITHUB_REPOSITORY" != "Boavizta/ecobenchmark-applicationweb-backend" ]; then
-            echo "::set-output name=push::false"
-          fi
+          node ./.github/scripts/matrix-services.js
+          node ./.github/scripts/variables.js
 
     outputs:
       services: ${{ steps.variables.outputs.services }}
-      use_case: ${{ steps.variables.outputs.use_case }}
+      usecase: ${{ steps.variables.outputs.usecase }}
       should_push: ${{ steps.variables.outputs.push }}
 
   build_services:
@@ -38,14 +27,7 @@ jobs:
 
     strategy:
       matrix:
-        service:
-          - go-pgx
-          - jvm-kotlin-spring
-          - node-express-sequelize
-          - php-symfony
-          - rust-actix-native
-          - rust-actix-sqlx
-          - rust-axum-sqlx
+        service: ${{ fromJSON(needs.common_variables.outputs.services) }}
 
     steps:
       - name: checkout code
@@ -72,4 +54,4 @@ jobs:
         with:
           context: service/${{ matrix.service }}
           push: ${{ needs.common_variables.outputs.should_push }}
-          tags: jdrouet/eco-benchmark:service-${{ matrix.service }}-${{ needs.common_variables.outputs.use_case }}
+          tags: jdrouet/eco-benchmark:service-${{ matrix.service }}-${{ needs.common_variables.outputs.usecase }}
