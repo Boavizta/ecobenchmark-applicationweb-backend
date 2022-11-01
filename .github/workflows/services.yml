@@ -1,8 +1,9 @@
 on: [push]
 
 jobs:
-  common-variables:
+  common_variables:
     name: generate common variables
+    runs-on: ubuntu-latest
     steps:
       - name: checkout code
         uses: actions/checkout@v2
@@ -10,23 +11,41 @@ jobs:
       - name: generate variables
         id: variables
         run: |
-          SERVICES=$(for d in $(ls -d ./service/*/); do basename $d; done)
-          echo "::set-output name=services::$SERVICES"
           USE_CASE=$(cat ./usecase)
           echo "::set-output name=use_case::$USE_CASE"
+          if [ "$GITHUB_REF" == "ref/head/main" && "$USE_CASE" == "default" ]; then
+            echo "::set-output name=push::true"
+          elif [ "$GITHUB_REF" == "ref/head/usecase-$USE_CASE" ]; then
+            echo "::set-output name=push::true"
+          else
+            echo "::set-output name=push::false"
+          fi
+          # should only push if on the boavizta repo (the creds are not available anyway if not on this repo)
+          if [ "$GITHUB_REPOSITORY" != "Boavizta/ecobenchmark-applicationweb-backend" ]; then
+            echo "::set-output name=push::false"
+          fi
 
     outputs:
       services: ${{ steps.variables.outputs.services }}
       use_case: ${{ steps.variables.outputs.use_case }}
+      should_push: ${{ steps.variables.outputs.push }}
 
-  build-service:
+  build_services:
     name: Building each service
     needs:
-      - common-variables
+      - common_variables
     runs-on: ubuntu-latest
 
     strategy:
-      matrix: ${{ needs.common-variables.outputs.services }}
+      matrix:
+        service:
+          - go-pgx
+          - jvm-kotlin-spring
+          - node-express-sequelize
+          - php-symfony
+          - rust-actix-native
+          - rust-actix-sqlx
+          - rust-axum-sqlx
 
     steps:
       - name: checkout code
@@ -40,27 +59,17 @@ jobs:
             workflows:
               - './service/${{ matrix.service }}/**'
 
-      - name: load the name of the usecase in memory
-        # if: steps.filter.outputs.workflows == 'true'
-        id: usecase
-        run: echo ::set-output name=name::$(cat ./usecase)
-
-      - name: check if should push to Docker Hub
-        # if: steps.filter.outputs.workflows == 'true'
-        id: usecase
-        run: echo ::set-output name=name::$(cat ./usecase)
-
       - name: login to Docker Hub
         uses: docker/login-action@v2
-        # if: steps.filter.outputs.workflows == 'true'
+        if: steps.filter.outputs.workflows == 'true'
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: build image
         uses: docker/build-push-action@v3
-        # if: steps.filter.outputs.workflows == 'true'
+        if: steps.filter.outputs.workflows == 'true'
         with:
           context: service/${{ matrix.service }}
-          push: true
-          tags: jdrouet/eco-benchmark:service-${{ matrix.service }}-${{ needs.common-variables.outputs.use_case }}
+          push: ${{ needs.common_variables.outputs.should_push }}
+          tags: jdrouet/eco-benchmark:service-${{ matrix.service }}-${{ needs.common_variables.outputs.use_case }}
