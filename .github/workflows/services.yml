@@ -1,0 +1,23 @@
+on: [push]
+
+jobs:
+  build-each-service:
+    name: Building each service
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service:
+          - go-pgx
+          - jvm-kotlin-spring
+          - node-express-sequelize
+          - php-symfony
+          - rust-actix-native
+          - rust-actix-sqlx
+          - rust-axum-sqlx
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build and push
+        uses: docker/build-push-action@v3
+        with:
+          context: service/${{ matrix.service }}
+          tags: jdrouet/eco-benchmark:service-${{ matrix.service }}-default
