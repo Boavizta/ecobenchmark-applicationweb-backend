@@ -16,8 +16,15 @@ jobs:
           - rust-axum-sqlx
     steps:
       - uses: actions/checkout@v2
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            workflows:
+              - './service/${{ matrix.service }}/**'
       - name: Build and push
         uses: docker/build-push-action@v3
+        if: steps.filter.outputs.workflows == 'true'
         with:
           context: service/${{ matrix.service }}
           tags: jdrouet/eco-benchmark:service-${{ matrix.service }}-default
