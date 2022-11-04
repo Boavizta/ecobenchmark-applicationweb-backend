@@ -22,24 +22,24 @@ public class GetStatsResource {
 
     @GET
     public List<StatsResponse> getStats(){
-        Query nativeQuery = entityManager.createQuery("""
+        Query nativeQuery = entityManager.createNativeQuery("""
             SELECT
-                a.id,
-                a.login,
+                CAST(id AS VARCHAR),
+                login,
                 count(list_id) AS nb_list,
                 avg(nb_tasks) AS avg_tasks
             FROM (
                 SELECT
                     account.id,
                     account.login,
-                    list.id AS list_id,
-                    count(task.id) AS nb_tasks
-                FROM Account a
-                INNER JOIN a.lists as list
-                LEFT JOIN list.tasks as task
-                GROUP BY a.id, a.login, list.id
+                    list.id list_id,
+                    count(task.id) nb_tasks
+                FROM account
+                INNER JOIN list ON (list.account_id=account.id)
+                LEFT JOIN task ON (task.list_id=list.id)
+                GROUP BY account.id, account.login, list.id
             ) t
-            GROUP BY a.id, a.login""".trim(), Tuple.class);
+            GROUP BY id, login""".trim(), Tuple.class);
         List<Tuple> resultList = nativeQuery.getResultList();
         List<StatsResponse> responseList = new ArrayList<>();
         for(Tuple tuple : resultList){
