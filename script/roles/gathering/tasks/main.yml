@@ -1,0 +1,53 @@
+---
+- name: wait for scaphandre to be done measuring
+  shell: docker ps | grep scaphandre | wc -l
+  register: result
+  until: "result.stdout == '0'"
+  retries: 10
+  delay: 30
+  tags:
+    - gathering
+  when: instance_type == "application" or instance_type == "database"
+
+- name: remove all existing running containers
+  community.docker.docker_container:
+    name: "{{ item }}"
+    state: absent
+  loop:
+    - eco-benchmark-scaphandre
+    - eco-benchmark-database
+    - eco-benchmark-application
+    - eco-benchmark-watcher
+  tags:
+    - cleanup
+
+- name: gather docker activity results
+  fetch:
+    src: "{{ ansible_env.HOME }}/{{ service }}_{{ use_case }}_{{ run_id }}_docker-activity-{{ instance_type }}.json"
+    dest: "{{ output_directory }}/{{ service }}_{{ use_case }}_{{ run_id }}_docker-activity-{{ instance_type }}.json"
+    flat: yes
+    # validate_checksum: no
+  tags:
+    - gathering
+  when: instance_type == "application" or instance_type == "database"
+
+- name: gather scaphandre results
+  fetch:
+    src: "{{ ansible_env.HOME }}/{{ service }}_{{ use_case }}_{{ run_id }}_scaphandre-{{ instance_type }}.json"
+    dest: "{{ output_directory }}/{{ service }}_{{ use_case }}_{{ run_id }}_scaphandre-{{ instance_type }}.json"
+    flat: yes
+    # validate_checksum: no
+  tags:
+    - gathering
+  when: instance_type == "application" or instance_type == "database"
+
+- name: gather k6 results
+  fetch:
+    src: "{{ ansible_env.HOME }}/{{ service }}_{{ use_case }}_{{ run_id }}_k6-summary.json"
+    dest: "{{ output_directory }}/{{ service }}_{{ use_case }}_{{ run_id }}_k6-summary.json"
+    flat: yes
+    # validate_checksum: no
+  tags:
+    - gathering
+  when: instance_type == "runner"
+  

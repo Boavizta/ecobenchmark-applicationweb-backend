@@ -1,3 +1,10 @@
 runner/eco-bench-runner
 
 *.iml
+.env
+results/*.json
+results/*.png
+
+*.code-worksapce
+
+.DS_Store
