@@ -82,50 +82,26 @@ func (s *Storage) GetListsByAccountId(request get_lists.GetListsRequest) ([]get_
 	var listWithTask = []get_lists.GetListsResponse{}
 	var listsRef = map[string]*get_lists.GetListsResponse{}
 	var pageSize int64 = 10
-	var listIds []string
 
-	rowsList, err := s.pool.Query(context.Background(),
-		`select id,name,creation_date 
-      		from list
-			where list.account_id=$1 limit $2 offset $3
+	rowsTask, err := s.pool.Query(context.Background(),
+		`SELECT
+                l.id,
+                l.name,
+                l.creation_date,
+                l.account_id,
+                t.id AS task_id,
+                t.name AS task_name,
+                t.description,
+                t.creation_date AS task_creation_date
+            FROM list l
+                LEFT JOIN task t ON l.id = t.list_id
+            WHERE
+                l.account_id = $1
+                AND l.id IN (SELECT id FROM list WHERE account_id = $1 LIMIT $2 OFFSET $3)
 		`,
 		request.AccountId,
 		pageSize,
 		request.Page*pageSize,
-	)
-	if err != nil {
-		return nil, errors.Wrapf(err, "failed to select the tasks list")
-	}
-	defer rowsList.Close()
-	for rowsList.Next() {
-		var rawId string
-		var name string
-		var creationDate time.Time
-		err = rowsList.Scan(&rawId, &name, &creationDate)
-		if err != nil {
-			return nil, errors.Wrap(err, "failed to scan the SQL result")
-		}
-		id, err := uuid.FromString(rawId)
-		if err != nil {
-			return nil, errors.Wrapf(err, "the list has wrong id: %s", rawId)
-		}
-		list := get_lists.GetListsResponse{
-			Id:           id,
-			Name:         name,
-			CreationDate: creationDate,
-			Tasks:        []get_lists.TasksResponse{},
-		}
-		listsRef[rawId] = &list
-		listIds = append(listIds, rawId)
-	}
-
-	rowsTask, err := s.pool.Query(context.Background(),
-		`select list.id,task.id,task.name,task.description,task.creation_date 
-      		from list inner join task on (task.list_id=list.id)
-			where list.account_id=$1 and list.id = any($2)
-		`,
-		request.AccountId,
-		listIds,
 	)
 	if err != nil {
 		return nil, errors.Wrapf(err, "failed to select the tasks")
@@ -133,34 +109,70 @@ func (s *Storage) GetListsByAccountId(request get_lists.GetListsRequest) ([]get_
 	defer rowsTask.Close()
 	for rowsTask.Next() {
 		var rawListId string
-		var rawId string
-		var name sql.NullString
-		var description sql.NullString
-		var creationDate time.Time
-		err = rowsTask.Scan(&rawListId, &rawId, &name, &description, &creationDate)
+		var listName string
+		var listCreationDate time.Time
+		var rawAccountId string
+		var rawTaskId sql.NullString
+		var taskName sql.NullString
+		var taskDescription sql.NullString
+		var taskCreationDate sql.NullTime
+		err = rowsTask.Scan(&rawListId, &listName, &listCreationDate, &rawAccountId, &rawTaskId, &taskName, &taskDescription, &taskCreationDate)
 		if err != nil {
 			return nil, errors.Wrap(err, "failed to scan the SQL result")
 		}
 
-		id, err := uuid.FromString(rawId)
+		listId, err := uuid.FromString(rawListId)
 		if err != nil {
-			return nil, errors.Wrapf(err, "the task has wrong id: %s", rawId)
+			return nil, errors.Wrapf(err, "the task has wrong id: %s", rawListId)
 		}
 
-		task := get_lists.TasksResponse{
-			Id:           id,
-			Name:         name.String,
-			Description:  description.String,
-			CreationDate: creationDate,
+		accountId, err := uuid.FromString(rawAccountId)
+		if err != nil {
+			return nil, errors.Wrapf(err, "the task has wrong id: %s", rawAccountId)
 		}
 
-		list := listsRef[rawListId]
-		list.Tasks = append(listsRef[rawListId].Tasks, task)
-	}
-	for _, value := range listsRef {
-		listWithTask = append(listWithTask, *value)
-	}
+		if rawTaskId.Valid {
+			// List with tasks
+			taskId, err := uuid.FromString(rawTaskId.String)
+			if err != nil {
+				return nil, errors.Wrapf(err, "the task has wrong id: %s", rawTaskId)
+			}
 
+			task := get_lists.TasksResponse{
+				Id:           taskId,
+				Name:         taskName.String,
+				Description:  taskDescription.String,
+				CreationDate: taskCreationDate.Time,
+			}
+
+			list := listsRef[rawListId]
+			if list != nil {
+				list.Tasks = append(listsRef[rawListId].Tasks, task)
+			} else {
+				list := get_lists.GetListsResponse{
+					Id:           listId,
+					Name:         listName,
+					CreationDate: taskCreationDate.Time,
+					AccountId:    accountId,
+					Tasks:        []get_lists.TasksResponse{},
+				}
+				list.Tasks = append(list.Tasks, task)
+				listWithTask = append(listWithTask, list)
+				listsRef[rawListId] = &listWithTask[len(listWithTask)-1]
+			}
+		} else {
+			// List without tasks
+			list := get_lists.GetListsResponse{
+				Id:           listId,
+				Name:         listName,
+				CreationDate: taskCreationDate.Time,
+				AccountId:    accountId,
+				Tasks:        []get_lists.TasksResponse{},
+			}
+			listWithTask = append(listWithTask, list)
+			listsRef[rawListId] = &listWithTask[len(listWithTask)-1]
+		}
+	}
 	return listWithTask, nil
 }
 

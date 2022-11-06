@@ -12,12 +12,8 @@ http://localhost:8080
 
 ## Development Environment setup
 
-`docker run --name some-postgres  -p 5432:5432  -e POSTGRES_PASSWORD=mysecretpassword -d postgres`
+See the readme in the root folder.
 
-`DATABASE_URL=postgresql://postgres:mysecretpassword@127.0.0.1:5432/postgres?search_path=ecobenchmark`
-
-And init the db with sql in ../../migrations folder.
- 
 ## API usage example
 
     curl -I http://localhost:8080/healthcheck   
@@ -39,7 +35,7 @@ And init the db with sql in ../../migrations folder.
 
 ----
 
-    curl -i -X POST http://localhost:8080/api/lists -H "Content-Type: application/json"  -d '{"name":"list 1", "account_id":"f7d36f5e-ecba-4255-91ae-d817bcd0f1bc"}'
+    curl -i -X POST http://localhost:8080/api/accounts/f7d36f5e-ecba-4255-91ae-d817bcd0f1bc/lists -H "Content-Type: application/json"  -d '{"name":"list 1"}'
 
     HTTP/1.1 201 Created
     Content-Type: application/json; charset=UTF-8

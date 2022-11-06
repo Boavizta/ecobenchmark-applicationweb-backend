@@ -1,0 +1,57 @@
+on: [push]
+
+jobs:
+  common_variables:
+    name: generate common variables
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v2
+
+      - name: generate variables
+        id: variables
+        run: |
+          node ./.github/scripts/matrix-services.js
+          node ./.github/scripts/variables.js
+
+    outputs:
+      services: ${{ steps.variables.outputs.services }}
+      usecase: ${{ steps.variables.outputs.usecase }}
+      should_push: ${{ steps.variables.outputs.push }}
+
+  build_services:
+    name: Building each service
+    needs:
+      - common_variables
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        service: ${{ fromJSON(needs.common_variables.outputs.services) }}
+
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v2
+
+      - name: check that the code has changed
+        uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            workflows:
+              - './service/${{ matrix.service }}/**'
+
+      - name: login to Docker Hub
+        uses: docker/login-action@v2
+        if: steps.filter.outputs.workflows == 'true'
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: build image
+        uses: docker/build-push-action@v3
+        if: steps.filter.outputs.workflows == 'true'
+        with:
+          context: service/${{ matrix.service }}
+          push: ${{ needs.common_variables.outputs.should_push }}
+          tags: jdrouet/eco-benchmark:service-${{ matrix.service }}-${{ needs.common_variables.outputs.usecase }}

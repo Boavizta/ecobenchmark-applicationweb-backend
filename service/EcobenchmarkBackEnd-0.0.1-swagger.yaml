@@ -1,0 +1,244 @@
+openapi: 3.0.0
+servers:
+  # Added by API Auto Mocking Plugin
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/agraignic/EcobenchmarkBackEnd/0.0.1
+info:
+  description: An API template to compare the energy consumption of several languages API backend.
+  version: "0.0.1"
+  title: Boavizta - Eco benchmark template API
+  contact:
+    name: 'Boavizta'
+    url: https://boavizta.org/
+  license:
+    name: GNU Affero General Public License v3.0
+    url: 'https://www.gnu.org/licenses/agpl-3.0.en.html'
+tags:
+  - name: developers
+    description: Operations available to regular developers
+paths:
+  /api/accounts:
+    post:
+      summary: Create an account / Simulate a login
+      operationId: createAccount
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AccountRequest'
+      responses:
+        '200':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountResponse'
+  /api/accounts/{accountId}/lists:
+    get:
+      summary: Get task lists of an account
+      operationId: getListsFromAccount
+      parameters:
+        - in: path
+          name: accountId
+          schema:
+            type: string
+          required: true
+          description: UUID of the account who own the task lists
+        - in: query
+          name: page
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Tasks lists of an account (paginated)
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TaskResponse'
+        '404':
+          description: An account with the specified ID was not found.
+    post:
+      summary: Create a task list for a given account
+      operationId: createList
+      parameters:
+        - in: path
+          name: accountId
+          schema:
+            type: string
+          required: true
+          description: UUID of the account who own the task lists
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ListRequest'
+      responses:
+        '200':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListResponse'
+        '404':
+          description: An account with the specified ID was not found.
+  /api/lists/{listId}/tasks:
+    post:
+      summary: Create a task in a given list
+      operationId: createTask
+      parameters:
+        - in: path
+          name: listId
+          schema:
+            type: string
+          required: true
+          description: UUID of the task list
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskRequest'
+      responses:
+        '200':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskResponse'
+        '404':
+          description: An list with the specified ID was not found.
+  /api/stats:
+    get:
+      summary: Get statistics about all accounts, their lists and tasks.
+      operationId: stats
+      responses:
+        '200':
+          description: A list of accounts statistics
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AccountStatistic'
+  /healthcheck:
+    get: 
+      tags:
+        - developers
+      summary: returns the health of the service
+      operationId: healthCheck
+      description: |
+        The API endpoint handler performs various checks
+        to ensure the service is operational.
+      responses:
+        '200':
+          description: It works!
+        '500':
+          description: It's not working properly. Contact the administrator.
+components:
+  schemas:
+    AccountRequest:
+      type: object
+      required:
+        - login
+      properties:
+        login:
+          type: string
+          example: My Personal Account
+    AccountResponse:
+      type: object
+      required:
+        - login
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: d290f1ee-6c54-4b01-90e6-d701748f0851
+        login:
+          type: string
+          example: My Personal Account
+        creationDate:
+          type: string
+          format: date-time
+          example: '2022-06-29T13:37:00.001Z'
+    ListRequest:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          example: My Task List
+    ListResponse:
+      type: object
+      required:
+        - name
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 276f6a6f-0afa-4e50-9e39-7130f5aea9d2
+        accountId:
+          type: string
+          example: d290f1ee-6c54-4b01-90e6-d701748f0851
+        name:
+          type: string
+          example: My Task List
+        creationDate:
+          type: string
+          format: date-time
+          example: '2022-06-29T13:37:00.001Z'
+    TaskRequest:
+      type: object
+      required:
+        - name
+        - description
+      properties:
+        name:
+          type: string
+          example: Task0
+        description:
+          type: string
+          example: Just do it !
+    TaskResponse:
+      type: object
+      required:
+        - name
+        - description
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: c6516320-e069-4238-a5c3-a57df2c1bc32
+        listId:
+          type: string
+          example: 276f6a6f-0afa-4e50-9e39-7130f5aea9d2
+        name:
+          type: string
+          example: Task0
+        description:
+          type: string
+          example: Just do it !
+        creationDate:
+          type: string
+          format: date-time
+          example: '2022-06-29T13:37:00.001Z'
+    AccountStatistic:
+      type: object
+      properties:
+        accountId:
+          type: string
+          format: uuid
+          example: d290f1ee-6c54-4b01-90e6-d701748f0851
+        accountLogin:
+          type: string
+          example: My Personal Account
+        listCount:
+          type: number
+          example: 42
+        taskAvg:
+          type: number
+          example: 1337

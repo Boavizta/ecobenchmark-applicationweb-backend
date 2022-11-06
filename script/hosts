@@ -1,0 +1,29 @@
+[application]
+app_server ansible_host="{{ server_application_host }}" ansible_user="{{ server_application_user }}"
+
+[database]
+db_server ansible_host="{{ server_database_host }}" ansible_user="{{ server_database_user }}"
+
+[runner]
+run_server ansible_host="{{ server_runner_host }}" ansible_user="{{ server_runner_user }}"
+
+[all:vars]
+ansible_python_interpreter=/usr/bin/python3
+
+database_host="{{ server_database_host }}"
+database_username=postgres
+database_password=password
+database_name=postgres
+
+virtual_users=20
+duration=600
+run_id=overrideme
+
+[application:vars]
+instance_type=application
+
+[database:vars]
+instance_type=database
+
+[runner:vars]
+instance_type=runner

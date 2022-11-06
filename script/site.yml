@@ -1,0 +1,22 @@
+---
+- hosts: all
+  become: true
+  roles:
+    - role: "nickjj.docker"
+      tags:
+        - install
+        - docker
+    - role: install
+
+- hosts: all
+  roles:
+    - cleanup
+    - deploy
+
+- hosts: runner
+  roles:
+    - execute
+
+- hosts: all
+  roles:
+    - gathering

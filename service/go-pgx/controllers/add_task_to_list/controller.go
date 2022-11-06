@@ -4,6 +4,7 @@ import (
 	"github.com/gofrs/uuid"
 	echo "github.com/labstack/echo/v4"
 	"github.com/pkg/errors"
+	"go_pgx/common"
 	"go_pgx/usecases/add_task_to_list"
 	"log"
 	"net/http"
@@ -43,7 +44,7 @@ func Controller(storage add_task_to_list.Storage) func(c echo.Context) error {
 				ListId:       createdTask.ListId.String(),
 				Name:         createdTask.Name,
 				Description:  createdTask.Description,
-				CreationDate: createdTask.CreationDate.String(),
+				CreationDate: common.JSONDATE{Time: createdTask.CreationDate},
 			},
 		)
 	}
