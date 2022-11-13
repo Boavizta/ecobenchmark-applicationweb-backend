@@ -14,6 +14,20 @@ services:
     depends_on:
       - service
 
+  validator:
+    image: grafana/k6
+    build: ../../validator
+    command:
+      - run
+      - "--iterations"
+      - "1"
+      - "--env"
+      - "SERVER_HOST=service:8080"
+      - "/config/scenario.js"
+      - "--verbose"
+    depends_on:
+      - service
+
   service:
     image: jdrouet/eco-benchmark:service-rust-actix-native-default
     build: .

@@ -1,6 +1,6 @@
 services:
   runner:
-    image: jdrouet/eco-benchmark:runner-default
+    image: jdrouet/eco-benchmark:runner-${USECASE:-default}
     build: ../../runner
     command:
       - run
@@ -14,8 +14,21 @@ services:
     depends_on:
       - service
 
+  validator:
+    image: jdrouet/eco-benchmark:validator-${USECASE:-default}
+    build: ../../validator
+    command:
+      - run
+      - "--iterations"
+      - "1"
+      - "--env"
+      - "SERVER_HOST=service:8080"
+      - "/config/scenario.js"
+    depends_on:
+      - service
+
   service:
-    image: jdrouet/eco-benchmark:service-go-pgx-default
+    image: jdrouet/eco-benchmark:service-go-pgx-${USECASE:-default}
     build: .
     depends_on:
       - database
@@ -25,7 +38,7 @@ services:
     restart: unless-stopped
 
   database:
-    image: jdrouet/eco-benchmark:database-default
+    image: jdrouet/eco-benchmark:database-${USECASE:-default}
     build: ../../migrations
     environment:
       - POSTGRES_PASSWORD=mysecretpassword

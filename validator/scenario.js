@@ -55,7 +55,7 @@ function expect_keys(obj, keys) {
 function healthcheck() {
   const url = `http://${serverHost}/healthcheck`;
   // invalid behaviors
-  group('invalid method', function() {
+  group('invalid method', function () {
     check(http.post(url), {
       'post status code is 404': (r) => expect_status(r, 404),
     });
@@ -75,13 +75,13 @@ function healthcheck() {
 function login() {
   const url = `http://${serverHost}/api/accounts`;
   // invalid behavior
-  group('missing content type', function() {
+  group('missing content type', function () {
     const req = http.post(url, JSON.stringify({ login: 'user' }));
     check(req, {
       'status code is 400': (r) => expect_status(r, 400),
     });
   });
-  group('invalid payload fields', function() {
+  group('invalid payload fields', function () {
     [
       { username: 'user' },
       { login: 'user', role: 'admin' },
@@ -95,7 +95,7 @@ function login() {
   const req = http.post(url, JSON.stringify({ login: 'user' }), httpParams);
   check(req, {
     'status code is 201': (r) => expect_status(r, 201),
-    'content length is 105': (r) => expect_header(r, 'Content-Length', '105'),
+    // 'content length is 105': (r) => expect_header(r, 'Content-Length', '105'),
     'content type is json': (r) => expect_header(r, 'Content-Type', 'application/json'),
     'body only contains everything "id", "login" and "creationDate"': (r) =>
       expect_keys(r.json(), ['id', 'login', 'creationDate']),
@@ -128,7 +128,7 @@ function create_list(userId) {
   const req = http.post(url, JSON.stringify({ name: 'foo' }), httpParams);
   check(req, {
     'status code is 201': (r) => expect_status(r, 201),
-    'content length is 154': (r) => expect_header(r, 'Content-Length', '154'),
+    // 'content length is 154': (r) => expect_header(r, 'Content-Length', '154'),
     'content type is json': (r) => expect_header(r, 'Content-Type', 'application/json'),
     'body only contains everything "id", "accountId", "name" and "creationDate"': (r) =>
       expect_keys(r.json(), ['id', 'accountId', 'name', 'creationDate']),
@@ -157,12 +157,12 @@ function create_task(listId) {
       'status code is 400': (r) => expect_status(r, 400),
     });
   });
-  
+
   // valid behavior
   const req = http.post(url, JSON.stringify({ name: 'bar', description: 'hello world' }), httpParams);
   check(req, {
     'status code is 201': (r) => expect_status(r, 201),
-    'content length is 179': (r) => expect_header(r, 'Content-Length', '179'),
+    // 'content length is 179': (r) => expect_header(r, 'Content-Length', '179'),
     'content type is json': (r) => expect_header(r, 'Content-Type', 'application/json'),
     'body only contains everything "id", "listId", "name", "description" and "creationDate"': (r) =>
       expect_keys(r.json(), ['id', 'listId', 'name', 'description', 'creationDate']),
@@ -176,7 +176,7 @@ function get_lists(accountId) {
   const req = http.get(url);
   check(req, {
     'status code is 200': (r) => expect_status(r, 200),
-    'content length is 346': (r) => expect_header(r, 'Content-Length', '346'),
+    // 'content length is 346': (r) => expect_header(r, 'Content-Length', '346'),
     'content type is json': (r) => expect_header(r, 'Content-Type', 'application/json'),
     'body only contains everything "id", "accountId", "tasks", "name" and "creationDate"': (r) =>
       expect_keys(r.json(), ['id', 'accountId', 'tasks', 'name', 'creationDate']),
@@ -194,7 +194,7 @@ function get_stats() {
   });
 }
 
-export default function() {
+export default function () {
   group('HEAD /healthcheck', healthcheck);
   const account = group('POST /api/accounts', login);
   const list = group('POST /api/accounts/:accountId/lists', () => create_list(account.id))

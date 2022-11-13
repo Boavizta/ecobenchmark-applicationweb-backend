@@ -24,8 +24,6 @@ services:
       - "--env"
       - "SERVER_HOST=service:8080"
       - "/config/scenario.js"
-    volumes:
-      - ../../validator:/config:ro
     depends_on:
       - service
 
