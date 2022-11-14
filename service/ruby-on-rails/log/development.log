@@ -1,0 +1,1412 @@
+  [1m[35m (5.0ms)[0m  [1m[35mCREATE DATABASE "ecobenchmark_development" ENCODING = 'unicode'[0m
+  [1m[35m (0.4ms)[0m  [1m[35mCREATE DATABASE "ecobenchmark_test" ENCODING = 'unicode'[0m
+  [1m[35m (26.3ms)[0m  [1m[35mCREATE TABLE "schema_migrations" ("version" character varying NOT NULL PRIMARY KEY)[0m
+  [1m[35m (2.6ms)[0m  [1m[35mCREATE TABLE "ar_internal_metadata" ("key" character varying NOT NULL PRIMARY KEY, "value" character varying, "created_at" timestamp(6) NOT NULL, "updated_at" timestamp(6) NOT NULL)[0m
+  [1m[35m (0.3ms)[0m  [1m[34mSELECT pg_try_advisory_lock(2895051369411935895)[0m
+  [1m[36mActiveRecord::SchemaMigration Pluck (0.5ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+Migrating to EnableUuid (20221109104647)
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN[0m
+  [1m[35mSQL (39.0ms)[0m  [1m[35mCREATE EXTENSION IF NOT EXISTS "pgcrypto"[0m
+  [1m[36mActiveRecord::SchemaMigration Create (0.4ms)[0m  [1m[32mINSERT INTO "schema_migrations" ("version") VALUES ($1) RETURNING "version"[0m  [["version", "20221109104647"]]
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mCOMMIT[0m
+Migrating to CreateAccounts (20221109104750)
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN[0m
+  [1m[35m (4.9ms)[0m  [1m[35mCREATE TABLE "accounts" ("id" uuid DEFAULT gen_random_uuid() NOT NULL PRIMARY KEY, "login" text, "created_at" timestamp(6) NOT NULL, "updated_at" timestamp(6) NOT NULL)[0m
+  [1m[36mActiveRecord::SchemaMigration Create (0.2ms)[0m  [1m[32mINSERT INTO "schema_migrations" ("version") VALUES ($1) RETURNING "version"[0m  [["version", "20221109104750"]]
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[35mCOMMIT[0m
+Migrating to CreateLists (20221109104850)
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN[0m
+  [1m[35m (5.8ms)[0m  [1m[35mCREATE TABLE "lists" ("id" uuid DEFAULT gen_random_uuid() NOT NULL PRIMARY KEY, "account_id" uuid NOT NULL, "name" text, "created_at" timestamp(6) NOT NULL, "updated_at" timestamp(6) NOT NULL, CONSTRAINT "fk_rails_3853b78dac"
+FOREIGN KEY ("account_id")
+  REFERENCES "accounts" ("id")
+)[0m
+  [1m[35m (0.8ms)[0m  [1m[35mCREATE INDEX "index_lists_on_account_id" ON "lists" ("account_id")[0m
+  [1m[36mActiveRecord::SchemaMigration Create (0.1ms)[0m  [1m[32mINSERT INTO "schema_migrations" ("version") VALUES ($1) RETURNING "version"[0m  [["version", "20221109104850"]]
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mCOMMIT[0m
+Migrating to CreateTasks (20221109104854)
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN[0m
+  [1m[35m (2.0ms)[0m  [1m[35mCREATE TABLE "tasks" ("id" uuid DEFAULT gen_random_uuid() NOT NULL PRIMARY KEY, "list_id" uuid NOT NULL, "name" text, "description" text, "created_at" timestamp(6) NOT NULL, "updated_at" timestamp(6) NOT NULL, CONSTRAINT "fk_rails_02b8df67b5"
+FOREIGN KEY ("list_id")
+  REFERENCES "lists" ("id")
+)[0m
+  [1m[35m (0.6ms)[0m  [1m[35mCREATE INDEX "index_tasks_on_list_id" ON "tasks" ("list_id")[0m
+  [1m[36mActiveRecord::SchemaMigration Create (0.2ms)[0m  [1m[32mINSERT INTO "schema_migrations" ("version") VALUES ($1) RETURNING "version"[0m  [["version", "20221109104854"]]
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.3ms)[0m  [1m[34mSELECT "ar_internal_metadata".* FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = $1 LIMIT $2[0m  [["key", "environment"], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mActiveRecord::InternalMetadata Create (2.0ms)[0m  [1m[32mINSERT INTO "ar_internal_metadata" ("key", "value", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "key"[0m  [["key", "environment"], ["value", "development"], ["created_at", "2022-11-09 10:49:11.974555"], ["updated_at", "2022-11-09 10:49:11.974555"]]
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mCOMMIT[0m
+  [1m[35m (0.2ms)[0m  [1m[34mSELECT pg_advisory_unlock(2895051369411935895)[0m
+  [1m[36mActiveRecord::SchemaMigration Pluck (0.4ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+Started GET "/" for ::1 at 2022-11-09 11:49:36 +0100
+  [1m[36mActiveRecord::SchemaMigration Pluck (0.5ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+Processing by AccountsController#index as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering accounts/index.html.erb within layouts/application
+  [1m[36mAccount Load (0.5ms)[0m  [1m[34mSELECT "accounts".* FROM "accounts"[0m
+  ↳ app/views/accounts/index.html.erb:6
+  Rendered accounts/index.html.erb within layouts/application (Duration: 6.0ms | Allocations: 1891)
+  Rendered layout layouts/application.html.erb (Duration: 258.7ms | Allocations: 94259)
+Completed 200 OK in 280ms (Views: 264.8ms | ActiveRecord: 0.5ms | Allocations: 99698)
+
+
+Started GET "/accounts/new" for ::1 at 2022-11-09 11:49:39 +0100
+Processing by AccountsController#new as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering accounts/new.html.erb within layouts/application
+  Rendered accounts/_form.html.erb (Duration: 16.1ms | Allocations: 4443)
+  Rendered accounts/new.html.erb within layouts/application (Duration: 16.9ms | Allocations: 4796)
+  Rendered layout layouts/application.html.erb (Duration: 19.5ms | Allocations: 7093)
+Completed 200 OK in 31ms (Views: 20.0ms | ActiveRecord: 3.2ms | Allocations: 11310)
+
+
+Started POST "/accounts" for ::1 at 2022-11-09 11:49:45 +0100
+Processing by AccountsController#create as TURBO_STREAM
+  Parameters: {"authenticity_token"=>"[FILTERED]", "account"=>{"login"=>"Arnaud Levy"}, "commit"=>"Create Account"}
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN[0m
+  ↳ app/controllers/accounts_controller.rb:27:in `block in create'
+  [1m[36mAccount Create (0.5ms)[0m  [1m[32mINSERT INTO "accounts" ("login", "created_at", "updated_at") VALUES ($1, $2, $3) RETURNING "id"[0m  [["login", "Arnaud Levy"], ["created_at", "2022-11-09 10:49:45.126813"], ["updated_at", "2022-11-09 10:49:45.126813"]]
+  ↳ app/controllers/accounts_controller.rb:27:in `block in create'
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[35mCOMMIT[0m
+  ↳ app/controllers/accounts_controller.rb:27:in `block in create'
+Redirected to http://localhost:3000/accounts/fc7e18a0-87c7-4db6-ac4d-16215e1b2de4
+Completed 302 Found in 5ms (ActiveRecord: 0.9ms | Allocations: 3877)
+
+
+Started GET "/accounts/fc7e18a0-87c7-4db6-ac4d-16215e1b2de4" for ::1 at 2022-11-09 11:49:45 +0100
+Processing by AccountsController#show as TURBO_STREAM
+  Parameters: {"id"=>"fc7e18a0-87c7-4db6-ac4d-16215e1b2de4"}
+  [1m[36mAccount Load (0.4ms)[0m  [1m[34mSELECT "accounts".* FROM "accounts" WHERE "accounts"."id" = $1 LIMIT $2[0m  [["id", "fc7e18a0-87c7-4db6-ac4d-16215e1b2de4"], ["LIMIT", 1]]
+  ↳ app/controllers/accounts_controller.rb:63:in `set_account'
+  Rendering layout layouts/application.html.erb
+  Rendering accounts/show.html.erb within layouts/application
+  Rendered accounts/_account.html.erb (Duration: 0.4ms | Allocations: 203)
+  Rendered accounts/show.html.erb within layouts/application (Duration: 3.3ms | Allocations: 1661)
+  Rendered layout layouts/application.html.erb (Duration: 5.7ms | Allocations: 3943)
+Completed 200 OK in 10ms (Views: 6.1ms | ActiveRecord: 0.5ms | Allocations: 6446)
+
+
+Started GET "/lists" for ::1 at 2022-11-09 11:49:52 +0100
+Processing by ListsController#index as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering lists/index.html.erb within layouts/application
+  [1m[36mList Load (0.6ms)[0m  [1m[34mSELECT "lists".* FROM "lists"[0m
+  ↳ app/views/lists/index.html.erb:6
+  Rendered lists/index.html.erb within layouts/application (Duration: 3.0ms | Allocations: 1371)
+  Rendered layout layouts/application.html.erb (Duration: 6.3ms | Allocations: 3766)
+Completed 200 OK in 16ms (Views: 7.3ms | ActiveRecord: 0.6ms | Allocations: 6058)
+
+
+Started GET "/lists/new" for ::1 at 2022-11-09 11:49:53 +0100
+Processing by ListsController#new as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering lists/new.html.erb within layouts/application
+  Rendered lists/_form.html.erb (Duration: 4.2ms | Allocations: 1975)
+  Rendered lists/new.html.erb within layouts/application (Duration: 5.0ms | Allocations: 2277)
+  Rendered layout layouts/application.html.erb (Duration: 8.0ms | Allocations: 4570)
+Completed 200 OK in 17ms (Views: 8.5ms | ActiveRecord: 2.2ms | Allocations: 7560)
+
+
+Started GET "/lists/new" for ::1 at 2022-11-09 14:37:37 +0100
+  [1m[36mActiveRecord::SchemaMigration Pluck (0.9ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+Processing by ListsController#new as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering lists/new.html.erb within layouts/application
+  Rendered lists/_form.html.erb (Duration: 11.6ms | Allocations: 3617)
+  Rendered lists/new.html.erb within layouts/application (Duration: 13.5ms | Allocations: 4236)
+  Rendered layout layouts/application.html.erb (Duration: 62.7ms | Allocations: 39800)
+Completed 200 OK in 150ms (Views: 67.1ms | ActiveRecord: 18.8ms | Allocations: 48849)
+
+
+Started GET "/admin" for ::1 at 2022-11-09 14:38:16 +0100
+  
+ActionController::RoutingError (No route matches [GET] "/admin"):
+  
+Started GET "/accounts/new" for ::1 at 2022-11-09 14:38:18 +0100
+Processing by AccountsController#new as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering accounts/new.html.erb within layouts/application
+  Rendered accounts/_form.html.erb (Duration: 2.1ms | Allocations: 1430)
+  Rendered accounts/new.html.erb within layouts/application (Duration: 3.3ms | Allocations: 1772)
+  Rendered layout layouts/application.html.erb (Duration: 16.1ms | Allocations: 15501)
+Completed 200 OK in 32ms (Views: 17.6ms | ActiveRecord: 2.5ms | Allocations: 20124)
+
+
+Started GET "/accounts/new" for ::1 at 2022-11-09 14:39:04 +0100
+Processing by AccountsController#new as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering accounts/new.html.erb within layouts/application
+  Rendered accounts/_form.html.erb (Duration: 102.0ms | Allocations: 24152)
+  Rendered accounts/new.html.erb within layouts/application (Duration: 103.1ms | Allocations: 24486)
+  Rendered layout layouts/application.html.erb (Duration: 106.5ms | Allocations: 27087)
+Completed 200 OK in 109ms (Views: 108.1ms | ActiveRecord: 0.0ms | Allocations: 27950)
+
+
+Started GET "/accounts/new" for ::1 at 2022-11-09 14:39:13 +0100
+Processing by AccountsController#new as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering accounts/new.html.erb within layouts/application
+  Rendered accounts/_form.html.erb (Duration: 6.9ms | Allocations: 8008)
+  Rendered accounts/new.html.erb within layouts/application (Duration: 7.8ms | Allocations: 8332)
+  Rendered layout layouts/application.html.erb (Duration: 11.6ms | Allocations: 10882)
+Completed 200 OK in 14ms (Views: 13.3ms | ActiveRecord: 0.0ms | Allocations: 11791)
+
+
+Started POST "/accounts" for ::1 at 2022-11-09 14:39:21 +0100
+Processing by AccountsController#create as TURBO_STREAM
+  Parameters: {"authenticity_token"=>"[FILTERED]", "account"=>{"login"=>"test"}, "commit"=>"Create Account"}
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN[0m
+  ↳ app/controllers/accounts_controller.rb:27:in `block in create'
+  [1m[36mAccount Create (0.4ms)[0m  [1m[32mINSERT INTO "accounts" ("login", "created_at", "updated_at") VALUES ($1, $2, $3) RETURNING "id"[0m  [["login", "test"], ["created_at", "2022-11-09 13:39:21.159832"], ["updated_at", "2022-11-09 13:39:21.159832"]]
+  ↳ app/controllers/accounts_controller.rb:27:in `block in create'
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[35mCOMMIT[0m
+  ↳ app/controllers/accounts_controller.rb:27:in `block in create'
+Redirected to http://localhost:3000/accounts/16aa6b30-ee5e-423d-8c29-adc753bf206c
+Completed 302 Found in 6ms (ActiveRecord: 0.8ms | Allocations: 4022)
+
+
+Started GET "/accounts/16aa6b30-ee5e-423d-8c29-adc753bf206c" for ::1 at 2022-11-09 14:39:21 +0100
+Processing by AccountsController#show as TURBO_STREAM
+  Parameters: {"id"=>"16aa6b30-ee5e-423d-8c29-adc753bf206c"}
+  [1m[36mAccount Load (0.4ms)[0m  [1m[34mSELECT "accounts".* FROM "accounts" WHERE "accounts"."id" = $1 LIMIT $2[0m  [["id", "16aa6b30-ee5e-423d-8c29-adc753bf206c"], ["LIMIT", 1]]
+  ↳ app/controllers/accounts_controller.rb:63:in `set_account'
+  Rendering layout layouts/application.html.erb
+  Rendering accounts/show.html.erb within layouts/application
+  Rendered accounts/_account.html.erb (Duration: 0.7ms | Allocations: 196)
+  Rendered accounts/show.html.erb within layouts/application (Duration: 3.6ms | Allocations: 1588)
+  Rendered layout layouts/application.html.erb (Duration: 6.3ms | Allocations: 3875)
+Completed 200 OK in 19ms (Views: 6.8ms | ActiveRecord: 0.6ms | Allocations: 6491)
+
+
+Started GET "/lists" for ::1 at 2022-11-09 14:39:34 +0100
+Processing by ListsController#index as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering lists/index.html.erb within layouts/application
+  [1m[36mList Load (0.4ms)[0m  [1m[34mSELECT "lists".* FROM "lists"[0m
+  ↳ app/views/lists/index.html.erb:6
+  Rendered lists/index.html.erb within layouts/application (Duration: 3.0ms | Allocations: 1367)
+  Rendered layout layouts/application.html.erb (Duration: 6.3ms | Allocations: 3761)
+Completed 200 OK in 13ms (Views: 7.6ms | ActiveRecord: 0.4ms | Allocations: 5784)
+
+
+Started GET "/lists/new" for ::1 at 2022-11-09 14:39:36 +0100
+Processing by ListsController#new as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering lists/new.html.erb within layouts/application
+  Rendered lists/_form.html.erb (Duration: 2.2ms | Allocations: 1544)
+  Rendered lists/new.html.erb within layouts/application (Duration: 3.2ms | Allocations: 1827)
+  Rendered layout layouts/application.html.erb (Duration: 5.8ms | Allocations: 4009)
+Completed 200 OK in 11ms (Views: 6.1ms | ActiveRecord: 1.8ms | Allocations: 5803)
+
+
+Started GET "/lists/new" for ::1 at 2022-11-09 14:40:19 +0100
+Processing by ListsController#new as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering lists/new.html.erb within layouts/application
+  [1m[36mAccount Load (0.2ms)[0m  [1m[34mSELECT "accounts".* FROM "accounts"[0m
+  ↳ app/views/lists/_form.html.erb:2
+  Rendered lists/_form.html.erb (Duration: 28.9ms | Allocations: 22808)
+  Rendered lists/new.html.erb within layouts/application (Duration: 30.4ms | Allocations: 23145)
+  Rendered layout layouts/application.html.erb (Duration: 34.9ms | Allocations: 25730)
+Completed 200 OK in 39ms (Views: 36.5ms | ActiveRecord: 0.2ms | Allocations: 26581)
+
+
+Started GET "/lists/new" for ::1 at 2022-11-09 14:40:40 +0100
+Processing by ListsController#new as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering lists/new.html.erb within layouts/application
+  [1m[36mAccount Load (0.2ms)[0m  [1m[34mSELECT "accounts".* FROM "accounts"[0m
+  ↳ app/views/lists/_form.html.erb:2
+  Rendered lists/_form.html.erb (Duration: 44.9ms | Allocations: 18284)
+  Rendered lists/new.html.erb within layouts/application (Duration: 46.0ms | Allocations: 18613)
+  Rendered layout layouts/application.html.erb (Duration: 64.2ms | Allocations: 32658)
+Completed 200 OK in 74ms (Views: 46.4ms | ActiveRecord: 21.7ms | Allocations: 36503)
+
+
+Started POST "/lists" for ::1 at 2022-11-09 14:40:47 +0100
+Processing by ListsController#create as TURBO_STREAM
+  Parameters: {"authenticity_token"=>"[FILTERED]", "list"=>{"account_id"=>"fc7e18a0-87c7-4db6-ac4d-16215e1b2de4", "name"=>"Liste 1"}, "commit"=>"Create List"}
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN[0m
+  ↳ app/controllers/lists_controller.rb:27:in `block in create'
+  [1m[36mAccount Load (0.3ms)[0m  [1m[34mSELECT "accounts".* FROM "accounts" WHERE "accounts"."id" = $1 LIMIT $2[0m  [["id", "fc7e18a0-87c7-4db6-ac4d-16215e1b2de4"], ["LIMIT", 1]]
+  ↳ app/controllers/lists_controller.rb:27:in `block in create'
+  [1m[36mList Create (1.9ms)[0m  [1m[32mINSERT INTO "lists" ("account_id", "name", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["account_id", "fc7e18a0-87c7-4db6-ac4d-16215e1b2de4"], ["name", "Liste 1"], ["created_at", "2022-11-09 13:40:47.302677"], ["updated_at", "2022-11-09 13:40:47.302677"]]
+  ↳ app/controllers/lists_controller.rb:27:in `block in create'
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[35mCOMMIT[0m
+  ↳ app/controllers/lists_controller.rb:27:in `block in create'
+Redirected to http://localhost:3000/lists/a34f9d99-37b3-4506-92f0-6b882ccb840a
+Completed 302 Found in 25ms (ActiveRecord: 2.6ms | Allocations: 6520)
+
+
+Started GET "/lists/a34f9d99-37b3-4506-92f0-6b882ccb840a" for ::1 at 2022-11-09 14:40:47 +0100
+Processing by ListsController#show as TURBO_STREAM
+  Parameters: {"id"=>"a34f9d99-37b3-4506-92f0-6b882ccb840a"}
+  [1m[36mList Load (0.3ms)[0m  [1m[34mSELECT "lists".* FROM "lists" WHERE "lists"."id" = $1 LIMIT $2[0m  [["id", "a34f9d99-37b3-4506-92f0-6b882ccb840a"], ["LIMIT", 1]]
+  ↳ app/controllers/lists_controller.rb:63:in `set_list'
+  Rendering layout layouts/application.html.erb
+  Rendering lists/show.html.erb within layouts/application
+  Rendered lists/_list.html.erb (Duration: 0.8ms | Allocations: 172)
+  Rendered lists/show.html.erb within layouts/application (Duration: 3.1ms | Allocations: 1309)
+  Rendered layout layouts/application.html.erb (Duration: 6.3ms | Allocations: 3585)
+Completed 200 OK in 27ms (Views: 6.8ms | ActiveRecord: 0.3ms | Allocations: 4758)
+
+
+Started GET "/tasks" for ::1 at 2022-11-09 14:40:50 +0100
+Processing by TasksController#index as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering tasks/index.html.erb within layouts/application
+  [1m[36mTask Load (1.2ms)[0m  [1m[34mSELECT "tasks".* FROM "tasks"[0m
+  ↳ app/views/tasks/index.html.erb:6
+  Rendered tasks/index.html.erb within layouts/application (Duration: 8.6ms | Allocations: 1371)
+  Rendered layout layouts/application.html.erb (Duration: 11.7ms | Allocations: 3770)
+Completed 200 OK in 17ms (Views: 12.0ms | ActiveRecord: 1.2ms | Allocations: 5437)
+
+
+Started GET "/tasks/new" for ::1 at 2022-11-09 14:40:52 +0100
+Processing by TasksController#new as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering tasks/new.html.erb within layouts/application
+  Rendered tasks/_form.html.erb (Duration: 2.7ms | Allocations: 1886)
+  Rendered tasks/new.html.erb within layouts/application (Duration: 3.8ms | Allocations: 2170)
+  Rendered layout layouts/application.html.erb (Duration: 6.4ms | Allocations: 4352)
+Completed 200 OK in 15ms (Views: 6.8ms | ActiveRecord: 2.4ms | Allocations: 7530)
+
+
+Started GET "/tasks/new" for ::1 at 2022-11-09 14:41:23 +0100
+Processing by TasksController#new as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering tasks/new.html.erb within layouts/application
+  [1m[36mList Load (0.4ms)[0m  [1m[34mSELECT "lists".* FROM "lists"[0m
+  ↳ app/views/tasks/_form.html.erb:2
+  Rendered tasks/_form.html.erb (Duration: 20.4ms | Allocations: 23956)
+  Rendered tasks/new.html.erb within layouts/application (Duration: 21.6ms | Allocations: 24277)
+  Rendered layout layouts/application.html.erb (Duration: 25.1ms | Allocations: 26825)
+Completed 200 OK in 28ms (Views: 26.6ms | ActiveRecord: 0.4ms | Allocations: 27654)
+
+
+Started GET "/tasks/new" for ::1 at 2022-11-09 14:41:27 +0100
+Processing by TasksController#new as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering tasks/new.html.erb within layouts/application
+  [1m[36mList Load (0.2ms)[0m  [1m[34mSELECT "lists".* FROM "lists"[0m
+  ↳ app/views/tasks/_form.html.erb:2
+  Rendered tasks/_form.html.erb (Duration: 18.2ms | Allocations: 21949)
+  Rendered tasks/new.html.erb within layouts/application (Duration: 19.0ms | Allocations: 22271)
+  Rendered layout layouts/application.html.erb (Duration: 28.6ms | Allocations: 24821)
+Completed 200 OK in 31ms (Views: 30.1ms | ActiveRecord: 0.2ms | Allocations: 25674)
+
+
+Started POST "/tasks" for ::1 at 2022-11-09 14:41:38 +0100
+Processing by TasksController#create as TURBO_STREAM
+  Parameters: {"authenticity_token"=>"[FILTERED]", "task"=>{"list_id"=>"a34f9d99-37b3-4506-92f0-6b882ccb840a", "name"=>"task 1", "description"=>"desc"}, "commit"=>"Create Task"}
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  ↳ app/controllers/tasks_controller.rb:27:in `block in create'
+  [1m[36mList Load (0.3ms)[0m  [1m[34mSELECT "lists".* FROM "lists" WHERE "lists"."id" = $1 LIMIT $2[0m  [["id", "a34f9d99-37b3-4506-92f0-6b882ccb840a"], ["LIMIT", 1]]
+  ↳ app/controllers/tasks_controller.rb:27:in `block in create'
+  [1m[36mTask Create (1.0ms)[0m  [1m[32mINSERT INTO "tasks" ("list_id", "name", "description", "created_at", "updated_at") VALUES ($1, $2, $3, $4, $5) RETURNING "id"[0m  [["list_id", "a34f9d99-37b3-4506-92f0-6b882ccb840a"], ["name", "task 1"], ["description", "desc"], ["created_at", "2022-11-09 13:41:38.539581"], ["updated_at", "2022-11-09 13:41:38.539581"]]
+  ↳ app/controllers/tasks_controller.rb:27:in `block in create'
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[35mCOMMIT[0m
+  ↳ app/controllers/tasks_controller.rb:27:in `block in create'
+Redirected to http://localhost:3000/tasks/568e50aa-0485-4d4e-995d-8e14e7fcf4ff
+Completed 302 Found in 15ms (ActiveRecord: 1.8ms | Allocations: 3930)
+
+
+Started GET "/tasks/568e50aa-0485-4d4e-995d-8e14e7fcf4ff" for ::1 at 2022-11-09 14:41:38 +0100
+Processing by TasksController#show as TURBO_STREAM
+  Parameters: {"id"=>"568e50aa-0485-4d4e-995d-8e14e7fcf4ff"}
+  [1m[36mTask Load (0.2ms)[0m  [1m[34mSELECT "tasks".* FROM "tasks" WHERE "tasks"."id" = $1 LIMIT $2[0m  [["id", "568e50aa-0485-4d4e-995d-8e14e7fcf4ff"], ["LIMIT", 1]]
+  ↳ app/controllers/tasks_controller.rb:63:in `set_task'
+  Rendering layout layouts/application.html.erb
+  Rendering tasks/show.html.erb within layouts/application
+  Rendered tasks/_task.html.erb (Duration: 0.8ms | Allocations: 194)
+  Rendered tasks/show.html.erb within layouts/application (Duration: 2.6ms | Allocations: 1246)
+  Rendered layout layouts/application.html.erb (Duration: 5.0ms | Allocations: 3427)
+Completed 200 OK in 7ms (Views: 5.3ms | ActiveRecord: 0.2ms | Allocations: 4478)
+
+
+Started GET "/tasks" for ::1 at 2022-11-09 14:41:40 +0100
+Processing by TasksController#index as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering tasks/index.html.erb within layouts/application
+  [1m[36mTask Load (0.3ms)[0m  [1m[34mSELECT "tasks".* FROM "tasks"[0m
+  ↳ app/views/tasks/index.html.erb:6
+  Rendered tasks/_task.html.erb (Duration: 0.1ms | Allocations: 21)
+  Rendered tasks/index.html.erb within layouts/application (Duration: 7.6ms | Allocations: 1211)
+  Rendered layout layouts/application.html.erb (Duration: 10.4ms | Allocations: 3397)
+Completed 200 OK in 12ms (Views: 10.6ms | ActiveRecord: 0.3ms | Allocations: 3745)
+
+
+Started GET "/" for ::1 at 2022-11-09 14:41:42 +0100
+Processing by AccountsController#index as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering accounts/index.html.erb within layouts/application
+  [1m[36mAccount Load (0.2ms)[0m  [1m[34mSELECT "accounts".* FROM "accounts"[0m
+  ↳ app/views/accounts/index.html.erb:6
+  Rendered accounts/_account.html.erb (Duration: 0.6ms | Allocations: 162)
+  Rendered accounts/_account.html.erb (Duration: 0.0ms | Allocations: 16)
+  Rendered accounts/index.html.erb within layouts/application (Duration: 3.9ms | Allocations: 1905)
+  Rendered layout layouts/application.html.erb (Duration: 6.6ms | Allocations: 4303)
+Completed 200 OK in 9ms (Views: 7.7ms | ActiveRecord: 0.2ms | Allocations: 5166)
+
+
+Started GET "/accounts/fc7e18a0-87c7-4db6-ac4d-16215e1b2de4" for ::1 at 2022-11-09 14:41:45 +0100
+Processing by AccountsController#show as HTML
+  Parameters: {"id"=>"fc7e18a0-87c7-4db6-ac4d-16215e1b2de4"}
+  [1m[36mAccount Load (0.2ms)[0m  [1m[34mSELECT "accounts".* FROM "accounts" WHERE "accounts"."id" = $1 LIMIT $2[0m  [["id", "fc7e18a0-87c7-4db6-ac4d-16215e1b2de4"], ["LIMIT", 1]]
+  ↳ app/controllers/accounts_controller.rb:63:in `set_account'
+  Rendering layout layouts/application.html.erb
+  Rendering accounts/show.html.erb within layouts/application
+  Rendered accounts/_account.html.erb (Duration: 0.1ms | Allocations: 17)
+  Rendered accounts/show.html.erb within layouts/application (Duration: 1.6ms | Allocations: 849)
+  Rendered layout layouts/application.html.erb (Duration: 4.1ms | Allocations: 3023)
+Completed 200 OK in 7ms (Views: 4.5ms | ActiveRecord: 0.2ms | Allocations: 4046)
+
+
+Started GET "/accounts/fc7e18a0-87c7-4db6-ac4d-16215e1b2de4" for ::1 at 2022-11-09 14:42:34 +0100
+Processing by AccountsController#show as HTML
+  Parameters: {"id"=>"fc7e18a0-87c7-4db6-ac4d-16215e1b2de4"}
+  [1m[36mAccount Load (0.3ms)[0m  [1m[34mSELECT "accounts".* FROM "accounts" WHERE "accounts"."id" = $1 LIMIT $2[0m  [["id", "fc7e18a0-87c7-4db6-ac4d-16215e1b2de4"], ["LIMIT", 1]]
+  ↳ app/controllers/accounts_controller.rb:63:in `set_account'
+  Rendering layout layouts/application.html.erb
+  Rendering accounts/show.html.erb within layouts/application
+  Rendered accounts/_account.html.erb (Duration: 0.4ms | Allocations: 157)
+  [1m[36mList Load (0.9ms)[0m  [1m[34mSELECT "lists".* FROM "lists" WHERE "lists"."account_id" = $1[0m  [["account_id", "fc7e18a0-87c7-4db6-ac4d-16215e1b2de4"]]
+  ↳ app/views/accounts/show.html.erb:6
+  Rendered accounts/show.html.erb within layouts/application (Duration: 40.2ms | Allocations: 9854)
+  Rendered layout layouts/application.html.erb (Duration: 49.0ms | Allocations: 12436)
+Completed 200 OK in 53ms (Views: 50.1ms | ActiveRecord: 1.2ms | Allocations: 13774)
+
+
+Started GET "/accounts/fc7e18a0-87c7-4db6-ac4d-16215e1b2de4" for ::1 at 2022-11-09 14:42:45 +0100
+Processing by AccountsController#show as HTML
+  Parameters: {"id"=>"fc7e18a0-87c7-4db6-ac4d-16215e1b2de4"}
+  [1m[36mAccount Load (0.2ms)[0m  [1m[34mSELECT "accounts".* FROM "accounts" WHERE "accounts"."id" = $1 LIMIT $2[0m  [["id", "fc7e18a0-87c7-4db6-ac4d-16215e1b2de4"], ["LIMIT", 1]]
+  ↳ app/controllers/accounts_controller.rb:63:in `set_account'
+  Rendering layout layouts/application.html.erb
+  Rendering accounts/show.html.erb within layouts/application
+  Rendered accounts/_account.html.erb (Duration: 0.1ms | Allocations: 39)
+  [1m[36mList Load (0.2ms)[0m  [1m[34mSELECT "lists".* FROM "lists" WHERE "lists"."account_id" = $1[0m  [["account_id", "fc7e18a0-87c7-4db6-ac4d-16215e1b2de4"]]
+  ↳ app/views/accounts/show.html.erb:6
+  Rendered accounts/show.html.erb within layouts/application (Duration: 26.5ms | Allocations: 5923)
+  Rendered layout layouts/application.html.erb (Duration: 41.3ms | Allocations: 19725)
+Completed 200 OK in 52ms (Views: 25.1ms | ActiveRecord: 20.5ms | Allocations: 23611)
+
+
+Started GET "/lists/a34f9d99-37b3-4506-92f0-6b882ccb840a" for ::1 at 2022-11-09 14:42:47 +0100
+Processing by ListsController#show as HTML
+  Parameters: {"id"=>"a34f9d99-37b3-4506-92f0-6b882ccb840a"}
+  [1m[36mList Load (16.4ms)[0m  [1m[34mSELECT "lists".* FROM "lists" WHERE "lists"."id" = $1 LIMIT $2[0m  [["id", "a34f9d99-37b3-4506-92f0-6b882ccb840a"], ["LIMIT", 1]]
+  ↳ app/controllers/lists_controller.rb:63:in `set_list'
+  Rendering layout layouts/application.html.erb
+  Rendering lists/show.html.erb within layouts/application
+  Rendered lists/_list.html.erb (Duration: 0.8ms | Allocations: 183)
+  Rendered lists/show.html.erb within layouts/application (Duration: 3.0ms | Allocations: 1356)
+  Rendered layout layouts/application.html.erb (Duration: 5.9ms | Allocations: 3712)
+Completed 200 OK in 27ms (Views: 7.6ms | ActiveRecord: 16.4ms | Allocations: 5346)
+
+
+Started GET "/lists/a34f9d99-37b3-4506-92f0-6b882ccb840a" for ::1 at 2022-11-09 14:43:29 +0100
+Processing by ListsController#show as HTML
+  Parameters: {"id"=>"a34f9d99-37b3-4506-92f0-6b882ccb840a"}
+  [1m[36mList Load (0.5ms)[0m  [1m[34mSELECT "lists".* FROM "lists" WHERE "lists"."id" = $1 LIMIT $2[0m  [["id", "a34f9d99-37b3-4506-92f0-6b882ccb840a"], ["LIMIT", 1]]
+  ↳ app/controllers/lists_controller.rb:63:in `set_list'
+  Rendering layout layouts/application.html.erb
+  Rendering lists/show.html.erb within layouts/application
+  Rendered lists/_list.html.erb (Duration: 0.4ms | Allocations: 189)
+  [1m[36mTask Load (0.1ms)[0m  [1m[34mSELECT "tasks".* FROM "tasks" WHERE "tasks"."list_id" = $1[0m  [["list_id", "a34f9d99-37b3-4506-92f0-6b882ccb840a"]]
+  ↳ app/views/lists/show.html.erb:6
+  Rendered lists/show.html.erb within layouts/application (Duration: 10.9ms | Allocations: 6263)
+  Rendered layout layouts/application.html.erb (Duration: 22.6ms | Allocations: 20293)
+Completed 200 OK in 55ms (Views: 22.8ms | ActiveRecord: 22.3ms | Allocations: 25012)
+
+
+Started GET "/tasks/568e50aa-0485-4d4e-995d-8e14e7fcf4ff" for ::1 at 2022-11-09 14:43:30 +0100
+Processing by TasksController#show as HTML
+  Parameters: {"id"=>"568e50aa-0485-4d4e-995d-8e14e7fcf4ff"}
+  [1m[36mTask Load (0.2ms)[0m  [1m[34mSELECT "tasks".* FROM "tasks" WHERE "tasks"."id" = $1 LIMIT $2[0m  [["id", "568e50aa-0485-4d4e-995d-8e14e7fcf4ff"], ["LIMIT", 1]]
+  ↳ app/controllers/tasks_controller.rb:63:in `set_task'
+  Rendering layout layouts/application.html.erb
+  Rendering tasks/show.html.erb within layouts/application
+  Rendered tasks/_task.html.erb (Duration: 0.7ms | Allocations: 207)
+  Rendered tasks/show.html.erb within layouts/application (Duration: 2.7ms | Allocations: 1376)
+  Rendered layout layouts/application.html.erb (Duration: 5.4ms | Allocations: 3734)
+Completed 200 OK in 9ms (Views: 7.0ms | ActiveRecord: 0.2ms | Allocations: 5371)
+
+
+Started GET "/tasks/568e50aa-0485-4d4e-995d-8e14e7fcf4ff/edit" for ::1 at 2022-11-09 14:43:35 +0100
+Processing by TasksController#edit as HTML
+  Parameters: {"id"=>"568e50aa-0485-4d4e-995d-8e14e7fcf4ff"}
+  [1m[36mTask Load (0.2ms)[0m  [1m[34mSELECT "tasks".* FROM "tasks" WHERE "tasks"."id" = $1 LIMIT $2[0m  [["id", "568e50aa-0485-4d4e-995d-8e14e7fcf4ff"], ["LIMIT", 1]]
+  ↳ app/controllers/tasks_controller.rb:63:in `set_task'
+  Rendering layout layouts/application.html.erb
+  Rendering tasks/edit.html.erb within layouts/application
+  [1m[36mList Load (0.2ms)[0m  [1m[34mSELECT "lists".* FROM "lists"[0m
+  ↳ app/views/tasks/_form.html.erb:2
+  Rendered tasks/_form.html.erb (Duration: 19.7ms | Allocations: 21997)
+  Rendered tasks/edit.html.erb within layouts/application (Duration: 20.8ms | Allocations: 22325)
+  Rendered layout layouts/application.html.erb (Duration: 23.2ms | Allocations: 24499)
+Completed 200 OK in 32ms (Views: 23.4ms | ActiveRecord: 0.4ms | Allocations: 25400)
+
+
+Started GET "/" for ::1 at 2022-11-09 14:43:38 +0100
+Processing by AccountsController#index as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering accounts/index.html.erb within layouts/application
+  [1m[36mAccount Load (0.2ms)[0m  [1m[34mSELECT "accounts".* FROM "accounts"[0m
+  ↳ app/views/accounts/index.html.erb:6
+  Rendered accounts/_account.html.erb (Duration: 0.6ms | Allocations: 165)
+  Rendered accounts/_account.html.erb (Duration: 0.0ms | Allocations: 16)
+  Rendered accounts/index.html.erb within layouts/application (Duration: 22.9ms | Allocations: 3135)
+  Rendered layout layouts/application.html.erb (Duration: 26.7ms | Allocations: 5528)
+Completed 200 OK in 32ms (Views: 26.3ms | ActiveRecord: 2.2ms | Allocations: 7220)
+
+
+Started GET "/accounts/16aa6b30-ee5e-423d-8c29-adc753bf206c" for ::1 at 2022-11-09 14:43:39 +0100
+Processing by AccountsController#show as HTML
+  Parameters: {"id"=>"16aa6b30-ee5e-423d-8c29-adc753bf206c"}
+  [1m[36mAccount Load (0.2ms)[0m  [1m[34mSELECT "accounts".* FROM "accounts" WHERE "accounts"."id" = $1 LIMIT $2[0m  [["id", "16aa6b30-ee5e-423d-8c29-adc753bf206c"], ["LIMIT", 1]]
+  ↳ app/controllers/accounts_controller.rb:63:in `set_account'
+  Rendering layout layouts/application.html.erb
+  Rendering accounts/show.html.erb within layouts/application
+  Rendered accounts/_account.html.erb (Duration: 0.1ms | Allocations: 17)
+  [1m[36mList Load (9.3ms)[0m  [1m[34mSELECT "lists".* FROM "lists" WHERE "lists"."account_id" = $1[0m  [["account_id", "16aa6b30-ee5e-423d-8c29-adc753bf206c"]]
+  ↳ app/views/accounts/show.html.erb:6
+  Rendered accounts/show.html.erb within layouts/application (Duration: 18.6ms | Allocations: 2478)
+  Rendered layout layouts/application.html.erb (Duration: 22.1ms | Allocations: 4667)
+Completed 200 OK in 25ms (Views: 13.3ms | ActiveRecord: 9.5ms | Allocations: 5717)
+
+
+Started GET "/accounts/16aa6b30-ee5e-423d-8c29-adc753bf206c/edit" for ::1 at 2022-11-09 14:43:41 +0100
+Processing by AccountsController#edit as HTML
+  Parameters: {"id"=>"16aa6b30-ee5e-423d-8c29-adc753bf206c"}
+  [1m[36mAccount Load (0.2ms)[0m  [1m[34mSELECT "accounts".* FROM "accounts" WHERE "accounts"."id" = $1 LIMIT $2[0m  [["id", "16aa6b30-ee5e-423d-8c29-adc753bf206c"], ["LIMIT", 1]]
+  ↳ app/controllers/accounts_controller.rb:63:in `set_account'
+  Rendering layout layouts/application.html.erb
+  Rendering accounts/edit.html.erb within layouts/application
+  Rendered accounts/_form.html.erb (Duration: 7.3ms | Allocations: 7925)
+  Rendered accounts/edit.html.erb within layouts/application (Duration: 8.9ms | Allocations: 8257)
+  Rendered layout layouts/application.html.erb (Duration: 11.6ms | Allocations: 10431)
+Completed 200 OK in 14ms (Views: 12.0ms | ActiveRecord: 0.2ms | Allocations: 11241)
+
+
+Started GET "/accounts" for ::1 at 2022-11-09 14:43:42 +0100
+Processing by AccountsController#index as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering accounts/index.html.erb within layouts/application
+  [1m[36mAccount Load (0.3ms)[0m  [1m[34mSELECT "accounts".* FROM "accounts"[0m
+  ↳ app/views/accounts/index.html.erb:6
+  Rendered accounts/_account.html.erb (Duration: 0.1ms | Allocations: 17)
+  Rendered accounts/_account.html.erb (Duration: 0.0ms | Allocations: 16)
+  Rendered accounts/index.html.erb within layouts/application (Duration: 7.8ms | Allocations: 1121)
+  Rendered layout layouts/application.html.erb (Duration: 10.9ms | Allocations: 3303)
+Completed 200 OK in 12ms (Views: 10.9ms | ActiveRecord: 0.3ms | Allocations: 3574)
+
+
+Started GET "/accounts/fc7e18a0-87c7-4db6-ac4d-16215e1b2de4" for ::1 at 2022-11-09 14:43:43 +0100
+Processing by AccountsController#show as HTML
+  Parameters: {"id"=>"fc7e18a0-87c7-4db6-ac4d-16215e1b2de4"}
+  [1m[36mAccount Load (0.2ms)[0m  [1m[34mSELECT "accounts".* FROM "accounts" WHERE "accounts"."id" = $1 LIMIT $2[0m  [["id", "fc7e18a0-87c7-4db6-ac4d-16215e1b2de4"], ["LIMIT", 1]]
+  ↳ app/controllers/accounts_controller.rb:63:in `set_account'
+  Rendering layout layouts/application.html.erb
+  Rendering accounts/show.html.erb within layouts/application
+  Rendered accounts/_account.html.erb (Duration: 0.1ms | Allocations: 17)
+  [1m[36mList Load (15.1ms)[0m  [1m[34mSELECT "lists".* FROM "lists" WHERE "lists"."account_id" = $1[0m  [["account_id", "fc7e18a0-87c7-4db6-ac4d-16215e1b2de4"]]
+  ↳ app/views/accounts/show.html.erb:6
+  Rendered accounts/show.html.erb within layouts/application (Duration: 17.9ms | Allocations: 2086)
+  Rendered layout layouts/application.html.erb (Duration: 21.3ms | Allocations: 4260)
+Completed 200 OK in 23ms (Views: 6.6ms | ActiveRecord: 15.3ms | Allocations: 5016)
+
+
+Started GET "/lists/a34f9d99-37b3-4506-92f0-6b882ccb840a" for ::1 at 2022-11-09 14:43:44 +0100
+Processing by ListsController#show as HTML
+  Parameters: {"id"=>"a34f9d99-37b3-4506-92f0-6b882ccb840a"}
+  [1m[36mList Load (0.3ms)[0m  [1m[34mSELECT "lists".* FROM "lists" WHERE "lists"."id" = $1 LIMIT $2[0m  [["id", "a34f9d99-37b3-4506-92f0-6b882ccb840a"], ["LIMIT", 1]]
+  ↳ app/controllers/lists_controller.rb:63:in `set_list'
+  Rendering layout layouts/application.html.erb
+  Rendering lists/show.html.erb within layouts/application
+  Rendered lists/_list.html.erb (Duration: 0.1ms | Allocations: 19)
+  [1m[36mTask Load (0.2ms)[0m  [1m[34mSELECT "tasks".* FROM "tasks" WHERE "tasks"."list_id" = $1[0m  [["list_id", "a34f9d99-37b3-4506-92f0-6b882ccb840a"]]
+  ↳ app/views/lists/show.html.erb:6
+  Rendered lists/show.html.erb within layouts/application (Duration: 2.5ms | Allocations: 1392)
+  Rendered layout layouts/application.html.erb (Duration: 5.3ms | Allocations: 3566)
+Completed 200 OK in 7ms (Views: 5.5ms | ActiveRecord: 0.5ms | Allocations: 4327)
+
+
+Started GET "/tasks/568e50aa-0485-4d4e-995d-8e14e7fcf4ff" for ::1 at 2022-11-09 14:43:54 +0100
+Processing by TasksController#show as HTML
+  Parameters: {"id"=>"568e50aa-0485-4d4e-995d-8e14e7fcf4ff"}
+  [1m[36mTask Load (0.3ms)[0m  [1m[34mSELECT "tasks".* FROM "tasks" WHERE "tasks"."id" = $1 LIMIT $2[0m  [["id", "568e50aa-0485-4d4e-995d-8e14e7fcf4ff"], ["LIMIT", 1]]
+  ↳ app/controllers/tasks_controller.rb:63:in `set_task'
+  Rendering layout layouts/application.html.erb
+  Rendering tasks/show.html.erb within layouts/application
+  Rendered tasks/_task.html.erb (Duration: 0.1ms | Allocations: 21)
+  Rendered tasks/show.html.erb within layouts/application (Duration: 1.0ms | Allocations: 648)
+  Rendered layout layouts/application.html.erb (Duration: 4.1ms | Allocations: 2831)
+Completed 200 OK in 15ms (Views: 4.5ms | ActiveRecord: 0.3ms | Allocations: 3595)
+
+
+Started GET "/lists/a34f9d99-37b3-4506-92f0-6b882ccb840a" for ::1 at 2022-11-09 14:44:19 +0100
+Processing by ListsController#show as HTML
+  Parameters: {"id"=>"a34f9d99-37b3-4506-92f0-6b882ccb840a"}
+  [1m[36mList Load (0.3ms)[0m  [1m[34mSELECT "lists".* FROM "lists" WHERE "lists"."id" = $1 LIMIT $2[0m  [["id", "a34f9d99-37b3-4506-92f0-6b882ccb840a"], ["LIMIT", 1]]
+  ↳ app/controllers/lists_controller.rb:63:in `set_list'
+  Rendering layout layouts/application.html.erb
+  Rendering lists/show.html.erb within layouts/application
+  [1m[36mAccount Load (0.2ms)[0m  [1m[34mSELECT "accounts".* FROM "accounts" WHERE "accounts"."id" = $1 LIMIT $2[0m  [["id", "fc7e18a0-87c7-4db6-ac4d-16215e1b2de4"], ["LIMIT", 1]]
+  ↳ app/views/lists/_list.html.erb:4
+  Rendered lists/_list.html.erb (Duration: 2.5ms | Allocations: 1378)
+  [1m[36mTask Load (0.2ms)[0m  [1m[34mSELECT "tasks".* FROM "tasks" WHERE "tasks"."list_id" = $1[0m  [["list_id", "a34f9d99-37b3-4506-92f0-6b882ccb840a"]]
+  ↳ app/views/lists/show.html.erb:6
+  Rendered lists/show.html.erb within layouts/application (Duration: 5.3ms | Allocations: 3173)
+  Rendered layout layouts/application.html.erb (Duration: 8.6ms | Allocations: 5720)
+Completed 200 OK in 13ms (Views: 10.0ms | ActiveRecord: 0.7ms | Allocations: 7060)
+
+
+Started GET "/accounts/fc7e18a0-87c7-4db6-ac4d-16215e1b2de4" for ::1 at 2022-11-09 14:44:20 +0100
+Processing by AccountsController#show as HTML
+  Parameters: {"id"=>"fc7e18a0-87c7-4db6-ac4d-16215e1b2de4"}
+  [1m[36mAccount Load (0.2ms)[0m  [1m[34mSELECT "accounts".* FROM "accounts" WHERE "accounts"."id" = $1 LIMIT $2[0m  [["id", "fc7e18a0-87c7-4db6-ac4d-16215e1b2de4"], ["LIMIT", 1]]
+  ↳ app/controllers/accounts_controller.rb:63:in `set_account'
+  Rendering layout layouts/application.html.erb
+  Rendering accounts/show.html.erb within layouts/application
+  Rendered accounts/_account.html.erb (Duration: 0.3ms | Allocations: 157)
+  [1m[36mList Load (0.3ms)[0m  [1m[34mSELECT "lists".* FROM "lists" WHERE "lists"."account_id" = $1[0m  [["account_id", "fc7e18a0-87c7-4db6-ac4d-16215e1b2de4"]]
+  ↳ app/views/accounts/show.html.erb:6
+  Rendered accounts/show.html.erb within layouts/application (Duration: 3.4ms | Allocations: 2183)
+  Rendered layout layouts/application.html.erb (Duration: 5.9ms | Allocations: 4537)
+Completed 200 OK in 9ms (Views: 7.0ms | ActiveRecord: 0.5ms | Allocations: 5704)
+
+
+Started GET "/lists/a34f9d99-37b3-4506-92f0-6b882ccb840a" for ::1 at 2022-11-09 14:44:21 +0100
+Processing by ListsController#show as HTML
+  Parameters: {"id"=>"a34f9d99-37b3-4506-92f0-6b882ccb840a"}
+  [1m[36mList Load (0.2ms)[0m  [1m[34mSELECT "lists".* FROM "lists" WHERE "lists"."id" = $1 LIMIT $2[0m  [["id", "a34f9d99-37b3-4506-92f0-6b882ccb840a"], ["LIMIT", 1]]
+  ↳ app/controllers/lists_controller.rb:63:in `set_list'
+  Rendering layout layouts/application.html.erb
+  Rendering lists/show.html.erb within layouts/application
+  [1m[36mAccount Load (0.2ms)[0m  [1m[34mSELECT "accounts".* FROM "accounts" WHERE "accounts"."id" = $1 LIMIT $2[0m  [["id", "fc7e18a0-87c7-4db6-ac4d-16215e1b2de4"], ["LIMIT", 1]]
+  ↳ app/views/lists/_list.html.erb:4
+  Rendered lists/_list.html.erb (Duration: 1.4ms | Allocations: 749)
+  [1m[36mTask Load (0.2ms)[0m  [1m[34mSELECT "tasks".* FROM "tasks" WHERE "tasks"."list_id" = $1[0m  [["list_id", "a34f9d99-37b3-4506-92f0-6b882ccb840a"]]
+  ↳ app/views/lists/show.html.erb:6
+  Rendered lists/show.html.erb within layouts/application (Duration: 3.7ms | Allocations: 2083)
+  Rendered layout layouts/application.html.erb (Duration: 6.7ms | Allocations: 4257)
+Completed 200 OK in 9ms (Views: 6.7ms | ActiveRecord: 0.5ms | Allocations: 5046)
+
+
+Started GET "/tasks/568e50aa-0485-4d4e-995d-8e14e7fcf4ff" for ::1 at 2022-11-09 14:44:23 +0100
+Processing by TasksController#show as HTML
+  Parameters: {"id"=>"568e50aa-0485-4d4e-995d-8e14e7fcf4ff"}
+  [1m[36mTask Load (0.2ms)[0m  [1m[34mSELECT "tasks".* FROM "tasks" WHERE "tasks"."id" = $1 LIMIT $2[0m  [["id", "568e50aa-0485-4d4e-995d-8e14e7fcf4ff"], ["LIMIT", 1]]
+  ↳ app/controllers/tasks_controller.rb:63:in `set_task'
+  Rendering layout layouts/application.html.erb
+  Rendering tasks/show.html.erb within layouts/application
+  Rendered tasks/_task.html.erb (Duration: 0.4ms | Allocations: 201)
+  Rendered tasks/show.html.erb within layouts/application (Duration: 2.1ms | Allocations: 1308)
+  Rendered layout layouts/application.html.erb (Duration: 5.0ms | Allocations: 3661)
+Completed 200 OK in 14ms (Views: 6.5ms | ActiveRecord: 0.2ms | Allocations: 4816)
+
+
+Started GET "/tasks/568e50aa-0485-4d4e-995d-8e14e7fcf4ff" for ::1 at 2022-11-09 14:44:35 +0100
+Processing by TasksController#show as HTML
+  Parameters: {"id"=>"568e50aa-0485-4d4e-995d-8e14e7fcf4ff"}
+  [1m[36mTask Load (0.2ms)[0m  [1m[34mSELECT "tasks".* FROM "tasks" WHERE "tasks"."id" = $1 LIMIT $2[0m  [["id", "568e50aa-0485-4d4e-995d-8e14e7fcf4ff"], ["LIMIT", 1]]
+  ↳ app/controllers/tasks_controller.rb:63:in `set_task'
+  Rendering layout layouts/application.html.erb
+  Rendering tasks/show.html.erb within layouts/application
+  [1m[36mList Load (0.2ms)[0m  [1m[34mSELECT "lists".* FROM "lists" WHERE "lists"."id" = $1 LIMIT $2[0m  [["id", "a34f9d99-37b3-4506-92f0-6b882ccb840a"], ["LIMIT", 1]]
+  ↳ app/views/tasks/_task.html.erb:4
+  Rendered tasks/_task.html.erb (Duration: 2.8ms | Allocations: 1343)
+  Rendered tasks/show.html.erb within layouts/application (Duration: 4.8ms | Allocations: 2348)
+  Rendered layout layouts/application.html.erb (Duration: 9.5ms | Allocations: 4886)
+Completed 200 OK in 14ms (Views: 11.3ms | ActiveRecord: 0.4ms | Allocations: 6314)
+
+
+Started GET "/lists/a34f9d99-37b3-4506-92f0-6b882ccb840a" for ::1 at 2022-11-09 14:44:36 +0100
+Processing by ListsController#show as HTML
+  Parameters: {"id"=>"a34f9d99-37b3-4506-92f0-6b882ccb840a"}
+  [1m[36mList Load (0.1ms)[0m  [1m[34mSELECT "lists".* FROM "lists" WHERE "lists"."id" = $1 LIMIT $2[0m  [["id", "a34f9d99-37b3-4506-92f0-6b882ccb840a"], ["LIMIT", 1]]
+  ↳ app/controllers/lists_controller.rb:63:in `set_list'
+  Rendering layout layouts/application.html.erb
+  Rendering lists/show.html.erb within layouts/application
+  [1m[36mAccount Load (0.2ms)[0m  [1m[34mSELECT "accounts".* FROM "accounts" WHERE "accounts"."id" = $1 LIMIT $2[0m  [["id", "fc7e18a0-87c7-4db6-ac4d-16215e1b2de4"], ["LIMIT", 1]]
+  ↳ app/views/lists/_list.html.erb:4
+  Rendered lists/_list.html.erb (Duration: 2.7ms | Allocations: 1110)
+  [1m[36mTask Load (0.3ms)[0m  [1m[34mSELECT "tasks".* FROM "tasks" WHERE "tasks"."list_id" = $1[0m  [["list_id", "a34f9d99-37b3-4506-92f0-6b882ccb840a"]]
+  ↳ app/views/lists/show.html.erb:6
+  Rendered lists/show.html.erb within layouts/application (Duration: 6.0ms | Allocations: 2927)
+  Rendered layout layouts/application.html.erb (Duration: 9.0ms | Allocations: 5279)
+Completed 200 OK in 12ms (Views: 10.1ms | ActiveRecord: 0.6ms | Allocations: 6449)
+
+
+Started GET "/accounts/fc7e18a0-87c7-4db6-ac4d-16215e1b2de4" for ::1 at 2022-11-09 14:44:37 +0100
+Processing by AccountsController#show as HTML
+  Parameters: {"id"=>"fc7e18a0-87c7-4db6-ac4d-16215e1b2de4"}
+  [1m[36mAccount Load (0.2ms)[0m  [1m[34mSELECT "accounts".* FROM "accounts" WHERE "accounts"."id" = $1 LIMIT $2[0m  [["id", "fc7e18a0-87c7-4db6-ac4d-16215e1b2de4"], ["LIMIT", 1]]
+  ↳ app/controllers/accounts_controller.rb:63:in `set_account'
+  Rendering layout layouts/application.html.erb
+  Rendering accounts/show.html.erb within layouts/application
+  Rendered accounts/_account.html.erb (Duration: 0.8ms | Allocations: 157)
+  [1m[36mList Load (16.4ms)[0m  [1m[34mSELECT "lists".* FROM "lists" WHERE "lists"."account_id" = $1[0m  [["account_id", "fc7e18a0-87c7-4db6-ac4d-16215e1b2de4"]]
+  ↳ app/views/accounts/show.html.erb:6
+  Rendered accounts/show.html.erb within layouts/application (Duration: 21.6ms | Allocations: 2189)
+  Rendered layout layouts/application.html.erb (Duration: 28.9ms | Allocations: 4554)
+Completed 200 OK in 32ms (Views: 13.9ms | ActiveRecord: 16.6ms | Allocations: 5723)
+
+
+Started GET "/lists/a34f9d99-37b3-4506-92f0-6b882ccb840a" for ::1 at 2022-11-09 14:44:38 +0100
+Processing by ListsController#show as HTML
+  Parameters: {"id"=>"a34f9d99-37b3-4506-92f0-6b882ccb840a"}
+  [1m[36mList Load (0.1ms)[0m  [1m[34mSELECT "lists".* FROM "lists" WHERE "lists"."id" = $1 LIMIT $2[0m  [["id", "a34f9d99-37b3-4506-92f0-6b882ccb840a"], ["LIMIT", 1]]
+  ↳ app/controllers/lists_controller.rb:63:in `set_list'
+  Rendering layout layouts/application.html.erb
+  Rendering lists/show.html.erb within layouts/application
+  [1m[36mAccount Load (0.1ms)[0m  [1m[34mSELECT "accounts".* FROM "accounts" WHERE "accounts"."id" = $1 LIMIT $2[0m  [["id", "fc7e18a0-87c7-4db6-ac4d-16215e1b2de4"], ["LIMIT", 1]]
+  ↳ app/views/lists/_list.html.erb:4
+  Rendered lists/_list.html.erb (Duration: 1.4ms | Allocations: 749)
+  [1m[36mTask Load (0.2ms)[0m  [1m[34mSELECT "tasks".* FROM "tasks" WHERE "tasks"."list_id" = $1[0m  [["list_id", "a34f9d99-37b3-4506-92f0-6b882ccb840a"]]
+  ↳ app/views/lists/show.html.erb:6
+  Rendered lists/show.html.erb within layouts/application (Duration: 3.8ms | Allocations: 2095)
+  Rendered layout layouts/application.html.erb (Duration: 7.0ms | Allocations: 4279)
+Completed 200 OK in 9ms (Views: 7.0ms | ActiveRecord: 0.5ms | Allocations: 5069)
+
+
+Started GET "/tasks/568e50aa-0485-4d4e-995d-8e14e7fcf4ff" for ::1 at 2022-11-09 14:44:39 +0100
+Processing by TasksController#show as HTML
+  Parameters: {"id"=>"568e50aa-0485-4d4e-995d-8e14e7fcf4ff"}
+  [1m[36mTask Load (0.2ms)[0m  [1m[34mSELECT "tasks".* FROM "tasks" WHERE "tasks"."id" = $1 LIMIT $2[0m  [["id", "568e50aa-0485-4d4e-995d-8e14e7fcf4ff"], ["LIMIT", 1]]
+  ↳ app/controllers/tasks_controller.rb:63:in `set_task'
+  Rendering layout layouts/application.html.erb
+  Rendering tasks/show.html.erb within layouts/application
+  [1m[36mList Load (16.1ms)[0m  [1m[34mSELECT "lists".* FROM "lists" WHERE "lists"."id" = $1 LIMIT $2[0m  [["id", "a34f9d99-37b3-4506-92f0-6b882ccb840a"], ["LIMIT", 1]]
+  ↳ app/views/tasks/_task.html.erb:4
+  Rendered tasks/_task.html.erb (Duration: 17.8ms | Allocations: 754)
+  Rendered tasks/show.html.erb within layouts/application (Duration: 18.6ms | Allocations: 1368)
+  Rendered layout layouts/application.html.erb (Duration: 21.6ms | Allocations: 3542)
+Completed 200 OK in 24ms (Views: 5.9ms | ActiveRecord: 16.3ms | Allocations: 4307)
+
+
+  [1m[35m (0.9ms)[0m  [1m[34mSELECT pg_try_advisory_lock(2895051369411935895)[0m
+  [1m[36mActiveRecord::SchemaMigration Pluck (1.9ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+Migrating to FixDatabase (20221113173427)
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN[0m
+  [1m[35m (5.3ms)[0m  [1m[35mALTER TABLE "accounts" RENAME TO "account"[0m
+  [1m[35m (4.2ms)[0m  [1m[35mALTER TABLE "account" DROP COLUMN "updated_at"[0m
+  [1m[35m (0.6ms)[0m  [1m[35mALTER TABLE "account" RENAME COLUMN "created_at" TO "creation_date"[0m
+  [1m[35m (0.8ms)[0m  [1m[35mALTER TABLE "lists" RENAME TO "list"[0m
+  [1m[35m (1.6ms)[0m  [1m[35mALTER INDEX "index_lists_on_account_id" RENAME TO "index_list_on_account_id"[0m
+  [1m[35m (0.3ms)[0m  [1m[35mALTER TABLE "list" DROP COLUMN "updated_at"[0m
+  [1m[35m (0.1ms)[0m  [1m[35mALTER TABLE "list" RENAME COLUMN "created_at" TO "creation_date"[0m
+  [1m[35m (0.2ms)[0m  [1m[35mALTER TABLE "tasks" RENAME TO "task"[0m
+  [1m[35m (0.2ms)[0m  [1m[35mALTER INDEX "index_tasks_on_list_id" RENAME TO "index_task_on_list_id"[0m
+  [1m[35m (0.2ms)[0m  [1m[35mALTER TABLE "task" DROP COLUMN "updated_at"[0m
+  [1m[35m (0.1ms)[0m  [1m[35mALTER TABLE "task" RENAME COLUMN "created_at" TO "creation_date"[0m
+  [1m[36mActiveRecord::SchemaMigration Create (0.7ms)[0m  [1m[32mINSERT INTO "schema_migrations" ("version") VALUES ($1) RETURNING "version"[0m  [["version", "20221113173427"]]
+  [1m[36mTRANSACTION (2.1ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mActiveRecord::InternalMetadata Load (1.0ms)[0m  [1m[34mSELECT "ar_internal_metadata".* FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = $1 LIMIT $2[0m  [["key", "environment"], ["LIMIT", 1]]
+  [1m[35m (0.1ms)[0m  [1m[34mSELECT pg_advisory_unlock(2895051369411935895)[0m
+  [1m[36mActiveRecord::SchemaMigration Pluck (0.4ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+Started GET "/" for ::1 at 2022-11-13 18:38:37 +0100
+  [1m[36mActiveRecord::SchemaMigration Pluck (0.4ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+Processing by AccountsController#index as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering accounts/index.html.erb within layouts/application
+  [1m[36mAccount Load (9.5ms)[0m  [1m[34mSELECT "accounts".* FROM "accounts"[0m
+  ↳ app/views/accounts/index.html.erb:6
+  Rendered accounts/index.html.erb within layouts/application (Duration: 23.6ms | Allocations: 3570)
+  Rendered layout layouts/application.html.erb (Duration: 23.8ms | Allocations: 3680)
+Completed 500 Internal Server Error in 75ms (ActiveRecord: 9.5ms | Allocations: 8950)
+
+
+  
+ActionView::Template::Error (PG::UndefinedTable: ERROR:  relation "accounts" does not exist
+LINE 1: SELECT "accounts".* FROM "accounts"
+                                 ^
+):
+    3: <h1>Accounts</h1>
+    4: 
+    5: <div id="accounts">
+    6:   <% @accounts.each do |account| %>
+    7:     <%= render account %>
+    8:     <p>
+    9:       <%= link_to "Show this account", account %>
+  
+app/views/accounts/index.html.erb:6
+Started GET "/" for ::1 at 2022-11-13 18:39:04 +0100
+Processing by AccountsController#index as HTML
+Completed 500 Internal Server Error in 1ms (ActiveRecord: 0.0ms | Allocations: 886)
+
+
+  
+SyntaxError (/Users/arnaudlevy/Dev/noesya/ecobenchmark/app/models/account.rb:2: syntax error, unexpected ':', expecting `end'
+  table_name: 'account'
+            ^
+):
+  
+app/models/account.rb:2: syntax error, unexpected ':', expecting `end'
+app/models/account.rb:2: syntax error, unexpected ':', expecting `end'
+app/models/account.rb:2: syntax error, unexpected ':', expecting `end'
+app/controllers/accounts_controller.rb:6:in `index'
+Started GET "/" for ::1 at 2022-11-13 18:39:41 +0100
+Processing by AccountsController#index as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering accounts/index.html.erb within layouts/application
+  [1m[36mAccount Load (2.4ms)[0m  [1m[34mSELECT "account".* FROM "account"[0m
+  ↳ app/views/accounts/index.html.erb:6
+  Rendered accounts/_account.html.erb (Duration: 1.0ms | Allocations: 293)
+  Rendered accounts/_account.html.erb (Duration: 0.0ms | Allocations: 16)
+  Rendered accounts/index.html.erb within layouts/application (Duration: 16.7ms | Allocations: 4955)
+  Rendered layout layouts/application.html.erb (Duration: 80.1ms | Allocations: 40556)
+Completed 200 OK in 88ms (Views: 75.1ms | ActiveRecord: 6.0ms | Allocations: 42314)
+
+
+Started GET "/accounts/fc7e18a0-87c7-4db6-ac4d-16215e1b2de4" for ::1 at 2022-11-13 18:39:45 +0100
+Processing by AccountsController#show as HTML
+  Parameters: {"id"=>"fc7e18a0-87c7-4db6-ac4d-16215e1b2de4"}
+  [1m[36mAccount Load (1.5ms)[0m  [1m[34mSELECT "account".* FROM "account" WHERE "account"."id" = $1 LIMIT $2[0m  [["id", "fc7e18a0-87c7-4db6-ac4d-16215e1b2de4"], ["LIMIT", 1]]
+  ↳ app/controllers/accounts_controller.rb:63:in `set_account'
+  Rendering layout layouts/application.html.erb
+  Rendering accounts/show.html.erb within layouts/application
+  Rendered accounts/_account.html.erb (Duration: 0.1ms | Allocations: 23)
+  Rendered accounts/show.html.erb within layouts/application (Duration: 35.8ms | Allocations: 5768)
+  Rendered layout layouts/application.html.erb (Duration: 36.0ms | Allocations: 5858)
+Completed 500 Internal Server Error in 43ms (ActiveRecord: 22.7ms | Allocations: 8343)
+
+
+  
+ActionView::Template::Error (PG::UndefinedTable: ERROR:  relation "lists" does not exist
+LINE 9:  WHERE a.attrelid = '"lists"'::regclass
+                            ^
+):
+    3: <%= render @account %>
+    4: 
+    5: <ul>
+    6:   <% @account.lists.each do |list| %>
+    7:     <li><%= link_to list, list %></li>
+    8:   <% end %>
+    9: </ul>
+  
+app/views/accounts/show.html.erb:6
+Started GET "/" for ::1 at 2022-11-13 18:39:49 +0100
+Processing by AccountsController#index as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering accounts/index.html.erb within layouts/application
+  [1m[36mAccount Load (0.2ms)[0m  [1m[34mSELECT "account".* FROM "account"[0m
+  ↳ app/views/accounts/index.html.erb:6
+  Rendered accounts/_account.html.erb (Duration: 0.1ms | Allocations: 22)
+  Rendered accounts/_account.html.erb (Duration: 0.0ms | Allocations: 16)
+  Rendered accounts/index.html.erb within layouts/application (Duration: 2.3ms | Allocations: 1292)
+  Rendered layout layouts/application.html.erb (Duration: 6.1ms | Allocations: 3601)
+Completed 200 OK in 7ms (Views: 6.3ms | ActiveRecord: 0.2ms | Allocations: 3914)
+
+
+Started GET "/accounts/new" for ::1 at 2022-11-13 18:39:50 +0100
+Processing by AccountsController#new as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering accounts/new.html.erb within layouts/application
+  Rendered accounts/_form.html.erb (Duration: 46.5ms | Allocations: 15583)
+  Rendered accounts/new.html.erb within layouts/application (Duration: 47.8ms | Allocations: 15883)
+  Rendered layout layouts/application.html.erb (Duration: 50.4ms | Allocations: 18174)
+Completed 200 OK in 52ms (Views: 50.8ms | ActiveRecord: 0.0ms | Allocations: 18566)
+
+
+Started POST "/accounts" for ::1 at 2022-11-13 18:39:51 +0100
+Processing by AccountsController#create as TURBO_STREAM
+  Parameters: {"authenticity_token"=>"[FILTERED]", "account"=>{"login"=>"test"}, "commit"=>"Create Account"}
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  ↳ app/controllers/accounts_controller.rb:27:in `block in create'
+  [1m[36mAccount Create (2.6ms)[0m  [1m[32mINSERT INTO "account" ("login", "creation_date") VALUES ($1, $2) RETURNING "id"[0m  [["login", "test"], ["creation_date", nil]]
+  ↳ app/controllers/accounts_controller.rb:27:in `block in create'
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[31mROLLBACK[0m
+  ↳ app/controllers/accounts_controller.rb:27:in `block in create'
+Completed 500 Internal Server Error in 7ms (ActiveRecord: 2.8ms | Allocations: 4783)
+
+
+  
+ActiveRecord::NotNullViolation (PG::NotNullViolation: ERROR:  null value in column "creation_date" of relation "account" violates not-null constraint
+DETAIL:  Failing row contains (3fcf996b-dd76-4346-a9ea-f6ff45fbd2ff, test, null).
+):
+  
+app/controllers/accounts_controller.rb:27:in `block in create'
+app/controllers/accounts_controller.rb:26:in `create'
+Started GET "/accounts/new" for ::1 at 2022-11-13 18:40:12 +0100
+Processing by AccountsController#new as HTML
+Completed 500 Internal Server Error in 1ms (ActiveRecord: 0.0ms | Allocations: 883)
+
+
+  
+SyntaxError (/Users/arnaudlevy/Dev/noesya/ecobenchmark/app/models/account.rb:6: syntax error, unexpected ','
+  alias :created_at, :creation_date
+                   ^
+):
+  
+app/models/account.rb:6: syntax error, unexpected ','
+app/models/account.rb:6: syntax error, unexpected ','
+app/models/account.rb:6: syntax error, unexpected ','
+app/controllers/accounts_controller.rb:15:in `new'
+Started GET "/accounts/new" for ::1 at 2022-11-13 18:40:18 +0100
+Processing by AccountsController#new as HTML
+Completed 500 Internal Server Error in 13ms (ActiveRecord: 0.0ms | Allocations: 5925)
+
+
+  
+NameError (undefined method `creation_date' for class `Account'
+Did you mean?  create_or_find_by):
+  
+app/models/account.rb:6:in `<class:Account>'
+app/models/account.rb:1:in `<main>'
+app/controllers/accounts_controller.rb:15:in `new'
+Started GET "/accounts/new" for ::1 at 2022-11-13 18:40:28 +0100
+Processing by AccountsController#new as HTML
+Completed 500 Internal Server Error in 11ms (ActiveRecord: 0.0ms | Allocations: 5866)
+
+
+  
+NameError (undefined method `created_at' for class `Account'
+Did you mean?  create):
+  
+app/models/account.rb:6:in `<class:Account>'
+app/models/account.rb:1:in `<main>'
+app/controllers/accounts_controller.rb:15:in `new'
+Started GET "/accounts/new" for ::1 at 2022-11-13 18:42:20 +0100
+Processing by AccountsController#new as HTML
+Completed 500 Internal Server Error in 14ms (ActiveRecord: 0.0ms | Allocations: 5850)
+
+
+  
+NameError (undefined method `creation_date' for class `Account'
+Did you mean?  create_or_find_by):
+  
+app/models/account.rb:6:in `<class:Account>'
+app/models/account.rb:1:in `<main>'
+app/controllers/accounts_controller.rb:15:in `new'
+Started GET "/accounts/new" for ::1 at 2022-11-13 18:42:33 +0100
+Processing by AccountsController#new as HTML
+Completed 500 Internal Server Error in 11ms (ActiveRecord: 0.0ms | Allocations: 5866)
+
+
+  
+NameError (undefined method `created_at' for class `Account'
+Did you mean?  create):
+  
+app/models/account.rb:6:in `<class:Account>'
+app/models/account.rb:1:in `<main>'
+app/controllers/accounts_controller.rb:15:in `new'
+Started GET "/accounts/new" for ::1 at 2022-11-13 18:42:34 +0100
+Processing by AccountsController#new as HTML
+Completed 500 Internal Server Error in 11ms (ActiveRecord: 0.0ms | Allocations: 5111)
+
+
+  
+NameError (undefined method `created_at' for class `Account'
+Did you mean?  create):
+  
+app/models/account.rb:6:in `<class:Account>'
+app/models/account.rb:1:in `<main>'
+app/controllers/accounts_controller.rb:15:in `new'
+Started GET "/accounts/new" for ::1 at 2022-11-13 18:43:00 +0100
+Processing by AccountsController#new as HTML
+Completed 500 Internal Server Error in 13ms (ActiveRecord: 0.0ms | Allocations: 5850)
+
+
+  
+NameError (undefined method `creation_date' for class `Account'
+Did you mean?  create_or_find_by):
+  
+app/models/account.rb:6:in `<class:Account>'
+app/models/account.rb:1:in `<main>'
+app/controllers/accounts_controller.rb:15:in `new'
+Started GET "/accounts/new" for ::1 at 2022-11-13 18:43:02 +0100
+Processing by AccountsController#new as HTML
+Completed 500 Internal Server Error in 31ms (ActiveRecord: 0.0ms | Allocations: 5148)
+
+
+  
+NameError (undefined method `creation_date' for class `Account'
+Did you mean?  create_or_find_by):
+  
+app/models/account.rb:6:in `<class:Account>'
+app/models/account.rb:1:in `<main>'
+app/controllers/accounts_controller.rb:15:in `new'
+Started GET "/accounts/new" for ::1 at 2022-11-13 18:43:25 +0100
+Processing by AccountsController#new as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering accounts/new.html.erb within layouts/application
+  Rendered accounts/_form.html.erb (Duration: 7.1ms | Allocations: 7914)
+  Rendered accounts/new.html.erb within layouts/application (Duration: 7.3ms | Allocations: 8027)
+  Rendered layout layouts/application.html.erb (Duration: 22.0ms | Allocations: 21852)
+Completed 200 OK in 29ms (Views: 22.8ms | ActiveRecord: 2.0ms | Allocations: 24658)
+
+
+Started GET "/accounts" for ::1 at 2022-11-13 18:43:27 +0100
+Processing by AccountsController#index as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering accounts/index.html.erb within layouts/application
+  [1m[36mAccount Load (0.2ms)[0m  [1m[34mSELECT "account".* FROM "account"[0m
+  ↳ app/views/accounts/index.html.erb:6
+  Rendered accounts/_account.html.erb (Duration: 0.1ms | Allocations: 26)
+  Rendered accounts/_account.html.erb (Duration: 0.0ms | Allocations: 16)
+  Rendered accounts/index.html.erb within layouts/application (Duration: 2.3ms | Allocations: 1345)
+  Rendered layout layouts/application.html.erb (Duration: 4.7ms | Allocations: 3527)
+Completed 200 OK in 6ms (Views: 4.8ms | ActiveRecord: 0.2ms | Allocations: 3876)
+
+
+Started GET "/accounts/new" for ::1 at 2022-11-13 18:43:28 +0100
+Processing by AccountsController#new as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering accounts/new.html.erb within layouts/application
+  Rendered accounts/_form.html.erb (Duration: 7.3ms | Allocations: 7484)
+  Rendered accounts/new.html.erb within layouts/application (Duration: 7.6ms | Allocations: 7571)
+  Rendered layout layouts/application.html.erb (Duration: 11.1ms | Allocations: 9753)
+Completed 200 OK in 12ms (Views: 11.6ms | ActiveRecord: 0.0ms | Allocations: 10029)
+
+
+Started POST "/accounts" for ::1 at 2022-11-13 18:43:30 +0100
+Processing by AccountsController#create as TURBO_STREAM
+  Parameters: {"authenticity_token"=>"[FILTERED]", "account"=>{"login"=>"test"}, "commit"=>"Create Account"}
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN[0m
+  ↳ app/controllers/accounts_controller.rb:27:in `block in create'
+  [1m[36mAccount Create (1.7ms)[0m  [1m[32mINSERT INTO "account" ("login", "creation_date") VALUES ($1, $2) RETURNING "id"[0m  [["login", "test"], ["creation_date", nil]]
+  ↳ app/controllers/accounts_controller.rb:27:in `block in create'
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[31mROLLBACK[0m
+  ↳ app/controllers/accounts_controller.rb:27:in `block in create'
+Completed 500 Internal Server Error in 5ms (ActiveRecord: 1.9ms | Allocations: 3488)
+
+
+  
+ActiveRecord::NotNullViolation (PG::NotNullViolation: ERROR:  null value in column "creation_date" of relation "account" violates not-null constraint
+DETAIL:  Failing row contains (c00ae936-ecf1-4319-98df-a05b9f57f942, test, null).
+):
+  
+app/controllers/accounts_controller.rb:27:in `block in create'
+app/controllers/accounts_controller.rb:26:in `create'
+Started GET "/accounts/new" for ::1 at 2022-11-13 18:43:56 +0100
+Processing by AccountsController#new as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering accounts/new.html.erb within layouts/application
+  Rendered accounts/_form.html.erb (Duration: 6.0ms | Allocations: 7863)
+  Rendered accounts/new.html.erb within layouts/application (Duration: 6.2ms | Allocations: 7976)
+  Rendered layout layouts/application.html.erb (Duration: 17.4ms | Allocations: 21802)
+Completed 200 OK in 25ms (Views: 18.2ms | ActiveRecord: 2.1ms | Allocations: 24587)
+
+
+Started POST "/accounts" for ::1 at 2022-11-13 18:43:59 +0100
+Processing by AccountsController#create as TURBO_STREAM
+  Parameters: {"authenticity_token"=>"[FILTERED]", "account"=>{"login"=>"test"}, "commit"=>"Create Account"}
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN[0m
+  ↳ app/controllers/accounts_controller.rb:27:in `block in create'
+  [1m[36mAccount Create (0.6ms)[0m  [1m[32mINSERT INTO "account" ("login", "creation_date") VALUES ($1, $2) RETURNING "id"[0m  [["login", "test"], ["creation_date", nil]]
+  ↳ app/controllers/accounts_controller.rb:27:in `block in create'
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[31mROLLBACK[0m
+  ↳ app/controllers/accounts_controller.rb:27:in `block in create'
+Completed 500 Internal Server Error in 4ms (ActiveRecord: 0.8ms | Allocations: 3541)
+
+
+  
+ActiveRecord::NotNullViolation (PG::NotNullViolation: ERROR:  null value in column "creation_date" of relation "account" violates not-null constraint
+DETAIL:  Failing row contains (10809ee3-1f7a-4826-924d-c27d8ae440f2, test, null).
+):
+  
+app/controllers/accounts_controller.rb:27:in `block in create'
+app/controllers/accounts_controller.rb:26:in `create'
+Started GET "/accounts/new" for ::1 at 2022-11-13 18:44:54 +0100
+Processing by AccountsController#new as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering accounts/new.html.erb within layouts/application
+  Rendered accounts/_form.html.erb (Duration: 6.1ms | Allocations: 7866)
+  Rendered accounts/new.html.erb within layouts/application (Duration: 6.3ms | Allocations: 7979)
+  Rendered layout layouts/application.html.erb (Duration: 22.4ms | Allocations: 21829)
+Completed 200 OK in 29ms (Views: 23.1ms | ActiveRecord: 1.7ms | Allocations: 24632)
+
+
+Started POST "/accounts" for ::1 at 2022-11-13 18:44:57 +0100
+Processing by AccountsController#create as TURBO_STREAM
+  Parameters: {"authenticity_token"=>"[FILTERED]", "account"=>{"login"=>"test"}, "commit"=>"Create Account"}
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN[0m
+  ↳ app/controllers/accounts_controller.rb:27:in `block in create'
+  [1m[36mAccount Create (1.6ms)[0m  [1m[32mINSERT INTO "account" ("login", "creation_date") VALUES ($1, $2) RETURNING "id"[0m  [["login", "test"], ["creation_date", "2022-11-13 17:44:57.431558"]]
+  ↳ app/controllers/accounts_controller.rb:27:in `block in create'
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[35mCOMMIT[0m
+  ↳ app/controllers/accounts_controller.rb:27:in `block in create'
+Redirected to http://localhost:3000/accounts/72414fbd-c396-4510-b5b6-bcc8884e9172
+Completed 302 Found in 6ms (ActiveRecord: 2.0ms | Allocations: 2943)
+
+
+Started GET "/accounts/72414fbd-c396-4510-b5b6-bcc8884e9172" for ::1 at 2022-11-13 18:44:57 +0100
+Processing by AccountsController#show as TURBO_STREAM
+  Parameters: {"id"=>"72414fbd-c396-4510-b5b6-bcc8884e9172"}
+  [1m[36mAccount Load (0.2ms)[0m  [1m[34mSELECT "account".* FROM "account" WHERE "account"."id" = $1 LIMIT $2[0m  [["id", "72414fbd-c396-4510-b5b6-bcc8884e9172"], ["LIMIT", 1]]
+  ↳ app/controllers/accounts_controller.rb:63:in `set_account'
+  Rendering layout layouts/application.html.erb
+  Rendering accounts/show.html.erb within layouts/application
+  Rendered accounts/_account.html.erb (Duration: 0.1ms | Allocations: 22)
+  Rendered accounts/show.html.erb within layouts/application (Duration: 4.8ms | Allocations: 4148)
+  Rendered layout layouts/application.html.erb (Duration: 4.9ms | Allocations: 4236)
+Completed 500 Internal Server Error in 7ms (ActiveRecord: 0.7ms | Allocations: 5327)
+
+
+  
+ActionView::Template::Error (PG::UndefinedTable: ERROR:  relation "lists" does not exist
+LINE 9:  WHERE a.attrelid = '"lists"'::regclass
+                            ^
+):
+    3: <%= render @account %>
+    4: 
+    5: <ul>
+    6:   <% @account.lists.each do |list| %>
+    7:     <li><%= link_to list, list %></li>
+    8:   <% end %>
+    9: </ul>
+  
+app/views/accounts/show.html.erb:6
+Started GET "/accounts/new" for ::1 at 2022-11-13 18:46:07 +0100
+Processing by AccountsController#new as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering accounts/new.html.erb within layouts/application
+  Rendered accounts/_form.html.erb (Duration: 6.5ms | Allocations: 7879)
+  Rendered accounts/new.html.erb within layouts/application (Duration: 6.7ms | Allocations: 7992)
+  Rendered layout layouts/application.html.erb (Duration: 21.1ms | Allocations: 21818)
+Completed 200 OK in 30ms (Views: 21.9ms | ActiveRecord: 2.0ms | Allocations: 24740)
+
+
+Started GET "/accounts" for ::1 at 2022-11-13 18:46:09 +0100
+Processing by AccountsController#index as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering accounts/index.html.erb within layouts/application
+  [1m[36mAccount Load (0.2ms)[0m  [1m[34mSELECT "account".* FROM "account"[0m
+  ↳ app/views/accounts/index.html.erb:6
+  Rendered accounts/_account.html.erb (Duration: 0.1ms | Allocations: 25)
+  Rendered accounts/_account.html.erb (Duration: 0.0ms | Allocations: 16)
+  Rendered accounts/_account.html.erb (Duration: 0.0ms | Allocations: 16)
+  Rendered accounts/index.html.erb within layouts/application (Duration: 2.3ms | Allocations: 1525)
+  Rendered layout layouts/application.html.erb (Duration: 4.6ms | Allocations: 3707)
+Completed 200 OK in 5ms (Views: 4.6ms | ActiveRecord: 0.2ms | Allocations: 4055)
+
+
+Started GET "/accounts/new" for ::1 at 2022-11-13 18:46:10 +0100
+Processing by AccountsController#new as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering accounts/new.html.erb within layouts/application
+  Rendered accounts/_form.html.erb (Duration: 6.1ms | Allocations: 7487)
+  Rendered accounts/new.html.erb within layouts/application (Duration: 6.5ms | Allocations: 7574)
+  Rendered layout layouts/application.html.erb (Duration: 10.0ms | Allocations: 9756)
+Completed 200 OK in 11ms (Views: 10.6ms | ActiveRecord: 0.0ms | Allocations: 10032)
+
+
+Started POST "/accounts" for ::1 at 2022-11-13 18:46:14 +0100
+Processing by AccountsController#create as TURBO_STREAM
+  Parameters: {"authenticity_token"=>"[FILTERED]", "account"=>{"login"=>"test 2"}, "commit"=>"Create Account"}
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  ↳ app/controllers/accounts_controller.rb:27:in `block in create'
+  [1m[36mAccount Create (0.4ms)[0m  [1m[32mINSERT INTO "account" ("login", "creation_date") VALUES ($1, $2) RETURNING "id"[0m  [["login", "test 2"], ["creation_date", "2022-11-13 17:46:14.210880"]]
+  ↳ app/controllers/accounts_controller.rb:27:in `block in create'
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[35mCOMMIT[0m
+  ↳ app/controllers/accounts_controller.rb:27:in `block in create'
+Redirected to http://localhost:3000/accounts/2c56fa05-2d91-4dd6-9203-734a65ab09f2
+Completed 302 Found in 6ms (ActiveRecord: 0.9ms | Allocations: 2634)
+
+
+Started GET "/accounts/2c56fa05-2d91-4dd6-9203-734a65ab09f2" for ::1 at 2022-11-13 18:46:14 +0100
+Processing by AccountsController#show as TURBO_STREAM
+  Parameters: {"id"=>"2c56fa05-2d91-4dd6-9203-734a65ab09f2"}
+  [1m[36mAccount Load (0.2ms)[0m  [1m[34mSELECT "account".* FROM "account" WHERE "account"."id" = $1 LIMIT $2[0m  [["id", "2c56fa05-2d91-4dd6-9203-734a65ab09f2"], ["LIMIT", 1]]
+  ↳ app/controllers/accounts_controller.rb:63:in `set_account'
+  Rendering layout layouts/application.html.erb
+  Rendering accounts/show.html.erb within layouts/application
+  Rendered accounts/_account.html.erb (Duration: 0.1ms | Allocations: 17)
+  Rendered accounts/show.html.erb within layouts/application (Duration: 5.1ms | Allocations: 4058)
+  Rendered layout layouts/application.html.erb (Duration: 5.3ms | Allocations: 4146)
+Completed 500 Internal Server Error in 8ms (ActiveRecord: 1.2ms | Allocations: 5072)
+
+
+  
+ActionView::Template::Error (PG::UndefinedTable: ERROR:  relation "lists" does not exist
+LINE 9:  WHERE a.attrelid = '"lists"'::regclass
+                            ^
+):
+    3: <%= render @account %>
+    4: 
+    5: <ul>
+    6:   <% @account.lists.each do |list| %>
+    7:     <li><%= link_to list, list %></li>
+    8:   <% end %>
+    9: </ul>
+  
+app/views/accounts/show.html.erb:6
+Started GET "/accounts" for ::1 at 2022-11-13 18:46:15 +0100
+Processing by AccountsController#index as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering accounts/index.html.erb within layouts/application
+  [1m[36mAccount Load (0.2ms)[0m  [1m[34mSELECT "account".* FROM "account"[0m
+  ↳ app/views/accounts/index.html.erb:6
+  Rendered accounts/_account.html.erb (Duration: 0.1ms | Allocations: 22)
+  Rendered accounts/_account.html.erb (Duration: 0.0ms | Allocations: 16)
+  Rendered accounts/_account.html.erb (Duration: 0.0ms | Allocations: 16)
+  Rendered accounts/_account.html.erb (Duration: 0.0ms | Allocations: 16)
+  Rendered accounts/index.html.erb within layouts/application (Duration: 2.8ms | Allocations: 1558)
+  Rendered layout layouts/application.html.erb (Duration: 6.0ms | Allocations: 3864)
+Completed 200 OK in 7ms (Views: 6.2ms | ActiveRecord: 0.2ms | Allocations: 4166)
+
+
+Started GET "/accounts" for ::1 at 2022-11-13 18:46:15 +0100
+Processing by AccountsController#index as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering accounts/index.html.erb within layouts/application
+  [1m[36mAccount Load (0.2ms)[0m  [1m[34mSELECT "account".* FROM "account"[0m
+  ↳ app/views/accounts/index.html.erb:6
+  Rendered accounts/_account.html.erb (Duration: 0.1ms | Allocations: 17)
+  Rendered accounts/_account.html.erb (Duration: 0.0ms | Allocations: 16)
+  Rendered accounts/_account.html.erb (Duration: 0.0ms | Allocations: 16)
+  Rendered accounts/_account.html.erb (Duration: 0.0ms | Allocations: 16)
+  Rendered accounts/index.html.erb within layouts/application (Duration: 2.5ms | Allocations: 1362)
+  Rendered layout layouts/application.html.erb (Duration: 5.0ms | Allocations: 3544)
+Completed 200 OK in 6ms (Views: 5.2ms | ActiveRecord: 0.2ms | Allocations: 3812)
+
+
+Started GET "/accounts/new" for ::1 at 2022-11-13 18:46:16 +0100
+Processing by AccountsController#new as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering accounts/new.html.erb within layouts/application
+  Rendered accounts/_form.html.erb (Duration: 6.5ms | Allocations: 7623)
+  Rendered accounts/new.html.erb within layouts/application (Duration: 6.8ms | Allocations: 7710)
+  Rendered layout layouts/application.html.erb (Duration: 9.8ms | Allocations: 9892)
+Completed 200 OK in 11ms (Views: 10.2ms | ActiveRecord: 0.0ms | Allocations: 10166)
+
+
+Started GET "/accounts/2c56fa05-2d91-4dd6-9203-734a65ab09f2" for ::1 at 2022-11-13 18:46:18 +0100
+Processing by AccountsController#show as HTML
+  Parameters: {"id"=>"2c56fa05-2d91-4dd6-9203-734a65ab09f2"}
+  [1m[36mAccount Load (0.2ms)[0m  [1m[34mSELECT "account".* FROM "account" WHERE "account"."id" = $1 LIMIT $2[0m  [["id", "2c56fa05-2d91-4dd6-9203-734a65ab09f2"], ["LIMIT", 1]]
+  ↳ app/controllers/accounts_controller.rb:63:in `set_account'
+  Rendering layout layouts/application.html.erb
+  Rendering accounts/show.html.erb within layouts/application
+  Rendered accounts/_account.html.erb (Duration: 0.1ms | Allocations: 17)
+  Rendered accounts/show.html.erb within layouts/application (Duration: 1.9ms | Allocations: 2203)
+  Rendered layout layouts/application.html.erb (Duration: 2.0ms | Allocations: 2282)
+Completed 500 Internal Server Error in 4ms (ActiveRecord: 1.0ms | Allocations: 3035)
+
+
+  
+ActionView::Template::Error (PG::UndefinedTable: ERROR:  relation "lists" does not exist
+LINE 9:  WHERE a.attrelid = '"lists"'::regclass
+                            ^
+):
+    3: <%= render @account %>
+    4: 
+    5: <ul>
+    6:   <% @account.lists.each do |list| %>
+    7:     <li><%= link_to list, list %></li>
+    8:   <% end %>
+    9: </ul>
+  
+app/views/accounts/show.html.erb:6
+Started GET "/accounts/2c56fa05-2d91-4dd6-9203-734a65ab09f2" for ::1 at 2022-11-13 18:47:09 +0100
+Processing by AccountsController#show as HTML
+  Parameters: {"id"=>"2c56fa05-2d91-4dd6-9203-734a65ab09f2"}
+  [1m[36mAccount Load (0.1ms)[0m  [1m[34mSELECT "account".* FROM "account" WHERE "account"."id" = $1 LIMIT $2[0m  [["id", "2c56fa05-2d91-4dd6-9203-734a65ab09f2"], ["LIMIT", 1]]
+  ↳ app/controllers/accounts_controller.rb:63:in `set_account'
+  Rendering layout layouts/application.html.erb
+  Rendering accounts/show.html.erb within layouts/application
+  Rendered accounts/_account.html.erb (Duration: 0.2ms | Allocations: 106)
+  [1m[36mList Load (1.7ms)[0m  [1m[34mSELECT "list".* FROM "list" WHERE "list"."account_id" = $1[0m  [["account_id", "2c56fa05-2d91-4dd6-9203-734a65ab09f2"]]
+  ↳ app/views/accounts/show.html.erb:6
+  Rendered accounts/show.html.erb within layouts/application (Duration: 8.3ms | Allocations: 4112)
+  Rendered layout layouts/application.html.erb (Duration: 20.6ms | Allocations: 17930)
+Completed 200 OK in 30ms (Views: 19.0ms | ActiveRecord: 4.4ms | Allocations: 21592)
+
+
+Started GET "/accounts" for ::1 at 2022-11-13 18:47:12 +0100
+Processing by AccountsController#index as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering accounts/index.html.erb within layouts/application
+  [1m[36mAccount Load (0.2ms)[0m  [1m[34mSELECT "account".* FROM "account"[0m
+  ↳ app/views/accounts/index.html.erb:6
+  Rendered accounts/_account.html.erb (Duration: 0.1ms | Allocations: 22)
+  Rendered accounts/_account.html.erb (Duration: 0.1ms | Allocations: 16)
+  Rendered accounts/_account.html.erb (Duration: 0.0ms | Allocations: 16)
+  Rendered accounts/_account.html.erb (Duration: 0.0ms | Allocations: 16)
+  Rendered accounts/index.html.erb within layouts/application (Duration: 3.2ms | Allocations: 1468)
+  Rendered layout layouts/application.html.erb (Duration: 6.3ms | Allocations: 3652)
+Completed 200 OK in 7ms (Views: 6.5ms | ActiveRecord: 0.2ms | Allocations: 3962)
+
+
+Started GET "/accounts/fc7e18a0-87c7-4db6-ac4d-16215e1b2de4" for ::1 at 2022-11-13 18:47:13 +0100
+Processing by AccountsController#show as HTML
+  Parameters: {"id"=>"fc7e18a0-87c7-4db6-ac4d-16215e1b2de4"}
+  [1m[36mAccount Load (0.2ms)[0m  [1m[34mSELECT "account".* FROM "account" WHERE "account"."id" = $1 LIMIT $2[0m  [["id", "fc7e18a0-87c7-4db6-ac4d-16215e1b2de4"], ["LIMIT", 1]]
+  ↳ app/controllers/accounts_controller.rb:63:in `set_account'
+  Rendering layout layouts/application.html.erb
+  Rendering accounts/show.html.erb within layouts/application
+  Rendered accounts/_account.html.erb (Duration: 0.1ms | Allocations: 17)
+  [1m[36mList Load (1.0ms)[0m  [1m[34mSELECT "list".* FROM "list" WHERE "list"."account_id" = $1[0m  [["account_id", "fc7e18a0-87c7-4db6-ac4d-16215e1b2de4"]]
+  ↳ app/views/accounts/show.html.erb:6
+  Rendered accounts/show.html.erb within layouts/application (Duration: 10.5ms | Allocations: 4567)
+  Rendered layout layouts/application.html.erb (Duration: 13.3ms | Allocations: 6858)
+Completed 200 OK in 15ms (Views: 11.4ms | ActiveRecord: 2.5ms | Allocations: 7650)
+
+
+Started GET "/lists/a34f9d99-37b3-4506-92f0-6b882ccb840a" for ::1 at 2022-11-13 18:47:15 +0100
+Processing by ListsController#show as HTML
+  Parameters: {"id"=>"a34f9d99-37b3-4506-92f0-6b882ccb840a"}
+  [1m[36mList Load (0.7ms)[0m  [1m[34mSELECT "list".* FROM "list" WHERE "list"."id" = $1 LIMIT $2[0m  [["id", "a34f9d99-37b3-4506-92f0-6b882ccb840a"], ["LIMIT", 1]]
+  ↳ app/controllers/lists_controller.rb:63:in `set_list'
+  Rendering layout layouts/application.html.erb
+  Rendering lists/show.html.erb within layouts/application
+  [1m[36mAccount Load (0.2ms)[0m  [1m[34mSELECT "account".* FROM "account" WHERE "account"."id" = $1 LIMIT $2[0m  [["id", "fc7e18a0-87c7-4db6-ac4d-16215e1b2de4"], ["LIMIT", 1]]
+  ↳ app/views/lists/_list.html.erb:4
+  Rendered lists/_list.html.erb (Duration: 2.7ms | Allocations: 1436)
+  [1m[36mTask Load (1.9ms)[0m  [1m[34mSELECT "task".* FROM "task" WHERE "task"."list_id" = $1[0m  [["list_id", "a34f9d99-37b3-4506-92f0-6b882ccb840a"]]
+  ↳ app/views/lists/show.html.erb:6
+  Rendered lists/show.html.erb within layouts/application (Duration: 18.6ms | Allocations: 8442)
+  Rendered layout layouts/application.html.erb (Duration: 27.4ms | Allocations: 10816)
+Completed 200 OK in 32ms (Views: 24.8ms | ActiveRecord: 4.8ms | Allocations: 12448)
+
+
+Started GET "/lists" for ::1 at 2022-11-13 18:47:17 +0100
+Processing by ListsController#index as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering lists/index.html.erb within layouts/application
+  [1m[36mList Load (0.2ms)[0m  [1m[34mSELECT "list".* FROM "list"[0m
+  ↳ app/views/lists/index.html.erb:6
+  [1m[36mAccount Load (0.1ms)[0m  [1m[34mSELECT "account".* FROM "account" WHERE "account"."id" = $1 LIMIT $2[0m  [["id", "fc7e18a0-87c7-4db6-ac4d-16215e1b2de4"], ["LIMIT", 1]]
+  ↳ app/views/lists/_list.html.erb:4
+  Rendered lists/_list.html.erb (Duration: 1.5ms | Allocations: 755)
+  Rendered lists/index.html.erb within layouts/application (Duration: 4.5ms | Allocations: 2037)
+  Rendered layout layouts/application.html.erb (Duration: 7.3ms | Allocations: 4221)
+Completed 200 OK in 9ms (Views: 7.4ms | ActiveRecord: 0.4ms | Allocations: 4626)
+
+
+Started GET "/lists/new" for ::1 at 2022-11-13 18:47:19 +0100
+Processing by ListsController#new as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering lists/new.html.erb within layouts/application
+  [1m[36mAccount Load (0.2ms)[0m  [1m[34mSELECT "account".* FROM "account"[0m
+  ↳ app/views/lists/_form.html.erb:2
+  Rendered lists/_form.html.erb (Duration: 15.3ms | Allocations: 15957)
+  Rendered lists/new.html.erb within layouts/application (Duration: 16.6ms | Allocations: 16253)
+  Rendered layout layouts/application.html.erb (Duration: 19.5ms | Allocations: 18541)
+Completed 200 OK in 21ms (Views: 19.7ms | ActiveRecord: 0.2ms | Allocations: 18906)
+
+
+Started POST "/lists" for ::1 at 2022-11-13 18:47:21 +0100
+Processing by ListsController#create as TURBO_STREAM
+  Parameters: {"authenticity_token"=>"[FILTERED]", "list"=>{"account_id"=>"fc7e18a0-87c7-4db6-ac4d-16215e1b2de4", "name"=>"liste 10"}, "commit"=>"Create List"}
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN[0m
+  ↳ app/controllers/lists_controller.rb:27:in `block in create'
+  [1m[36mAccount Load (0.2ms)[0m  [1m[34mSELECT "account".* FROM "account" WHERE "account"."id" = $1 LIMIT $2[0m  [["id", "fc7e18a0-87c7-4db6-ac4d-16215e1b2de4"], ["LIMIT", 1]]
+  ↳ app/controllers/lists_controller.rb:27:in `block in create'
+  [1m[36mList Create (3.8ms)[0m  [1m[32mINSERT INTO "list" ("account_id", "name", "creation_date") VALUES ($1, $2, $3) RETURNING "id"[0m  [["account_id", "fc7e18a0-87c7-4db6-ac4d-16215e1b2de4"], ["name", "liste 10"], ["creation_date", "2022-11-13 17:47:21.929556"]]
+  ↳ app/controllers/lists_controller.rb:27:in `block in create'
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mCOMMIT[0m
+  ↳ app/controllers/lists_controller.rb:27:in `block in create'
+Redirected to http://localhost:3000/lists/0b795c4a-56aa-466c-9f69-8f160a7ffa3d
+Completed 302 Found in 10ms (ActiveRecord: 4.3ms | Allocations: 3793)
+
+
+Started GET "/lists/0b795c4a-56aa-466c-9f69-8f160a7ffa3d" for ::1 at 2022-11-13 18:47:21 +0100
+Processing by ListsController#show as TURBO_STREAM
+  Parameters: {"id"=>"0b795c4a-56aa-466c-9f69-8f160a7ffa3d"}
+  [1m[36mList Load (0.2ms)[0m  [1m[34mSELECT "list".* FROM "list" WHERE "list"."id" = $1 LIMIT $2[0m  [["id", "0b795c4a-56aa-466c-9f69-8f160a7ffa3d"], ["LIMIT", 1]]
+  ↳ app/controllers/lists_controller.rb:63:in `set_list'
+  Rendering layout layouts/application.html.erb
+  Rendering lists/show.html.erb within layouts/application
+  [1m[36mAccount Load (0.1ms)[0m  [1m[34mSELECT "account".* FROM "account" WHERE "account"."id" = $1 LIMIT $2[0m  [["id", "fc7e18a0-87c7-4db6-ac4d-16215e1b2de4"], ["LIMIT", 1]]
+  ↳ app/views/lists/_list.html.erb:4
+  Rendered lists/_list.html.erb (Duration: 1.2ms | Allocations: 756)
+  [1m[36mTask Load (0.2ms)[0m  [1m[34mSELECT "task".* FROM "task" WHERE "task"."list_id" = $1[0m  [["list_id", "0b795c4a-56aa-466c-9f69-8f160a7ffa3d"]]
+  ↳ app/views/lists/show.html.erb:6
+  Rendered lists/show.html.erb within layouts/application (Duration: 3.1ms | Allocations: 2067)
+  Rendered layout layouts/application.html.erb (Duration: 5.7ms | Allocations: 4251)
+Completed 200 OK in 8ms (Views: 5.8ms | ActiveRecord: 0.5ms | Allocations: 5047)
+
+
+Started GET "/lists" for ::1 at 2022-11-13 18:47:24 +0100
+Processing by ListsController#index as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering lists/index.html.erb within layouts/application
+  [1m[36mList Load (0.2ms)[0m  [1m[34mSELECT "list".* FROM "list"[0m
+  ↳ app/views/lists/index.html.erb:6
+  [1m[36mAccount Load (0.1ms)[0m  [1m[34mSELECT "account".* FROM "account" WHERE "account"."id" = $1 LIMIT $2[0m  [["id", "fc7e18a0-87c7-4db6-ac4d-16215e1b2de4"], ["LIMIT", 1]]
+  ↳ app/views/lists/_list.html.erb:4
+  Rendered lists/_list.html.erb (Duration: 1.4ms | Allocations: 748)
+  [1m[36mCACHE Account Load (0.0ms)[0m  [1m[34mSELECT "account".* FROM "account" WHERE "account"."id" = $1 LIMIT $2[0m  [["id", "fc7e18a0-87c7-4db6-ac4d-16215e1b2de4"], ["LIMIT", 1]]
+  ↳ app/views/lists/_list.html.erb:4
+  Rendered lists/_list.html.erb (Duration: 1.0ms | Allocations: 687)
+  Rendered lists/index.html.erb within layouts/application (Duration: 4.5ms | Allocations: 2520)
+  Rendered layout layouts/application.html.erb (Duration: 7.5ms | Allocations: 4708)
+Completed 200 OK in 8ms (Views: 7.5ms | ActiveRecord: 0.4ms | Allocations: 4980)
+
+
+Started GET "/tasks" for ::1 at 2022-11-13 18:47:29 +0100
+Processing by TasksController#index as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering tasks/index.html.erb within layouts/application
+  [1m[36mTask Load (0.2ms)[0m  [1m[34mSELECT "task".* FROM "task"[0m
+  ↳ app/views/tasks/index.html.erb:6
+  [1m[36mList Load (0.2ms)[0m  [1m[34mSELECT "list".* FROM "list" WHERE "list"."id" = $1 LIMIT $2[0m  [["id", "a34f9d99-37b3-4506-92f0-6b882ccb840a"], ["LIMIT", 1]]
+  ↳ app/views/tasks/_task.html.erb:4
+  Rendered tasks/_task.html.erb (Duration: 3.1ms | Allocations: 1260)
+  Rendered tasks/index.html.erb within layouts/application (Duration: 6.3ms | Allocations: 2825)
+  Rendered layout layouts/application.html.erb (Duration: 9.6ms | Allocations: 5216)
+Completed 200 OK in 12ms (Views: 10.7ms | ActiveRecord: 0.5ms | Allocations: 6080)
+
+
+Started GET "/tasks/new" for ::1 at 2022-11-13 18:47:32 +0100
+Processing by TasksController#new as HTML
+  Rendering layout layouts/application.html.erb
+  Rendering tasks/new.html.erb within layouts/application
+  [1m[36mList Load (0.2ms)[0m  [1m[34mSELECT "list".* FROM "list"[0m
+  ↳ app/views/tasks/_form.html.erb:2
+  Rendered tasks/_form.html.erb (Duration: 76.0ms | Allocations: 22294)
+  Rendered tasks/new.html.erb within layouts/application (Duration: 77.4ms | Allocations: 22593)
+  Rendered layout layouts/application.html.erb (Duration: 80.3ms | Allocations: 24898)
+Completed 200 OK in 82ms (Views: 80.5ms | ActiveRecord: 0.2ms | Allocations: 25283)
+
+
+Started POST "/tasks" for ::1 at 2022-11-13 18:47:37 +0100
+Processing by TasksController#create as TURBO_STREAM
+  Parameters: {"authenticity_token"=>"[FILTERED]", "task"=>{"list_id"=>"0b795c4a-56aa-466c-9f69-8f160a7ffa3d", "name"=>"azerfdgh", "description"=>"esdf"}, "commit"=>"Create Task"}
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  ↳ app/controllers/tasks_controller.rb:27:in `block in create'
+  [1m[36mList Load (0.2ms)[0m  [1m[34mSELECT "list".* FROM "list" WHERE "list"."id" = $1 LIMIT $2[0m  [["id", "0b795c4a-56aa-466c-9f69-8f160a7ffa3d"], ["LIMIT", 1]]
+  ↳ app/controllers/tasks_controller.rb:27:in `block in create'
+  [1m[36mTask Create (0.9ms)[0m  [1m[32mINSERT INTO "task" ("list_id", "name", "description", "creation_date") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["list_id", "0b795c4a-56aa-466c-9f69-8f160a7ffa3d"], ["name", "azerfdgh"], ["description", "esdf"], ["creation_date", "2022-11-13 17:47:37.753867"]]
+  ↳ app/controllers/tasks_controller.rb:27:in `block in create'
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[35mCOMMIT[0m
+  ↳ app/controllers/tasks_controller.rb:27:in `block in create'
+Redirected to http://localhost:3000/tasks/1b0027b0-3db0-4376-8a3f-6b75eb8e317b
+Completed 302 Found in 8ms (ActiveRecord: 1.6ms | Allocations: 3707)
+
+
+Started GET "/tasks/1b0027b0-3db0-4376-8a3f-6b75eb8e317b" for ::1 at 2022-11-13 18:47:37 +0100
+Processing by TasksController#show as TURBO_STREAM
+  Parameters: {"id"=>"1b0027b0-3db0-4376-8a3f-6b75eb8e317b"}
+  [1m[36mTask Load (0.2ms)[0m  [1m[34mSELECT "task".* FROM "task" WHERE "task"."id" = $1 LIMIT $2[0m  [["id", "1b0027b0-3db0-4376-8a3f-6b75eb8e317b"], ["LIMIT", 1]]
+  ↳ app/controllers/tasks_controller.rb:63:in `set_task'
+  Rendering layout layouts/application.html.erb
+  Rendering tasks/show.html.erb within layouts/application
+  [1m[36mList Load (0.2ms)[0m  [1m[34mSELECT "list".* FROM "list" WHERE "list"."id" = $1 LIMIT $2[0m  [["id", "0b795c4a-56aa-466c-9f69-8f160a7ffa3d"], ["LIMIT", 1]]
+  ↳ app/views/tasks/_task.html.erb:4
+  Rendered tasks/_task.html.erb (Duration: 1.6ms | Allocations: 762)
+  Rendered tasks/show.html.erb within layouts/application (Duration: 3.6ms | Allocations: 1632)
+  Rendered layout layouts/application.html.erb (Duration: 6.4ms | Allocations: 3807)
+Completed 200 OK in 9ms (Views: 6.7ms | ActiveRecord: 0.5ms | Allocations: 4863)
+
+
+Started GET "/lists/0b795c4a-56aa-466c-9f69-8f160a7ffa3d" for ::1 at 2022-11-13 18:47:39 +0100
+Processing by ListsController#show as HTML
+  Parameters: {"id"=>"0b795c4a-56aa-466c-9f69-8f160a7ffa3d"}
+  [1m[36mList Load (0.2ms)[0m  [1m[34mSELECT "list".* FROM "list" WHERE "list"."id" = $1 LIMIT $2[0m  [["id", "0b795c4a-56aa-466c-9f69-8f160a7ffa3d"], ["LIMIT", 1]]
+  ↳ app/controllers/lists_controller.rb:63:in `set_list'
+  Rendering layout layouts/application.html.erb
+  Rendering lists/show.html.erb within layouts/application
+  [1m[36mAccount Load (0.2ms)[0m  [1m[34mSELECT "account".* FROM "account" WHERE "account"."id" = $1 LIMIT $2[0m  [["id", "fc7e18a0-87c7-4db6-ac4d-16215e1b2de4"], ["LIMIT", 1]]
+  ↳ app/views/lists/_list.html.erb:4
+  Rendered lists/_list.html.erb (Duration: 1.5ms | Allocations: 745)
+  [1m[36mTask Load (0.2ms)[0m  [1m[34mSELECT "task".* FROM "task" WHERE "task"."list_id" = $1[0m  [["list_id", "0b795c4a-56aa-466c-9f69-8f160a7ffa3d"]]
+  ↳ app/views/lists/show.html.erb:6
+  Rendered lists/show.html.erb within layouts/application (Duration: 3.8ms | Allocations: 2089)
+  Rendered layout layouts/application.html.erb (Duration: 6.7ms | Allocations: 4263)
+Completed 200 OK in 9ms (Views: 6.7ms | ActiveRecord: 0.6ms | Allocations: 5021)
+
+

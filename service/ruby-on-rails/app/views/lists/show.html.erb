@@ -1,0 +1,16 @@
+<p style="color: green"><%= notice %></p>
+
+<%= render @list %>
+
+<ul>
+  <% @list.tasks.each do |task| %>
+    <li><%= link_to task, task %></li>
+  <% end %>
+</ul>
+
+<div>
+  <%= link_to "Edit this list", edit_list_path(@list) %> |
+  <%= link_to "Back to lists", lists_path %>
+
+  <%= button_to "Destroy this list", @list, method: :delete %>
+</div>
