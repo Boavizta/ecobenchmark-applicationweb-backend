@@ -1,8 +1,11 @@
 package com.ecobenchmark.controllers.getlists;
 
+import io.quarkus.runtime.annotations.RegisterForReflection;
+
 import java.time.Instant;
 import java.util.UUID;
 
+@RegisterForReflection
 public class TaskResponse {
 
     private UUID id;

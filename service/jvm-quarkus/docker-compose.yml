@@ -16,10 +16,10 @@ services:
       - "/config/scenario.js"
 
   service:
-    image: quarkus/jvm-quarkus-jvm:latest
+    image: quarkus/jvm-quarkus-native:latest
     build:
       context: .
-      dockerfile: src/main/docker/Dockerfile.jvm
+      dockerfile: src/main/docker/Dockerfile.native
     depends_on:
       - database
     environment:

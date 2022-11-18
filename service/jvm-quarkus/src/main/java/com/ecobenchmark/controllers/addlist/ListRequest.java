@@ -1,5 +1,8 @@
 package com.ecobenchmark.controllers.addlist;
 
+import io.quarkus.runtime.annotations.RegisterForReflection;
+
+@RegisterForReflection
 public class ListRequest {
 
     private String name;

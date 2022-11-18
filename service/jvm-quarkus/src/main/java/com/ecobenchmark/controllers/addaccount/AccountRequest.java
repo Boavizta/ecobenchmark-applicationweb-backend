@@ -1,10 +1,12 @@
 package com.ecobenchmark.controllers.addaccount;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.quarkus.runtime.annotations.RegisterForReflection;
 
 import java.time.Instant;
 import java.util.UUID;
 
+@RegisterForReflection
 public class AccountRequest {
 
     private UUID id;

@@ -1,10 +1,12 @@
 package com.ecobenchmark.controllers.addtask;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.quarkus.runtime.annotations.RegisterForReflection;
 
 import java.time.Instant;
 import java.util.UUID;
 
+@RegisterForReflection
 public class TaskResponse {
 
     private UUID id;
