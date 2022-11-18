@@ -32,6 +32,22 @@ impl From<sqlx::Error> for Error {
                 code: StatusCode::NOT_FOUND,
                 message: "Entity not found.".into(),
             },
+            sqlx::Error::Database(inner) => {
+                // violates foreign key
+                let invalid_constraint =
+                    inner.code().map(|v| v.as_ref() == "23503").unwrap_or(false);
+                if invalid_constraint {
+                    Self {
+                        code: StatusCode::NOT_FOUND,
+                        message: "Entity not found".into(),
+                    }
+                } else {
+                    Self {
+                        code: StatusCode::INTERNAL_SERVER_ERROR,
+                        message: "Internal server error.".into(),
+                    }
+                }
+            }
             _ => Self {
                 code: StatusCode::INTERNAL_SERVER_ERROR,
                 message: "Internal server error.".into(),
