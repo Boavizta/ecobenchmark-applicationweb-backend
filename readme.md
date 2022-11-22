@@ -28,7 +28,7 @@ Each image can be built using the following command.
 docker run -d \
   --name eco-benchmark-database \
   # to run the migrations when starting the database
-  --volume $(pwd)/migrations:/docker-entrypoint-initdb:ro \
+  --volume $(pwd)/migrations:/docker-entrypoint-initdb.d:ro \
   --port 5432:5432 \
   -e POSTGRES_PASSWORD=mysecretpassword \
   # today, the 30th of april 2022, this is the latest release

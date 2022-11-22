@@ -229,16 +229,16 @@ components:
     AccountStatistic:
       type: object
       properties:
-        id:
+        accountId:
           type: string
           format: uuid
           example: d290f1ee-6c54-4b01-90e6-d701748f0851
-        login:
+        accountLogin:
           type: string
           example: My Personal Account
-        nb_list:
+        listCount:
           type: number
           example: 42
-        avg_tasks:
+        taskAvg:
           type: number
           example: 1337

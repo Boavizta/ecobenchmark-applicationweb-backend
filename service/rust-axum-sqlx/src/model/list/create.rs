@@ -1,7 +1,6 @@
 use uuid::Uuid;
 
 #[derive(serde::Deserialize)]
-#[serde(deny_unknown_fields)]
 pub struct ListCreate {
     name: String,
 }

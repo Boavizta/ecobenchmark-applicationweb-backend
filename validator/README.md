@@ -1,18 +1,10 @@
-services:
-  runner:
-    image: jdrouet/eco-benchmark:runner-default
-    build: ../../runner
-    command:
-      - run
-      - "--vus"
-      - "2"
-      - "--duration"
-      - "1m"
-      - "--env"
-      - "SERVER_HOST=service:8080"
-      - "/config/scenario.js"
-    depends_on:
-      - service
+# Validator container
+
+This container uses [k6](https://k6.io/) to test that the service follows the same rules than the other services.
+
+You can embed this validator in the docker-compose for the service you're working on as follow
+
+```yaml
 
   validator:
     image: grafana/k6
@@ -52,3 +44,6 @@ services:
       timeout: 1s
       retries: 20
     restart: unless-stopped
+```
+
+And the you can run `docker-compose up -d --build service` to start the service freshly built and then run `docker-compose run validator` to make sure everything works as expected.

@@ -1,0 +1,14 @@
+* @jdrouet @youenchene
+/builder/ @jdrouet
+/migrations/ @jdrouet @youenchene
+/results/ecobenchmark.ipynb @youenchene
+/runner/ @jdrouet
+/script/ @jdrouet
+/service/go-pgx/ @youenchene
+/service/jvm-kotlin-spring/ @youenchene
+/service/node-express-sequelize/ @jdrouet
+/service/php-symfony/ @youenchene
+/service/rust-actix-native/ @jdrouet
+/service/rust-actix-sqlx/ @jdrouet
+/service/rust-axum-sqlx/ @jdrouet
+/validator/ @jdrouet
