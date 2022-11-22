@@ -1,10 +1,12 @@
 package com.ecobenchmark.controllers.getlists;
 
+import io.quarkus.hibernate.reactive.panache.common.runtime.ReactiveTransactional;
+import io.smallrye.mutiny.Uni;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
-import javax.transaction.Transactional;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 import java.util.LinkedHashMap;
@@ -23,8 +25,8 @@ public class GetListsResource {
 
     @GET
     @Path("/{id}/lists")
-    @Transactional
-    public Response getLists(@PathParam("id") UUID accountId, @QueryParam("page") int page) {
+    @ReactiveTransactional
+    public Uni<Response> getLists(@PathParam("id") UUID accountId, @QueryParam("page") int page) {
 
         Query nativeQuery = entityManager.createNativeQuery("""
                 SELECT
@@ -62,7 +64,7 @@ public class GetListsResource {
 
         }
 
-        return Response.ok(listResponseMap.values()).build();
+        return Uni.createFrom().item(Response.ok(listResponseMap.values()).build());
     }
 
 

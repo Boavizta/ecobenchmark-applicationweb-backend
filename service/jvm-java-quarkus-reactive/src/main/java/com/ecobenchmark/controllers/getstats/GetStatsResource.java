@@ -1,5 +1,8 @@
 package com.ecobenchmark.controllers.getstats;
 
+import io.quarkus.hibernate.reactive.panache.common.runtime.ReactiveTransactional;
+import io.smallrye.mutiny.Uni;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -18,7 +21,8 @@ public class GetStatsResource {
     private EntityManager entityManager;
 
     @GET
-    public List<StatsResponse> getStats(){
+    @ReactiveTransactional
+    public Uni<List<StatsResponse>> getStats(){
         Query nativeQuery = entityManager.createNativeQuery("""
             SELECT
                 id,
@@ -38,7 +42,7 @@ public class GetStatsResource {
             ) t
             GROUP BY id, login""".trim(), "StatsResponseMapping");
 
-        return nativeQuery.getResultList();
+        return Uni.createFrom().item(nativeQuery.getResultList());
 
     }
 }

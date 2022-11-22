@@ -1,5 +1,7 @@
 package com.ecobenchmark.controllers;
 
+import io.smallrye.mutiny.Uni;
+
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
@@ -8,7 +10,7 @@ import javax.ws.rs.core.Response;
 public class Healthcheck {
 
     @GET
-    public Response healthcheck() {
-        return Response.noContent().build();
+    public Uni<Response> healthcheck() {
+        return Uni.createFrom().item(Response.noContent().build());
     }
 }

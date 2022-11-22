@@ -2,10 +2,11 @@ package com.ecobenchmark.controllers.addaccount;
 
 import com.ecobenchmark.entities.Account;
 import com.ecobenchmark.repositories.AccountRepository;
+import io.quarkus.hibernate.reactive.panache.common.runtime.ReactiveTransactional;
+import io.smallrye.mutiny.Uni;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.transaction.Transactional;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -25,11 +26,13 @@ public class AddAccountResource {
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    @Transactional
-    public AccountResponse addAccount(AccountRequest accountRequest) {
+    @ReactiveTransactional
+    public Uni<AccountResponse> addAccount(AccountRequest accountRequest) {
         Account account = new Account(accountRequest.getLogin(), Instant.now(), emptyList());
-        accountRepository.persist(account);
+        return accountRepository.persist(account).onItem().transform(this::getAccountResponse);
+    }
 
-        return new AccountResponse(account.getId(), account.getLogin(), account.getCreationDate());
+    private AccountResponse getAccountResponse(Account newAccount) {
+        return new AccountResponse(newAccount.getId(), newAccount.getLogin(), newAccount.getCreationDate());
     }
 }

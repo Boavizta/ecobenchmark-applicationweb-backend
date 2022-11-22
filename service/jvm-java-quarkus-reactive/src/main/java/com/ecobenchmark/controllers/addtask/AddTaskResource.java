@@ -4,14 +4,14 @@ import com.ecobenchmark.entities.ListEntity;
 import com.ecobenchmark.entities.Task;
 import com.ecobenchmark.repositories.ListEntityRepository;
 import com.ecobenchmark.repositories.TaskRepository;
+import io.quarkus.hibernate.reactive.panache.common.runtime.ReactiveTransactional;
+import io.smallrye.mutiny.Uni;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.transaction.Transactional;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 import java.time.Instant;
-import java.util.Optional;
 import java.util.UUID;
 
 @Path("/api/lists")
@@ -28,14 +28,26 @@ public class AddTaskResource {
 
     @POST
     @Path("/{id}/tasks")
-    @Transactional
-    public Response addTask(@PathParam("id") UUID listId, TaskRequest taskRequest) {
-        Optional<ListEntity> list = listEntityRepository.findByIdOptional(listId);
-        if(list.isEmpty()){
-            return Response.status(Response.Status.BAD_REQUEST).build();
-        }
-        Task task = new Task(taskRequest.getName(), taskRequest.getDescription(), Instant.now(),list.get());
-        taskRepository.persist(task);
-        return Response.ok().entity(new TaskResponse(task.getId(), task.getList().getId(), task.getName(), task.getDescription(), task.getCreationDate())).build();
+    @ReactiveTransactional
+    public Uni<Response> addTask(@PathParam("id") UUID listId, TaskRequest taskRequest) {
+        return listEntityRepository.findById(listId)
+                .onItem().ifNotNull().transformToUni(listEntity -> createTask(listEntity, taskRequest))
+                .onItem().ifNull().continueWith(this::listNotFound)
+                .onFailure()
+                .recoverWithItem(f-> Response.serverError().entity(f.getMessage()).build());
+    }
+
+    private Uni<Response> createTask(ListEntity listEntity, TaskRequest taskRequest) {
+        Task task = new Task(taskRequest.getName(), taskRequest.getDescription(), Instant.now(),listEntity);
+        return taskRepository.persist(task).onItem().transform(this::getTaskResponse);
+    }
+
+    private Response getTaskResponse(Task item) {
+        TaskResponse taskResponse = new TaskResponse(item.getId(), item.getList().getId(), item.getName(), item.getDescription(), item.getCreationDate());
+        return Response.ok().entity(taskResponse).build();
+    }
+
+    private Response listNotFound() {
+        return Response.status(Response.Status.BAD_REQUEST).build();
     }
 }
