@@ -40,14 +40,15 @@ export DATABASE_URL=postgresql://postgres:mysecretpassword@127.0.0.1:5432/postgr
 
 ## Use Case Status
 
-| Langage       | Reference (main) | No Index | ORM Loop | MySQL | GRPC | No Pagination | Aggregation on code side |
-|---------------|------------------|----------|----------|-------|------|---------------|--------------------------|
-| Go Lang       | X                | X        | X        | X     | X    | X             | X                        |
-| Rust          | X                | X        | X        |       |      | X             | X                        |
-| PHP (Symfony) | X                | X        | X        | X     | N/A  | X             | X                        |
-| JVM/Kotlin    | X                | X        | X        | X     | X    | X             | X                        |
-| Node.js       | X                | X        | X        | X     |      | X             | X                        |
-| Ruby On Rails |                  |          |          |       |      |               |                          |
+| Langage            | Reference (main) | No Index | ORM Loop | MySQL | GRPC | No Pagination | Aggregation on code side |
+|--------------------|------------------|----------|----------|-------|------|---------------|--------------------------|
+| Go Lang            | X                | X        | X        | X     | X    | X             | X                        |
+| Rust               | X                | X        | X        |       |      | X             | X                        |
+| PHP (Symfony)      | X                | X        | X        | X     | N/A  | X             | X                        |
+| JVM/Kotlin         | X                | X        | X        | X     | X    | X             | X                        |
+| Node.js            | X                | X        | X        | X     |      | X             | X                        |
+| Ruby On Rails      |                  |          |          |       |      |               |                          |
+| JVM/Java (Quarkus) | X                |          |          |       |      |               |                          |
 
 ## Use Case Documentation
 
