@@ -1,22 +1,11 @@
 package com.ecobenchmark.entities;
 
-import com.ecobenchmark.controllers.getstats.StatsResponse;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.time.Instant;
 import java.util.UUID;
 
-@SqlResultSetMapping(
-        name = "StatsResponseMapping",
-        classes = {
-                @ConstructorResult(
-                        targetClass = StatsResponse.class,
-                        columns = {
-                                @ColumnResult(name = "id" ,type = UUID.class),
-                                @ColumnResult(name = "login", type = String.class),
-                                @ColumnResult(name = "nb_list", type = Integer.class),
-                                @ColumnResult(name = "avg_tasks", type = Float.class)})})
 @Entity
 public class Task {
 
