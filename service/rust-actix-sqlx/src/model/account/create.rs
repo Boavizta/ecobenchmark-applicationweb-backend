@@ -1,4 +1,5 @@
 #[derive(serde::Deserialize)]
+#[serde(deny_unknown_fields)]
 pub struct AccountCreate {
     login: String,
 }

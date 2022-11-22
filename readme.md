@@ -28,7 +28,7 @@ Each image can be built using the following command.
 docker run -d \
   --name eco-benchmark-database \
   # to run the migrations when starting the database
-  --volume $(pwd)/migrations:/docker-entrypoint-initdb:ro \
+  --volume $(pwd)/migrations:/docker-entrypoint-initdb.d:ro \
   --port 5432:5432 \
   -e POSTGRES_PASSWORD=mysecretpassword \
   # today, the 30th of april 2022, this is the latest release
@@ -40,14 +40,15 @@ export DATABASE_URL=postgresql://postgres:mysecretpassword@127.0.0.1:5432/postgr
 
 ## Use Case Status
 
-| Langage       | Reference (main) | No Index | ORM Loop | MySQL | GRPC | No Pagination | Aggregation on code side |
-|---------------|------------------|----------|----------|-------|------|---------------|--------------------------|
-| Go Lang       | X                | X        | X        | X     | X    | X             | X                        |
-| Rust          | X                | X        | X        |       |      | X             | X                        |
-| PHP (Symfony) | X                | X        | X        | X     | N/A  | X             | X                        |
-| JVM/Kotlin    | X                | X        | X        | X     | X    | X             | X                        |
-| Node.js       | X                | X        | X        | X     |      | X             | X                        |
-| Ruby On Rails |                  |          |          |       |      |               |                          |
+| Langage            | Reference (main) | No Index | ORM Loop | MySQL | GRPC | No Pagination | Aggregation on code side |
+|--------------------|------------------|----------|----------|-------|------|---------------|--------------------------|
+| Go Lang            | X                | X        | X        | X     | X    | X             | X                        |
+| Rust               | X                | X        | X        |       |      | X             | X                        |
+| PHP (Symfony)      | X                | X        | X        | X     | N/A  | X             | X                        |
+| JVM/Kotlin         | X                | X        | X        | X     | X    | X             | X                        |
+| Node.js            | X                | X        | X        | X     |      | X             | X                        |
+| Ruby On Rails      |                  |          |          |       |      |               |                          |
+| JVM/Java (Quarkus) | X                |          |          |       |      |               |                          |
 
 ## Use Case Documentation
 

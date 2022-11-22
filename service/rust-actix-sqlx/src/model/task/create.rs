@@ -1,6 +1,7 @@
 use uuid::Uuid;
 
 #[derive(serde::Deserialize)]
+#[serde(deny_unknown_fields)]
 pub struct TaskCreate {
     name: String,
     description: String,

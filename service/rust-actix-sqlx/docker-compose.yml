@@ -14,6 +14,21 @@ services:
     depends_on:
       - service
 
+  validator:
+    image: grafana/k6
+    build: ../../validator
+    command:
+      - run
+      - "--iterations"
+      - "1"
+      - "--env"
+      - "SERVER_HOST=service:8080"
+      - "/config/scenario.js"
+    volumes:
+      - ../../validator:/config:ro
+    depends_on:
+      - service
+
   service:
     image: jdrouet/eco-benchmark:service-rust-actix-sqlx-default
     build: .
@@ -22,6 +37,8 @@ services:
     environment:
       - DATABASE_URL=postgres://postgres:mysecretpassword@database:5432/postgres
       - DATABASE_POOL_MAX=20
+    ports:
+      - 8080:8080
     restart: unless-stopped
 
   database:
