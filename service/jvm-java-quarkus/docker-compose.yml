@@ -16,7 +16,7 @@ services:
       - "/config/scenario.js"
 
   service:
-    image: quarkus/jvm-java-quarkus-jvm:latest
+    image: quarkus/jvm-java-quarkus:latest
     build:
       context: .
       dockerfile: src/main/docker/Dockerfile.jvm
