@@ -7,11 +7,11 @@
 #
 # Then, build the image with:
 #
-# docker build -f src/main/docker/Dockerfile.native -t quarkus/jvm-quarkus-native .
+# docker build -f src/main/docker/Dockerfile.native -t quarkus/jvm-java-quarkus-reactive-native .
 #
 # Then run the container using:
 #
-# docker run -i --rm -p 8080:8080 quarkus/jvm-quarkus
+# docker run -i --rm -p 8080:8080 quarkus/jvm-java-quarkus-reactive
 #
 ###
 FROM registry.access.redhat.com/ubi8/ubi-minimal:8.5
