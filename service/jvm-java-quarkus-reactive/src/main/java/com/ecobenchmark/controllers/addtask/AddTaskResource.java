@@ -21,10 +21,10 @@ import java.util.UUID;
 public class AddTaskResource {
 
     @Inject
-    private ListEntityRepository listEntityRepository;
+    ListEntityRepository listEntityRepository;
 
     @Inject
-    private TaskRepository taskRepository;
+    TaskRepository taskRepository;
 
     @POST
     @Path("/{id}/tasks")

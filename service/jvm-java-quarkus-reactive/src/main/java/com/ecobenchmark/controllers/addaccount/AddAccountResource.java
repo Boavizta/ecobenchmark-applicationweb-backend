@@ -13,6 +13,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import java.time.Instant;
+import java.time.OffsetDateTime;
 
 import static java.util.Collections.emptyList;
 
@@ -21,7 +22,7 @@ import static java.util.Collections.emptyList;
 public class AddAccountResource {
 
     @Inject
-    private AccountRepository accountRepository;
+    AccountRepository accountRepository;
 
     @POST
     @Produces(MediaType.APPLICATION_JSON)

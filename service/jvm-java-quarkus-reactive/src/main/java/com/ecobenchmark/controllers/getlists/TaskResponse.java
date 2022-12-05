@@ -1,5 +1,7 @@
 package com.ecobenchmark.controllers.getlists;
 
+import io.vertx.mutiny.sqlclient.Row;
+
 import java.time.Instant;
 import java.util.UUID;
 
@@ -18,6 +20,14 @@ public class TaskResponse {
         this.name = name;
         this.description = description;
         this.creationDate = creationDate;
+    }
+
+    public static TaskResponse from(Row row){
+        return new TaskResponse(
+                row.get(UUID.class,"task_id"),
+                row.get(String.class,"task_name"),
+                row.get(String.class,"task_description"),
+                row.get(Instant.class,"task_creation_date"));
     }
 
     public UUID getId() {

@@ -22,10 +22,10 @@ import java.util.UUID;
 public class AddListResource {
 
     @Inject
-    private ListEntityRepository listEntityRepository;
+    ListEntityRepository listEntityRepository;
 
     @Inject
-    private AccountRepository accountRepository;
+    AccountRepository accountRepository;
 
     @POST
     @Path("/{id}/lists")
