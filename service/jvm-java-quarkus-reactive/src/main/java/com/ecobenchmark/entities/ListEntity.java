@@ -1,8 +1,6 @@
 package com.ecobenchmark.entities;
 
 
-import com.ecobenchmark.controllers.getlists.ListResponse;
-import com.ecobenchmark.controllers.getlists.TaskResponse;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -11,24 +9,6 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity(name = "list")
-@SqlResultSetMapping(
-        name = "getListsResponseMapping",
-        classes = {
-                @ConstructorResult(
-                        targetClass = ListResponse.class,
-                        columns = {
-                                @ColumnResult(name = "id" ,type = UUID.class),
-                                @ColumnResult(name = "name", type = String.class),
-                                @ColumnResult(name = "creation_date", type = Instant.class),
-                                @ColumnResult(name = "account_id", type = UUID.class)}),
-                @ConstructorResult(
-                        targetClass = TaskResponse.class,
-                        columns = {
-                                @ColumnResult(name = "task_id" ,type = UUID.class),
-                                @ColumnResult(name = "task_name", type = String.class),
-                                @ColumnResult(name = "task_description", type = String.class),
-                                @ColumnResult(name = "task_creation_date", type = Instant.class)})
-        })
 public class ListEntity {
 
     @Id
