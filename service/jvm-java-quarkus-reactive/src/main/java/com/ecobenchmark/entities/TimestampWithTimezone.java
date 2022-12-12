@@ -10,6 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.Objects;
@@ -38,8 +39,8 @@ public class TimestampWithTimezone implements UserType {
 
     @Override
     public Object nullSafeGet(ResultSet resultSet, String[] names, SharedSessionContractImplementor sharedSessionContractImplementor, Object o) throws HibernateException, SQLException {
-        OffsetDateTime offsetDateTime = resultSet.getObject( names[0], OffsetDateTime.class );
-        return offsetDateTime == null || resultSet.wasNull() ? null : offsetDateTime.toInstant();
+        LocalDateTime localDateTime = resultSet.getObject( names[0], LocalDateTime.class );
+        return localDateTime == null || resultSet.wasNull() ? null : localDateTime.toInstant(ZoneOffset.UTC);
     }
 
     @Override

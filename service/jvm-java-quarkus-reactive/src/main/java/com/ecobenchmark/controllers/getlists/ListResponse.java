@@ -3,7 +3,9 @@ package com.ecobenchmark.controllers.getlists;
 
 import io.vertx.mutiny.sqlclient.Row;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -13,10 +15,10 @@ public class ListResponse {
     private UUID id;
     private String name;
     private List<TaskResponse> tasks = new ArrayList<>();
-    private LocalDateTime creationDate;
+    private Instant creationDate;
     private UUID accountId;
 
-    public ListResponse(UUID id, String name, LocalDateTime creationDate, UUID accountId) {
+    public ListResponse(UUID id, String name, Instant creationDate, UUID accountId) {
         this.id = id;
         this.name = name;
         this.creationDate = creationDate;
@@ -25,11 +27,11 @@ public class ListResponse {
     
     public static ListResponse from(Row row){
         LocalDateTime creationDate = row.get(LocalDateTime.class, "creation_date");
-
+        Instant creationDateInstant = creationDate != null ? creationDate.toInstant(ZoneOffset.UTC) : null;
         return new ListResponse(
         row.get(UUID.class,"id"),
         row.get(String.class,"name"),
-                creationDate,
+                creationDateInstant,
         row.get(UUID.class,"account_id"));
     }
 
@@ -57,11 +59,11 @@ public class ListResponse {
         this.tasks = tasks;
     }
 
-    public LocalDateTime getCreationDate() {
+    public Instant getCreationDate() {
         return creationDate;
     }
 
-    public void setCreationDate(LocalDateTime creationDate) {
+    public void setCreationDate(Instant creationDate) {
         this.creationDate = creationDate;
     }
 

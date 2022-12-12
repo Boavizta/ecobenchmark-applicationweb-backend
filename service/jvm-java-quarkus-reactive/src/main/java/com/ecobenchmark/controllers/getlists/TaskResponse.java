@@ -3,6 +3,8 @@ package com.ecobenchmark.controllers.getlists;
 import io.vertx.mutiny.sqlclient.Row;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.UUID;
 
 public class TaskResponse {
@@ -23,11 +25,13 @@ public class TaskResponse {
     }
 
     public static TaskResponse from(Row row){
+        LocalDateTime creationDate = row.get(LocalDateTime.class, "task_creation_date");
+        Instant creationDateInstant = creationDate != null ? creationDate.toInstant(ZoneOffset.UTC) : null;
         return new TaskResponse(
                 row.get(UUID.class,"task_id"),
                 row.get(String.class,"task_name"),
                 row.get(String.class,"task_description"),
-                row.get(Instant.class,"task_creation_date"));
+                creationDateInstant);
     }
 
     public UUID getId() {
