@@ -1,6 +1,7 @@
 package com.ecobenchmark.entities;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.time.Instant;
@@ -18,6 +19,7 @@ public class Task {
 
     private String description;
 
+    @Type(type = "com.ecobenchmark.entities.TimestampWithTimezone")
     @Column(name = "creation_date")
     private Instant creationDate;
 
