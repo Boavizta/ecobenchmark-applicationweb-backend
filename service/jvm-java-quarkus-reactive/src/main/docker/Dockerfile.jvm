@@ -75,16 +75,23 @@
 #   accessed directly. (example: "foo.example.com,bar.example.com")
 #
 ###
+FROM eclipse-temurin:17-jdk-jammy as build
+
+WORKDIR /workdir
+COPY .mvn/ .mvn
+COPY mvnw pom.xml ./
+COPY src ./src
+RUN ./mvnw package -Dmaven.test.skip=true
+
 FROM registry.access.redhat.com/ubi8/openjdk-17:1.11
 
 ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en'
 
-
 # We make four distinct layers so if there are application changes the library layers can be re-used
-COPY --chown=185 target/quarkus-app/lib/ /deployments/lib/
-COPY --chown=185 target/quarkus-app/*.jar /deployments/
-COPY --chown=185 target/quarkus-app/app/ /deployments/app/
-COPY --chown=185 target/quarkus-app/quarkus/ /deployments/quarkus/
+COPY --from=build --chown=185 /workdir/target/quarkus-app/lib/ /deployments/lib/
+COPY --from=build --chown=185 /workdir/target/quarkus-app/*.jar /deployments/
+COPY --from=build --chown=185 /workdir/target/quarkus-app/app/ /deployments/app/
+COPY --from=build --chown=185 /workdir/target/quarkus-app/quarkus/ /deployments/quarkus/
 
 EXPOSE 8080
 USER 185
