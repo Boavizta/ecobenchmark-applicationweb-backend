@@ -19,7 +19,7 @@ services:
     image: quarkus/jvm-java-quarkus-reactive:latest
     build:
       context: .
-      dockerfile: src/main/docker/Dockerfile.jvm
+      dockerfile: Dockerfile
     depends_on:
       - database
     environment:

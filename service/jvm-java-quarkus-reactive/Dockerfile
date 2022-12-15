@@ -7,18 +7,18 @@
 #
 # Then, build the image with:
 #
-# docker build -f src/main/docker/Dockerfile.jvm -t quarkus/jvm-java-quarkus .
+# docker build -f src/main/docker/Dockerfile.jvm -t quarkus/jvm-java-quarkus-reactive .
 #
 # Then run the container using:
 #
-# docker run -i --rm -p 8080:8080 quarkus/jvm-java-quarkus
+# docker run -i --rm -p 8080:8080 quarkus/jvm-java-quarkus-reactive
 #
 # If you want to include the debug port into your docker image
 # you will have to expose the debug port (default 5005) like this :  EXPOSE 8080 5005
 #
 # Then run the container using :
 #
-# docker run -i --rm -p 8080:8080 quarkus/jvm-java-quarkus
+# docker run -i --rm -p 8080:8080 quarkus/jvm-java-quarkus-reactive
 #
 # This image uses the `run-java.sh` script to run the application.
 # This scripts computes the command line to execute your Java application, and
@@ -86,7 +86,6 @@ RUN ./mvnw package -Dmaven.test.skip=true
 FROM registry.access.redhat.com/ubi8/openjdk-17:1.11
 
 ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en'
-
 
 # We make four distinct layers so if there are application changes the library layers can be re-used
 COPY --from=build --chown=185 /workdir/target/quarkus-app/lib/ /deployments/lib/
