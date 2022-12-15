@@ -7,18 +7,18 @@
 #
 # Then, build the image with:
 #
-# docker build -f src/main/docker/Dockerfile.jvm -t quarkus/jvm-java-quarkus .
+# docker build -f src/main/docker/Dockerfile.jvm -t mbras/jvm-java-quarkus .
 #
 # Then run the container using:
 #
-# docker run -i --rm -p 8080:8080 quarkus/jvm-java-quarkus
+# docker run -i --rm -p 8080:8080 mbras/jvm-java-quarkus
 #
 # If you want to include the debug port into your docker image
 # you will have to expose the debug port (default 5005) like this :  EXPOSE 8080 5005
 #
 # Then run the container using :
 #
-# docker run -i --rm -p 8080:8080 quarkus/jvm-java-quarkus
+# docker run -i --rm -p 8080:8080 mbras/jvm-java-quarkus
 #
 # This image uses the `run-java.sh` script to run the application.
 # This scripts computes the command line to execute your Java application, and
