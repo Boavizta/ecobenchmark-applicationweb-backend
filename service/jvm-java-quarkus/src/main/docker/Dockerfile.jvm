@@ -80,6 +80,7 @@ FROM eclipse-temurin:17-jdk-jammy as build
 WORKDIR /workdir
 COPY .mvn/ .mvn
 COPY mvnw pom.xml ./
+RUN ./mvnw -B org.apache.maven.plugins:maven-dependency-plugin:3.1.2:go-offline
 COPY src ./src
 RUN ./mvnw package -Dmaven.test.skip=true
 
