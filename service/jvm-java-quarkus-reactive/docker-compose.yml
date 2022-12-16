@@ -21,7 +21,8 @@ services:
       context: .
       dockerfile: Dockerfile
     depends_on:
-      - database
+      database:
+        condition: service_healthy
     environment:
       - QUARKUS_DATASOURCE_REACTIVE_URL=postgresql://database:5432/postgres
       - QUARKUS_DATASOURCE_DB-KIND=postgresql
