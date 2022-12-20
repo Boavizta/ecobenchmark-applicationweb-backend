@@ -6,6 +6,7 @@ use uuid::Uuid;
 pub mod create;
 
 #[derive(serde::Deserialize, serde::Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct Account {
     id: Uuid,
     login: String,
