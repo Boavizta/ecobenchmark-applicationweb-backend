@@ -19,7 +19,7 @@ public class Account {
     private String login;
 
     @Type(type = "com.ecobenchmark.entities.TimestampWithTimezone")
-    @Column(name = "creation_date")
+    @Column(name = "creation_date", columnDefinition = "timestamp with time zone not null")
     private Instant creationDate;
 
     @OneToMany(mappedBy = "account")
