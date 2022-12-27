@@ -16,7 +16,7 @@ services:
       - "/config/scenario.js"
 
   service:
-    image: mbras/jvm-java-quarkus:latest
+    image: mbras/native-java-quarkus:latest
     build:
       context: .
       dockerfile: Dockerfile
