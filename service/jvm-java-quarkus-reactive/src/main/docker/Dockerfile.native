@@ -7,14 +7,14 @@
 #
 # Then, build the image with:
 #
-# docker build -f src/main/docker/Dockerfile.native -t mbras/jvm-java-quarkus-reactive-native .
+# docker build -f src/main/docker/Dockerfile.native -t mbras/native-java-quarkus-reactive .
 #
 # Then run the container using:
 #
-# docker run -i --rm -p 8080:8080 mbras/jvm-java-quarkus-reactive
+# docker run -i --rm -p 8080:8080 mbras/native-java-quarkus-reactive
 #
 ###
-FROM registry.access.redhat.com/ubi8/ubi-minimal:8.5
+FROM registry.access.redhat.com/ubi8/ubi-minimal:8.6
 WORKDIR /work/
 RUN chown 1001 /work \
     && chmod "g+rwX" /work \
