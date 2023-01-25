@@ -16,7 +16,7 @@ services:
       - "/config/scenario.js"
 
   service:
-    image: mbras/native-java-quarkus:latest
+    image: jdrouet/eco-benchmark:service-native-java-quarkus-default
     build:
       context: .
       dockerfile: Dockerfile
