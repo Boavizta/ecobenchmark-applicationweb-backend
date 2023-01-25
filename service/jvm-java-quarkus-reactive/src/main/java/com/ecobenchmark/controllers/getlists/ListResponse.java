@@ -1,6 +1,7 @@
 package com.ecobenchmark.controllers.getlists;
 
 
+import io.quarkus.runtime.annotations.RegisterForReflection;
 import io.vertx.mutiny.sqlclient.Row;
 
 import java.time.Instant;
@@ -10,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+@RegisterForReflection
 public class ListResponse {
 
     private UUID id;

@@ -1,10 +1,12 @@
 package com.ecobenchmark.controllers.getstats;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.quarkus.runtime.annotations.RegisterForReflection;
 import io.vertx.mutiny.sqlclient.Row;
 
 import java.util.UUID;
 
+@RegisterForReflection
 public class StatsResponse {
 
     @JsonProperty("account_id")

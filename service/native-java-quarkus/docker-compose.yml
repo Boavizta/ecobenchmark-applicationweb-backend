@@ -1,0 +1,47 @@
+services:
+  runner:
+    image: jdrouet/eco-benchmark:runner-default
+    build: ../../runner
+    depends_on:
+      service:
+        condition: service_healthy
+    command:
+      - run
+      - "--vus"
+      - "2"
+      - "--duration"
+      - "1m"
+      - "--env"
+      - "SERVER_HOST=service:8080"
+      - "/config/scenario.js"
+
+  service:
+    image: mbras/native-java-quarkus:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      database:
+        condition: service_healthy
+    environment:
+      - QUARKUS_DATASOURCE_JDBC_URL=jdbc:postgresql://database:5432/postgres
+      - QUARKUS_DATASOURCE_USERNAME=postgres
+      - QUARKUS_DATASOURCE_PASSWORD=mysecretpassword
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://service:8080/healthcheck"]
+      interval: 3s
+      timeout: 1s
+      retries: 20
+    restart: unless-stopped
+
+  database:
+    image: jdrouet/eco-benchmark:database-default
+    build: ../../migrations
+    environment:
+      - POSTGRES_PASSWORD=mysecretpassword
+    healthcheck:
+      test: "/usr/bin/psql -U postgres postgres -c \"\\d\""
+      interval: 3s
+      timeout: 1s
+      retries: 20
+    restart: unless-stopped

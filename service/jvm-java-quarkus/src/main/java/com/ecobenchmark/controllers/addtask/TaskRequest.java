@@ -1,5 +1,8 @@
 package com.ecobenchmark.controllers.addtask;
 
+import io.quarkus.runtime.annotations.RegisterForReflection;
+
+@RegisterForReflection
 public class TaskRequest {
 
     private String name;
