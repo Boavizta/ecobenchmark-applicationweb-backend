@@ -29,6 +29,12 @@ run go-pgx no-index
 
 run jvm-kotlin-spring no-index
 
+run jvm-java-quarkus no-index
+
+run jvm-java-quarkus-reactive no-index
+
+run native-java-quarkus no-index
+
 run node-express-sequelize no-index
 
 run php-symfony no-index
