@@ -16,10 +16,12 @@ services:
       - "/config/scenario.js"
 
   service:
-    image: mbras/native-java-quarkus:latest
+    image: mbras/jvm-java-quarkus:latest
     build:
       context: .
       dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
     depends_on:
       database:
         condition: service_healthy
