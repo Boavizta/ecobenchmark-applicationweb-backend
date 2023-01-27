@@ -1,0 +1,37 @@
+services:
+  runner:
+    image: jdrouet/eco-benchmark:runner-default
+    build: ../../runner
+    command:
+      - run
+      - "--vus"
+      - "2"
+      - "--duration"
+      - "1m"
+      - "--env"
+      - "SERVER_HOST=service:80"
+      - "/config/scenario.js"
+    depends_on:
+      - service
+
+  service:
+    image: jdrouet/eco-benchmark:service-python-fastapi-default
+    build: .
+    depends_on:
+      - database
+    environment:
+      - DATABASE_URL=postgresql://postgres:mysecretpassword@database:5432/postgres
+      - DATABASE_POOL_SIZE=20
+    restart: unless-stopped
+
+  database:
+    image: jdrouet/eco-benchmark:database-default
+    build: ../../migrations
+    environment:
+      - POSTGRES_PASSWORD=mysecretpassword
+    healthcheck:
+      test: "/usr/bin/psql -U postgres postgres -c \"\\d\""
+      interval: 3s
+      timeout: 1s
+      retries: 20
+    restart: unless-stopped

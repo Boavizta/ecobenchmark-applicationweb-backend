@@ -9,8 +9,9 @@ import os
 
 # DATABASE_URL = "postgresql://postgres:mysecretpassword@127.0.0.1:5432/postgres"
 DATABASE_URL = os.getenv("DATABASE_URL")
-engine = create_engine(DATABASE_URL)
-session = Session(engine)
+# DATABASE_POOL_SIZE = 20
+DATABASE_POOL_SIZE = os.getenv("DATABASE_POOL_SIZE")
+engine = create_engine(DATABASE_URL, pool_size=int(DATABASE_POOL_SIZE))
 
 class AccountResponse(BaseModel):
     id: str
@@ -43,6 +44,7 @@ class ListResponse(BaseModel):
 def create_account(login: str):
     id = str(uuid4())
     creation_date = str(datetime.datetime.now())
+    session = Session(engine)
     session.execute(
         text("INSERT INTO account (id, login, creation_date) VALUES (:id, :login, :creation_date)"),
         [{"id": id, "login": login, "creation_date": creation_date}]
@@ -53,6 +55,7 @@ def create_account(login: str):
 
 def get_account_lists(account_id: str, page: int):
     limit = 10
+    session = Session(engine)
     rows = session.execute(
         text("""
         SELECT l.id, l.name, l.creation_date, l.account_id, t.id AS task_id,
@@ -72,9 +75,9 @@ def get_account_lists(account_id: str, page: int):
     )
     lists = {}
     for row in rows:
-        if id not in lists.keys():
+        if row.id not in lists.keys():
             lists[row.id] = ListResponse(
-                id=row.id,
+                id=str(row.id),
                 name=row.name,
                 tasks=[],
                 creation_date=str(row.creation_date),
@@ -88,12 +91,13 @@ def get_account_lists(account_id: str, page: int):
                 creation_date=str(row.task_creation_date)
             ))
     session.commit()
-    return lists.values()
+    return list(lists.values())
 
 
 def create_account_list(account_id: str, name: str):
     id = str(uuid4())
     creation_date = str(datetime.datetime.now())
+    session = Session(engine)
     session.execute(
         text("INSERT INTO list(id, account_id, name,  creation_date) values (:id, :account_id, :name, :creation_date)"),
         [{"id": id, "account_id": account_id, "name": name, "creation_date": creation_date}]
@@ -105,6 +109,7 @@ def create_account_list(account_id: str, name: str):
 def create_list_task(list_id: str, name: str, description: str):
     id = str(uuid4())
     creation_date = str(datetime.datetime.now())
+    session = Session(engine)
     session.execute(
         text("INSERT INTO task(id, list_id, name, description, creation_date) values (:id, :list_id, :name, :description, :creation_date)"),
         [{"id": id, "list_id": list_id, "name": name, "description": description, "creation_date": creation_date}]
@@ -114,6 +119,7 @@ def create_list_task(list_id: str, name: str, description: str):
 
 
 def get_stats():
+    session = Session(engine)
     rows = session.execute(
         text("""
         SELECT id, login, count(list_id) as nb_list, round(avg(nb_tasks), 2) as avg_tasks
