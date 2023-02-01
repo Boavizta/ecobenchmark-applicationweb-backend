@@ -7,9 +7,9 @@ from sqlalchemy.orm import Session
 from pydantic import BaseModel
 import os
 
-DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://postgres:mysecretpassword@127.0.0.1:5432/postgres")
-DATABASE_POOL_SIZE = os.getenv("DATABASE_POOL_SIZE", "20")
-engine = create_engine(DATABASE_URL, pool_size=int(DATABASE_POOL_SIZE))
+_database_url = os.getenv("DATABASE_URL", "postgresql://postgres:mysecretpassword@127.0.0.1:5432/postgres")
+_database_pool_size = os.getenv("DATABASE_POOL_SIZE", "20")
+_engine = create_engine(_database_url, pool_size=int(_database_pool_size))
 
 
 class AccountResponse(BaseModel):
@@ -43,7 +43,7 @@ class ListResponse(BaseModel):
 def create_account(login: str):
     account_id = str(uuid4())
     creation_date = str(datetime.datetime.now())
-    session = Session(engine)
+    session = Session(_engine)
     session.execute(
         text("INSERT INTO account (id, login, creation_date) VALUES (:id, :login, :creation_date)"),
         [{"id": account_id, "login": login, "creation_date": creation_date}]
@@ -54,7 +54,7 @@ def create_account(login: str):
 
 def get_account_lists(account_id: str, page: int):
     limit = 10
-    session = Session(engine)
+    session = Session(_engine)
     rows = session.execute(
         text("""
         SELECT l.id, l.name, l.creation_date, l.account_id, t.id AS task_id,
@@ -96,7 +96,7 @@ def get_account_lists(account_id: str, page: int):
 def create_account_list(account_id: str, name: str):
     list_id = str(uuid4())
     creation_date = str(datetime.datetime.now())
-    session = Session(engine)
+    session = Session(_engine)
     session.execute(
         text("INSERT INTO list(id, account_id, name,  creation_date) values (:id, :account_id, :name, :creation_date)"),
         [{"id": list_id, "account_id": account_id, "name": name, "creation_date": creation_date}]
@@ -108,7 +108,7 @@ def create_account_list(account_id: str, name: str):
 def create_list_task(list_id: str, name: str, description: str):
     task_id = str(uuid4())
     creation_date = str(datetime.datetime.now())
-    session = Session(engine)
+    session = Session(_engine)
     session.execute(
         text("""
         INSERT INTO task(id, list_id, name, description, creation_date)
@@ -121,7 +121,7 @@ def create_list_task(list_id: str, name: str, description: str):
 
 
 def get_stats():
-    session = Session(engine)
+    session = Session(_engine)
     rows = session.execute(
         text("""
         SELECT id, login, count(list_id) as nb_list, round(avg(nb_tasks), 2) as avg_tasks
