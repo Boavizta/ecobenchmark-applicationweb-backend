@@ -7,10 +7,8 @@ from sqlalchemy.orm import Session
 from pydantic import BaseModel
 import os
 
-# DATABASE_URL = "postgresql://postgres:mysecretpassword@127.0.0.1:5432/postgres"
-DATABASE_URL = os.getenv("DATABASE_URL")
-# DATABASE_POOL_SIZE = 20
-DATABASE_POOL_SIZE = os.getenv("DATABASE_POOL_SIZE")
+DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://postgres:mysecretpassword@127.0.0.1:5432/postgres")
+DATABASE_POOL_SIZE = os.getenv("DATABASE_POOL_SIZE", "20")
 engine = create_engine(DATABASE_URL, pool_size=int(DATABASE_POOL_SIZE))
 
 
