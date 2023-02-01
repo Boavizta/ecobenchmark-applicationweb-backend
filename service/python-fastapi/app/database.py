@@ -13,6 +13,7 @@ DATABASE_URL = os.getenv("DATABASE_URL")
 DATABASE_POOL_SIZE = os.getenv("DATABASE_POOL_SIZE")
 engine = create_engine(DATABASE_URL, pool_size=int(DATABASE_POOL_SIZE))
 
+
 class AccountResponse(BaseModel):
     id: str
     login: str
@@ -23,7 +24,7 @@ class AccountStatistics(BaseModel):
     account_id: str
     account_login: str
     list_count: int
-    task_avg: int 
+    task_avg: int
 
 
 class TaskResponse(BaseModel):
@@ -105,17 +106,20 @@ def create_account_list(account_id: str, name: str):
     session.commit()
     return ListResponse(id=id, account_id=account_id, name=name, creation_date=creation_date, tasks=[])
 
-    
+
 def create_list_task(list_id: str, name: str, description: str):
     id = str(uuid4())
     creation_date = str(datetime.datetime.now())
     session = Session(engine)
     session.execute(
-        text("INSERT INTO task(id, list_id, name, description, creation_date) values (:id, :list_id, :name, :description, :creation_date)"),
+        text("""
+        INSERT INTO task(id, list_id, name, description, creation_date)
+        values (:id, :list_id, :name, :description, :creation_date)
+        """),
         [{"id": id, "list_id": list_id, "name": name, "description": description, "creation_date": creation_date}]
     )
     session.commit()
-    return TaskResponse(id=id, list_id=list_id, name=name, description=description, creation_date=creation_date)   
+    return TaskResponse(id=id, list_id=list_id, name=name, description=description, creation_date=creation_date)
 
 
 def get_stats():
@@ -138,10 +142,9 @@ def get_stats():
     return [
         AccountStatistics(
             account_id=str(row.id),
-           account_login=row.login,
+            account_login=row.login,
             list_count=row.nb_list,
             task_avg=row.avg_tasks,
-        ) 
+        )
         for row in rows
     ]
-    
