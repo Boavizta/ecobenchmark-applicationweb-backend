@@ -3,7 +3,6 @@ from pydantic import BaseModel
 
 from . import database
 
-
 app = FastAPI()
 
 
@@ -18,7 +17,7 @@ class ListRequest(BaseModel):
 class TaskRequest(BaseModel):
     name: str
     description: str
-    
+
 
 @app.post("/api/accounts")
 def create_account(account_request: AccountRequest):
