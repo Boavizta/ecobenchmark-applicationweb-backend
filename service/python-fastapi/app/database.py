@@ -43,15 +43,15 @@ class ListResponse(BaseModel):
 
 
 def create_account(login: str):
-    id = str(uuid4())
+    account_id = str(uuid4())
     creation_date = str(datetime.datetime.now())
     session = Session(engine)
     session.execute(
         text("INSERT INTO account (id, login, creation_date) VALUES (:id, :login, :creation_date)"),
-        [{"id": id, "login": login, "creation_date": creation_date}]
+        [{"id": account_id, "login": login, "creation_date": creation_date}]
     )
     session.commit()
-    return AccountResponse(id=id, login=login, creation_date=creation_date)
+    return AccountResponse(id=account_id, login=login, creation_date=creation_date)
 
 
 def get_account_lists(account_id: str, page: int):
@@ -96,19 +96,19 @@ def get_account_lists(account_id: str, page: int):
 
 
 def create_account_list(account_id: str, name: str):
-    id = str(uuid4())
+    list_id = str(uuid4())
     creation_date = str(datetime.datetime.now())
     session = Session(engine)
     session.execute(
         text("INSERT INTO list(id, account_id, name,  creation_date) values (:id, :account_id, :name, :creation_date)"),
-        [{"id": id, "account_id": account_id, "name": name, "creation_date": creation_date}]
+        [{"id": list_id, "account_id": account_id, "name": name, "creation_date": creation_date}]
     )
     session.commit()
-    return ListResponse(id=id, account_id=account_id, name=name, creation_date=creation_date, tasks=[])
+    return ListResponse(id=list_id, account_id=account_id, name=name, creation_date=creation_date, tasks=[])
 
 
 def create_list_task(list_id: str, name: str, description: str):
-    id = str(uuid4())
+    task_id = str(uuid4())
     creation_date = str(datetime.datetime.now())
     session = Session(engine)
     session.execute(
@@ -116,10 +116,10 @@ def create_list_task(list_id: str, name: str, description: str):
         INSERT INTO task(id, list_id, name, description, creation_date)
         values (:id, :list_id, :name, :description, :creation_date)
         """),
-        [{"id": id, "list_id": list_id, "name": name, "description": description, "creation_date": creation_date}]
+        [{"id": task_id, "list_id": list_id, "name": name, "description": description, "creation_date": creation_date}]
     )
     session.commit()
-    return TaskResponse(id=id, list_id=list_id, name=name, description=description, creation_date=creation_date)
+    return TaskResponse(id=task_id, list_id=list_id, name=name, description=description, creation_date=creation_date)
 
 
 def get_stats():
