@@ -42,6 +42,13 @@ class ListResponse(BaseModel):
     tasks: List[TaskResponse]
 
 
+def is_healthy() -> bool:
+    session = Session(_engine)
+    result = session.execute(text("SELECT 1 FROM account WHERE 1 = 1"))
+    session.commit()
+    return len(result.all()) > 0
+
+
 def create_account(login: str):
     account_id = str(uuid4())
     creation_date = str(datetime.datetime.now())

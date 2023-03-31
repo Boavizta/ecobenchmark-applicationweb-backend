@@ -56,4 +56,4 @@ def get_stats():
 
 @app.get('/healthcheck')
 def get_healthcheck():
-    return {}, 200
+    return {'ok': database.is_healthy()}, 200
