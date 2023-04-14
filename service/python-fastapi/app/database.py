@@ -40,6 +40,17 @@ class ListResponse(BaseModel):
     tasks: List[TaskResponse]
 
 
+def is_healthy():
+    session = Session(_engine)
+    result = session.execute(text("""SELECT table_name
+    FROM information_schema.tables
+    WHERE table_schema='public'
+    AND table_type='BASE TABLE'
+    AND table_name='account';"""))
+    session.commit()
+    return len(result.all()) > 0
+
+
 def create_account(login: str):
     account_id = str(uuid4())
     creation_date = str(datetime.datetime.now())
