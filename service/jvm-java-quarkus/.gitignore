@@ -1,10 +1,3 @@
-runner/eco-bench-runner
-
-results/*.json
-results/*.png
-
-*.code-worksapce
-
 #Maven
 target/
 pom.xml.tag
