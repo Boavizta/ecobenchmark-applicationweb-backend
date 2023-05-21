@@ -313,3 +313,60 @@ FOREIGN KEY ("list_id")
   [1m[36mActiveRecord::InternalMetadata Load (0.3ms)[0m  [1m[34mSELECT "ar_internal_metadata".* FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = $1 LIMIT $2[0m  [["key", "environment"], ["LIMIT", 1]]
   [1m[35m (0.2ms)[0m  [1m[34mSELECT pg_advisory_unlock(2895051369411935895)[0m
   [1m[36mActiveRecord::SchemaMigration Pluck (0.5ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+Started POST "/api/accounts" for ::1 at 2023-05-21 10:29:30 +0200
+  [1m[36mActiveRecord::SchemaMigration Pluck (0.7ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+  
+ActionController::RoutingError (uninitialized constant ApiController):
+  
+Started POST "/api/accounts" for ::1 at 2023-05-21 10:29:43 +0200
+Processing by AccountsController#create as */*
+  Parameters: {"name"=>"Sebou"}
+Completed 500 Internal Server Error in 1ms (ActiveRecord: 0.0ms | Allocations: 229)
+
+
+  
+NoMethodError (undefined method `table_name=' for Account:Class):
+  
+app/models/account.rb:2:in `<class:Account>'
+app/models/account.rb:1:in `<main>'
+app/controllers/accounts_controller.rb:3:in `create'
+Started POST "/api/accounts" for ::1 at 2023-05-21 10:30:08 +0200
+Processing by AccountsController#create as */*
+  Parameters: {"name"=>"Sebou"}
+Completed 500 Internal Server Error in 14ms (ActiveRecord: 5.2ms | Allocations: 4805)
+
+
+  
+ActiveModel::UnknownAttributeError (unknown attribute 'name' for Account.):
+  
+app/controllers/accounts_controller.rb:3:in `create'
+Started POST "/api/accounts" for ::1 at 2023-05-21 10:30:41 +0200
+Processing by AccountsController#create as */*
+  Parameters: {"login"=>"Sebou"}
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN[0m
+  ↳ app/controllers/accounts_controller.rb:4:in `create'
+  [1m[36mAccount Create (1.3ms)[0m  [1m[32mINSERT INTO "account" ("login", "creation_date") VALUES ($1, $2) RETURNING "id"[0m  [["login", "Sebou"], ["creation_date", nil]]
+  ↳ app/controllers/accounts_controller.rb:4:in `create'
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mROLLBACK[0m
+  ↳ app/controllers/accounts_controller.rb:4:in `create'
+Completed 500 Internal Server Error in 8ms (ActiveRecord: 4.8ms | Allocations: 4445)
+
+
+  
+ActiveRecord::NotNullViolation (PG::NotNullViolation: ERROR:  null value in column "creation_date" of relation "account" violates not-null constraint
+DETAIL:  Failing row contains (e0cd5b92-11f5-4f3d-b99d-1b573caf8cfe, Sebou, null).
+):
+  
+app/controllers/accounts_controller.rb:4:in `create'
+Started POST "/api/accounts" for ::1 at 2023-05-21 10:31:19 +0200
+Processing by AccountsController#create as */*
+  Parameters: {"login"=>"Sebou"}
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN[0m
+  ↳ app/controllers/accounts_controller.rb:4:in `create'
+  [1m[36mAccount Create (3.4ms)[0m  [1m[32mINSERT INTO "account" ("login", "creation_date") VALUES ($1, $2) RETURNING "id"[0m  [["login", "Sebou"], ["creation_date", "2023-05-21 08:31:19.376750"]]
+  ↳ app/controllers/accounts_controller.rb:4:in `create'
+  [1m[36mTRANSACTION (2.1ms)[0m  [1m[35mCOMMIT[0m
+  ↳ app/controllers/accounts_controller.rb:4:in `create'
+Completed 201 Created in 13ms (Views: 0.2ms | ActiveRecord: 9.2ms | Allocations: 4705)
+
+
