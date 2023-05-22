@@ -3,4 +3,6 @@ class List < ApplicationRecord
 
   belongs_to :account
   has_many :tasks
+
+  validates :name, presence: true
 end

@@ -2,6 +2,10 @@
 class ListsController < ApplicationController
   before_action :load_account
 
+  def index
+    render json: ListResponse.generate(@account, params[:page])
+  end
+
   def create
     @list = @account.lists.new(name: params[:name])
     if @list.save
