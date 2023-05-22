@@ -1,4 +1,4 @@
-class List
+class List < ApplicationRecord
   self.table_name = "list"
 
   belongs_to :account

@@ -44,3 +44,9 @@ end
 Because database tables are already defined, we create the database schema with a database migration file present in the `db/migrations` folder.
 
 The `if_not_exists` prevent the application to override the existing database.
+
+#### Docker-Composer hostname
+
+On the Docker-Compose network, the app is named "service", so the runner will make requests to "http://service:8080".
+
+By default, Rails blocks unknown hosts, so we need to add it to the configuration, in `config/environments/development.rb`.
