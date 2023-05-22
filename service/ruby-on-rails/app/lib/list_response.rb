@@ -1,12 +1,12 @@
 class ListResponse
   attr_reader :lists
 
-  def self.generate(account, page = nil)
-    new(account, page).lists
+  def self.generate(account_id, page = nil)
+    new(account_id, page).lists
   end
 
-  def initialize(account, page = nil)
-    @account = account
+  def initialize(account_id, page = nil)
+    @account_id = account_id
     @page = page.to_i - 1
     @lists = []
     sql_results.each do |result|
@@ -44,10 +44,10 @@ class ListResponse
       SELECT l.id, l.name, l.creation_date, l.account_id, t.id AS task_id, t.name AS task_name, t.description, t.creation_date AS task_creation_date
       FROM list l
       LEFT JOIN task t ON l.id = t.list_id
-      WHERE l.account_id = '#{@account.id}' AND l.id IN (
+      WHERE l.account_id = '#{@account_id}' AND l.id IN (
         SELECT id
         FROM list
-        WHERE account_id = '#{@account.id}'
+        WHERE account_id = '#{@account_id}'
         LIMIT 10
         OFFSET #{10 * (@page < 0 ? 0 : @page)}
       )

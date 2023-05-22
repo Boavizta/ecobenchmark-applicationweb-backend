@@ -3,15 +3,15 @@ class ListsController < ApplicationController
   before_action :load_account
 
   def index
-    render json: ListResponse.generate(@account, params[:page])
+    render json: ListResponse.generate(@account.id, params[:page])
   end
 
   def create
-    @list = @account.lists.new(name: params[:name])
+    @list = @account.lists.new(params.permit(:name))
     if @list.save
       render json: @list, status: :created
     else
-      render json: @list.errors, status: :unprocessable_entity
+      render json: @list.errors, status: :bad_request
     end
   end
 
