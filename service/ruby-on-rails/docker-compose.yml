@@ -1,7 +1,6 @@
 services:
   runner:
     image: jdrouet/eco-benchmark:runner-default
-    platform: linux/amd64
     build: ../../runner
     command:
       - run
@@ -17,7 +16,6 @@ services:
 
   service:
     image: jdrouet/eco-benchmark:service-ruby-on-rails-default
-    platform: linux/amd64
     build: .
     depends_on:
       - database
@@ -28,7 +26,6 @@ services:
 
   database:
     image: jdrouet/eco-benchmark:database-default
-    platform: linux/amd64
     build: ../../migrations
     environment:
       - POSTGRES_PASSWORD=mysecretpassword
@@ -41,7 +38,6 @@ services:
 
   validator:
     image: grafana/k6
-    platform: linux/amd64
     build: ../../validator
     command:
       - run

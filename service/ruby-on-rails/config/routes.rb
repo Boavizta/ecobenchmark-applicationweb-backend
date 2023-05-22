@@ -5,6 +5,6 @@ Rails.application.routes.draw do
   post "/api/accounts/:account_id/lists" => "lists#create"
   post "/api/lists/:list_id/tasks" => "tasks#create"
 
-  get "/api/accounts/:account_id/:lists" => "lists#index"
+  get "/api/accounts/:account_id/lists" => "lists#index"
   get "/api/stats" => "stats#index"
 end
