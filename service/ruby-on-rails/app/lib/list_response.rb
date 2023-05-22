@@ -40,7 +40,7 @@ class ListResponse
   private
 
   def sql_results
-    result = ActiveRecord::Base.connection.execute("
+    ActiveRecord::Base.connection.execute("
       SELECT l.id, l.name, l.creation_date, l.account_id, t.id AS task_id, t.name AS task_name, t.description, t.creation_date AS task_creation_date
       FROM list l
       LEFT JOIN task t ON l.id = t.list_id
