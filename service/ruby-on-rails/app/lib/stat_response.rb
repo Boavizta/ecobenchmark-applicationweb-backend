@@ -1,25 +1,24 @@
 class StatResponse
-  attr_reader :stats
+  attr_reader :account_id, :account_login, :nb_list, :avg_tasks
 
   def self.generate
-    new.stats
+    stats = []
+    sql_results.each do |sql_result|
+      stats << new(sql_result)
+    end
+    stats
   end
 
-  def initialize
-    @stats = []
-    sql_results.each do |result|
-      @stats << {
-        "account_id" => result["id"],
-        "account_login" => result["login"],
-        "nb_list" => result["nb_list"].to_i,
-        "avg_tasks" => result["avg_tasks"].to_f,
-      }
-    end
+  def initialize(sql_result)
+    @account_id = sql_result["id"]
+    @account_login = sql_result["login"]
+    @nb_list = sql_result["nb_list"].to_i
+    @avg_tasks = sql_result["avg_tasks"].to_f
   end
 
   private
 
-  def sql_results
+  def self.sql_results
     ActiveRecord::Base.connection.execute("
       SELECT id, login, COUNT(list_id) AS nb_list, ROUND(AVG(nb_tasks), 2) AS avg_tasks
       FROM (
