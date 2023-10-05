@@ -125,7 +125,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/AccountStatistic'
   /healthcheck:
-    get: 
+    head: 
       tags:
         - developers
       summary: returns the health of the service
