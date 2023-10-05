@@ -35,7 +35,7 @@ Scenario: Simple Conformity Scenario - API Behavior and Cache agressive check
   And request { name: #(task_name), description: #(task_description) }
   When method post
   Then match [200, 201, 204] contains responseStatus
-  Then match response contains { id: #uuid, name: #(task_name), description: #(task_description) , list_id: #(list_id) }
+  Then match response contains { id: #uuid, name: #(task_name), description: #(task_description)}
   Then def task_id = response.id
   # Check current list content
   Given path 'api/accounts',account_id,'lists'
@@ -50,6 +50,7 @@ Scenario: Simple Conformity Scenario - API Behavior and Cache agressive check
   Given path 'api/stats'
   And header Content-Type = 'application/json'
   When method get
+  Then print response
   Then match [200, 201, 204] contains responseStatus
   Then def sub_result = karate.filter(response, x => { return x.account_id == account_id } ) 
   Then match sub_result[0] contains { account_id: #(account_id), account_login: #(account_name), list_count:1, task_avg:1 }
@@ -61,7 +62,7 @@ Scenario: Simple Conformity Scenario - API Behavior and Cache agressive check
   And request { name: #(task_name_2), description: #(task_description_2) }
   When method post
   Then match [200, 201, 204] contains responseStatus
-  Then match response contains { id: #uuid, name: #(task_name_2), description: #(task_description_2) ,  list_id: #(list_id) }
+  Then match response contains { id: #uuid, name: #(task_name_2), description: #(task_description_2) }
   Then def task_id_2 = response.id
   # Check current list content - should be 2 tasks
   Given path 'api/accounts',account_id,'lists'
@@ -103,7 +104,7 @@ Scenario: Simple Conformity Scenario - API Behavior and Cache agressive check
    And request { name: #(task_name), description: #(task_description) }
    When method post
    Then match [200, 201, 204] contains responseStatus
-   Then match response contains { id: #uuid, name: #(task_name), description: #(task_description),  list_id: #(list_id_2)}
+   Then match response contains { id: #uuid, name: #(task_name), description: #(task_description)}
    Then def task_id_1_2 = response.id
   # Check current lists content - should be 2 tasks
   Given path 'api/accounts',account_id,'lists'

@@ -181,13 +181,13 @@ components:
           type: string
           format: uuid
           example: 276f6a6f-0afa-4e50-9e39-7130f5aea9d2
-        accountId:
+        account_id:
           type: string
           example: d290f1ee-6c54-4b01-90e6-d701748f0851
         name:
           type: string
           example: My Task List
-        creationDate:
+        creation_date:
           type: string
           format: date-time
           example: '2022-06-29T13:37:00.001Z'
@@ -213,7 +213,7 @@ components:
           type: string
           format: uuid
           example: c6516320-e069-4238-a5c3-a57df2c1bc32
-        listId:
+        list_id:
           type: string
           example: 276f6a6f-0afa-4e50-9e39-7130f5aea9d2
         name:
@@ -222,23 +222,23 @@ components:
         description:
           type: string
           example: Just do it !
-        creationDate:
+        creation_date:
           type: string
           format: date-time
           example: '2022-06-29T13:37:00.001Z'
     AccountStatistic:
       type: object
       properties:
-        accountId:
+        account_id:
           type: string
           format: uuid
           example: d290f1ee-6c54-4b01-90e6-d701748f0851
-        accountLogin:
+        account_login:
           type: string
           example: My Personal Account
-        listCount:
+        list_count:
           type: number
           example: 42
-        taskAvg:
+        task_avg:
           type: number
           example: 1337
