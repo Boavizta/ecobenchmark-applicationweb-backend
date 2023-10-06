@@ -5,7 +5,7 @@ Background:
   * def account_name = 'Conformity-' + now()
   * url 'http://localhost:8080/'
 
-Scenario:
+Scenario: Healthcheck
   Given path 'healthcheck'
   When method head
 
@@ -43,14 +43,12 @@ Scenario: Simple Conformity Scenario - API Behavior and Cache agressive check
   And param page = 0
   When method get
   Then match [200, 201, 204] contains responseStatus
-  Then print response
   Then match response[0] contains { id: #(list_id), name: #(list_name), tasks: #notnull }
   Then match response[0].tasks[0] contains { id: #(task_id), name: #(task_name), description: #(task_description) }
   # Check stats
   Given path 'api/stats'
   And header Content-Type = 'application/json'
   When method get
-  Then print response
   Then match [200, 201, 204] contains responseStatus
   Then def sub_result = karate.filter(response, x => { return x.account_id == account_id } ) 
   Then match sub_result[0] contains { account_id: #(account_id), account_login: #(account_name), list_count:1, task_avg:1 }
