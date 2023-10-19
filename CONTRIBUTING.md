@@ -36,6 +36,15 @@ Each service must respect :
 
 Reference implementation is the [golang implementation](./service/go-pgx).
 
+### Acceptance criteria
+
+Service should pass the [conformity tests](./test/check-service-conformity.feature) - For help to execute test go here : https://github.com/karatelabs/karate
+
+Service's docker should have 2 environment variables :
+
+- `DATABASE_URL` :  Example of value injected: postgres://postgres:mysecretpassword@database:5432/postgres - url signature can be change for each service
+- `DATABASE_POOL_MAX` : setup to 20 by default
+
 #### API Contract
 
 API Contract must respect the following [API Definition documentation](./service/specs.md).
