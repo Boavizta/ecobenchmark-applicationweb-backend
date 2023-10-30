@@ -5,6 +5,9 @@ results/*.png
 
 *.code-worksapce
 
+#Karate
+test/target/
+test/karate*.jar
 #Maven
 target/
 pom.xml.tag
