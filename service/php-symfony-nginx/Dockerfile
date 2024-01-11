@@ -11,6 +11,11 @@ COPY docker/www.conf /usr/local/etc/php-fpm.d/www.conf
 RUN rm /usr/local/etc/php-fpm.d/docker.conf /usr/local/etc/php-fpm.d/zz-docker.conf && \
     mkdir -p /var/run/php && \
     chown www-data:www-data /var/run/php
+# Resolve trouble right
+RUN touch /run/nginx.pid
+RUN chown www-data:www-data /run/nginx.pid
+RUN chown -R www-data:www-data /var/lib/nginx /var/log/nginx /usr/local/var/log/
+# End Resolve trouble right -
 COPY docker/php.ini /usr/local/etc/php/php.ini
 COPY docker/default.conf /etc/nginx/sites-available/default
 ENV APP_ENV prod
