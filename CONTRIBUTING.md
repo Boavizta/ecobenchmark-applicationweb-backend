@@ -12,11 +12,11 @@ Target folders :
 A service is a combination of a language, a web framework, dao/orm lib (optional) and a webserver (optional).
 
 #### Name convention
-`[ecosytem-]language-framework[-dao][-webserver]`
+`[ecosystem-]language-framework[-dao][-webserver]`
 
 **Example** :
 - go-pgx (go as the language, pgx as the dao lib)
-- jvm-kotlin-spring (jvm as the ecosytem, kotlin as the language, spring as the framework)
+- jvm-kotlin-spring (jvm as the ecosystem, kotlin as the language, spring as the framework)
 - php-symfony-apache2 (php as the language, symfony as the framework, apache2 as the webserver).
 
 #### Implementation Spirit
@@ -71,19 +71,19 @@ ___
 
 `INSERT INTO task(id, list_id, name, description, creation_date) values ($1, $2, $3, $4, $5);`
 
-##### GET 	/api/accounts/:account/lists?page=n
+##### GET /api/accounts/:account/lists?page=n
 
 `SELECT l.id, l.name, l.creation_date, l.account_id, t.id AS task_id, t.name AS task_name, t.description, t.creation_date AS task_creation_date
 FROM list l LEFT JOIN task t ON l.id = t.list_id
 WHERE l.account_id = $1 AND l.id IN (SELECT id FROM list WHERE account_id = $1 LIMIT $2 OFFSET $3)`
 
-##### GET 	/api/stats
+##### GET /api/stats
 
 `select id,  login, count(list_id) as nb_list, round(avg(nb_tasks),2) as avg_tasks from (select account.id, account.login, list.id list_id, count(task.id) nb_tasks from account inner join list on (list.account_id=account.id) left join task on (task.list_id=list.id) group by account.id, account.login, list.id) t group by id, login`
 
 #### Algorithm
 
-##### GET 	/api/stats
+##### GET /api/stats
 
 Please follow the following example :
 
@@ -117,7 +117,6 @@ for rowsList.Next() {
 Target folders :
 - [/results](./results)
 
-
 _Not available yet_
 
 ## Runner contribution
@@ -129,4 +128,3 @@ Target folders :
 - [/script](./script)
 
 _Not available yet_
-
