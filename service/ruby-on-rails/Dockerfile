@@ -8,5 +8,6 @@ WORKDIR /workdir
 COPY Gemfile Gemfile.lock /workdir/
 RUN bundle install
 COPY . /workdir
+RUN mkdir -p /workdir/lib/tasks /workdir/log /workdir/tmp/pids /workdir/vendor
 
 CMD ["/workdir/bin/rails", "server", "-b", "0.0.0.0"]
