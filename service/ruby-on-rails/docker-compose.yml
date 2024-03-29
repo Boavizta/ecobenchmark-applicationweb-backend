@@ -1,6 +1,6 @@
 services:
   runner:
-    image: jdrouet/eco-benchmark:runner-default
+    image: gmathieu/eco-benchmark:runner-default
     build: ../../runner
     command:
       - run
@@ -15,8 +15,10 @@ services:
       - service
 
   service:
-    image: jdrouet/eco-benchmark:service-ruby-on-rails-default
+    image: gmathieu/eco-benchmark:service-ruby-on-rails-default
     build: .
+    ports:
+      - 8080:8080
     depends_on:
       - database
     environment:
@@ -25,8 +27,10 @@ services:
     restart: unless-stopped
 
   database:
-    image: jdrouet/eco-benchmark:database-default
+    image: gmathieu/eco-benchmark:database-default
     build: ../../migrations
+    ports:
+      - 5432:5432
     environment:
       - POSTGRES_PASSWORD=mysecretpassword
     healthcheck:

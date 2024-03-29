@@ -8,5 +8,8 @@ WORKDIR /workdir
 COPY . /workdir
 RUN bundle install
 RUN mkdir -p /workdir/lib/tasks /workdir/log /workdir/tmp/pids /workdir/vendor
+RUN chmod u+x /workdir/docker-entrypoint.sh
 
-CMD ["/workdir/bin/rails", "server", "-b", "0.0.0.0"]
+EXPOSE 8080
+
+ENTRYPOINT ["/workdir/docker-entrypoint.sh"]

@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  match "/healthcheck" => "health#check", via: :head
+  get "/healthcheck" => "health#check"
 
   post "/api/accounts" => "accounts#create"
   post "/api/accounts/:account_id/lists" => "lists#create"
