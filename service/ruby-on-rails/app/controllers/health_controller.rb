@@ -1,5 +1,5 @@
 class HealthController < ApplicationController
   def check
-    render_up
+    head :no_content
   end
 end
