@@ -1,5 +1,5 @@
 class StatResponse
-  attr_reader :account_id, :account_login, :nb_list, :avg_tasks
+  attr_reader :accountId, :accountLogin, :listCount, :taskAvg
 
   def self.generate
     stats = []
@@ -10,17 +10,17 @@ class StatResponse
   end
 
   def initialize(sql_result)
-    @account_id = sql_result["id"]
-    @account_login = sql_result["login"]
-    @nb_list = sql_result["nb_list"].to_i
-    @avg_tasks = sql_result["avg_tasks"].to_f
+    @accountId = sql_result["id"]
+    @accountLogin = sql_result["login"]
+    @listCount = sql_result["listCount"].to_i
+    @taskAvg = sql_result["taskAvg"].to_f
   end
 
   private
 
   def self.sql_results
     ActiveRecord::Base.connection.execute("
-      SELECT id, login, COUNT(list_id) AS nb_list, ROUND(AVG(nb_tasks), 2) AS avg_tasks
+      SELECT id, login, COUNT(list_id) AS listCount, ROUND(AVG(nb_tasks), 2) AS taskAvg
       FROM (
         SELECT account.id, account.login, list.id list_id, COUNT(task.id) nb_tasks
         FROM account

@@ -1,5 +1,5 @@
 class ListResponse
-  attr_reader :id, :name, :creation_date, :account_id
+  attr_reader :id, :name, :creationDate, :accountId
   attr_accessor :tasks
 
   def self.generate(account_id, page = nil)
@@ -18,8 +18,8 @@ class ListResponse
   def initialize(sql_result)
     @id = sql_result["id"]
     @name = sql_result["name"]
-    @creation_date = sql_result["creation_date"]
-    @account_id = sql_result["account_id"]
+    @creationDate = sql_result["creation_date"]
+    @accountId = sql_result["account_id"]
     @tasks = []
   end
 
