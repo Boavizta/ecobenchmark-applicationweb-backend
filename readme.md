@@ -1,3 +1,7 @@
+**This repository is in stand by, the project continues with another goal : provide data to Boavizta / efootprint builders**
+
+==> https://github.com/Boavizta/ecobenchmark-4-builder-efoootprint
+
 # Eco benchmark
 
 This repository is benchmarking different scenario to try to compare the energy consumption, for several languages.
