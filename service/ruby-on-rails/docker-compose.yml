@@ -1,0 +1,56 @@
+services:
+  runner:
+    image: gmathieu/eco-benchmark:runner-default
+    build: ../../runner
+    command:
+      - run
+      - "--vus"
+      - "2"
+      - "--duration"
+      - "1m"
+      - "--env"
+      - "SERVER_HOST=service:8080"
+      - "/config/scenario.js"
+    depends_on:
+      - service
+
+  service:
+    image: gmathieu/eco-benchmark:service-ruby-on-rails-default
+    build: .
+    ports:
+      - 8080:8080
+    depends_on:
+      - database
+    environment:
+      - DATABASE_URL=postgres://postgres:mysecretpassword@database:5432/postgres
+      - DATABASE_POOL_MAX=20
+    restart: unless-stopped
+
+  database:
+    image: gmathieu/eco-benchmark:database-default
+    build: ../../migrations
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_PASSWORD=mysecretpassword
+    healthcheck:
+      test: "/usr/bin/psql -U postgres postgres -c \"\\d\""
+      interval: 3s
+      timeout: 1s
+      retries: 20
+    restart: unless-stopped
+
+  validator:
+    image: grafana/k6
+    build: ../../validator
+    command:
+      - run
+      - "--iterations"
+      - "1"
+      - "--env"
+      - "SERVER_HOST=service:8080"
+      - "/config/scenario.js"
+    volumes:
+      - ../../validator:/config:ro
+    depends_on:
+      - service
