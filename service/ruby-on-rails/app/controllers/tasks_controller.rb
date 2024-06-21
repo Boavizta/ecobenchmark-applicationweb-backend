@@ -6,7 +6,7 @@ class TasksController < ApplicationController
     @task = @list.tasks.new(params.permit(:name, :description))
     response.headers['Content-Type'] = 'application/json'
     if @task.save
-      @task_json = @task.to_json.to_str.gsub('creation_date', 'creationDate').gsub('list_id', 'listId')
+      @task_json = @task.to_json.to_str.gsub('creationDate', 'creation_date').gsub('listId', 'list_id')
       render json: @task_json, status: :created
     else
       render json: @task.errors, status: :bad_request

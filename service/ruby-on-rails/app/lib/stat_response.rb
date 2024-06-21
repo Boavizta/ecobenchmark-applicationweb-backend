@@ -12,15 +12,15 @@ class StatResponse
   def initialize(sql_result)
     @accountId = sql_result["id"]
     @accountLogin = sql_result["login"]
-    @listCount = sql_result["listCount"].to_i
-    @taskAvg = sql_result["taskAvg"].to_f
+    @listCount = sql_result["list_count"].to_i
+    @taskAvg = sql_result["task_avg"].to_f
   end
 
   private
 
   def self.sql_results
     ActiveRecord::Base.connection.execute("
-      SELECT id, login, COUNT(list_id) AS listCount, ROUND(AVG(nb_tasks), 2) AS taskAvg
+      SELECT id, login, COUNT(list_id) AS list_count, ROUND(AVG(nb_tasks), 2) AS task_avg
       FROM (
         SELECT account.id, account.login, list.id list_id, COUNT(task.id) nb_tasks
         FROM account
